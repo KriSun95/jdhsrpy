@@ -165,6 +165,7 @@ def gradezero(evtdata):
 
 def in_time_range_inds(evtdata, tmrng):    
     """ Only include counts within a given time range.
+    
     Parameters
     ----------
     evtdata: FITS data class
