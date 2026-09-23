@@ -1,5 +1,7 @@
 import nustar_pysolar
 
+__all__ = ["evt_to_sunpos_evt"]
+
 def evt_to_sunpos_evt(file, load_path=None):
 	"""Convert a `.evt` NuSTAR file to a `_sunpos.evt` file
 	

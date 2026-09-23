@@ -5,6 +5,8 @@ import os
 
 from jdhsrpy.nustar_evt import NUSTAR_EPOCH, in_time_range_inds
 
+__all__ = ["time_filtered_evt_file", "make_gti_file"]
+
 def time_filtered_evt_file(evt_file, time_range=None, save_dir=None, **kwargs):
     """Takes a .evt file and filters the events list to a given time range. 
     Only for region selection, do not use directly with spectral fitting 

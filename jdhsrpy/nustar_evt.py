@@ -5,6 +5,7 @@ import ntpath
 import numpy as np
 import re
 
+__all__ = ["NUSTAR_EPOCH", "NustarSunposEvt", "bad_pix", "by_energy", "gradezero", "in_time_range_inds", "event_filter"]
 
 NUSTAR_EPOCH = Time("2010-01-01T00:00:00.000", format='isot',scale='utc') 
 
@@ -87,9 +88,6 @@ def bad_pix(evtdata, fpm):
     goodinds: iterable
         Index of evtdata that passes the filtering.
     """
-    
-
-    
     # Hot pixel filters
     
     # FPMA or FPMB
@@ -165,7 +163,7 @@ def gradezero(evtdata):
 
 def in_time_range_inds(evtdata, tmrng):    
     """ Only include counts within a given time range.
-    
+
     Parameters
     ----------
     evtdata: FITS data class

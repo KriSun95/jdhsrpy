@@ -3,6 +3,8 @@ from astropy.visualization import time_support
 from datetime import datetime
 import matplotlib.pyplot as plt
 
+__all__ = ["time_profile_plot", "vertical_line_of_time"]
+
 def time_profile_plot(times, ydata, axes=None):
     axes = plt if axes is None else axes
     if isinstance(times, Time):

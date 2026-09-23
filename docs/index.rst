@@ -13,10 +13,3 @@ Welcome! This is the online documentation for the `jdhsrpy <https://github.com/K
    :caption: Contents:
 
    modules
-
-.. image:: foxsi-1sol.png
-   :width: 400px
-   :height: 400px
-   :scale: 50 %
-   :alt: alternate text
-   :align: center
