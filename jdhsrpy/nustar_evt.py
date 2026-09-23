@@ -3,7 +3,6 @@ from astropy.time import Time
 import astropy.units as u
 import ntpath
 import numpy as np
-# import nustar_pysolar
 import re
 
 __all__ = ["NUSTAR_EPOCH", "NustarSunposEvt", "sunpos_evt", "bad_pix", "by_energy", "gradezero", "in_time_range_inds", "event_filter"]
@@ -76,6 +75,8 @@ def sunpos_evt(file, load_path=None):
     
     The new file will contain Solar-X/-Y coordinates for each event.
     """
+    # importing this causes the docs to fail for this file
+    import nustar_pysolar
     load_path = "./" if load_path is None else load_path
     nustar_pysolar.convert.convert_file(file, load_path=load_path)
 
