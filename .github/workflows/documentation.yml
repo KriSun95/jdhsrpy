@@ -11,12 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
+      - name: Install uv
+        run: |
+          pip install uv
       - name: Install dependencies
         run: |
           pip install sphinx sphinx_rtd_theme myst_parser sphinxemoji sphinx-gallery
       - name: Install jdhsrpy
         run: |
-          pip install -e .
+          uv pip install -e .
       - name: Sphinx construct
         run: |
           sphinx-apidoc -o docs jdhsrpy/
