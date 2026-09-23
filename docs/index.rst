@@ -12,4 +12,5 @@ Welcome! This is the online documentation for the `jdhsrpy <https://github.com/K
    :maxdepth: 2
    :caption: Contents:
 
+   setting_up_nustar_data
    modules
