@@ -1,0 +1,17 @@
+[project]
+name = "jdhsrpy"
+version = "0.1.0"
+description = "Software used for Jessie Duncan's HSR project."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+            "setuptools",
+            "numpy",
+            "scipy",
+            "matplotlib",
+            "sunpy",
+            "nustar-pysolar",
+]
+
+[tool.uv.sources]
+nustar-pysolar = { git = "https://github.com/NuSTAR/nustar_pysolar.git" }

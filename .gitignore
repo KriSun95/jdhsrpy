@@ -1,0 +1,29 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.eggs/
+jdhsrpy.egg-info/
+
+# Virtual environments
+.venv
+.env/
+.venv/
+
+# Mac
+.DS_Store
+
+# docs
+_build/
+docs/auto_examples/
+docs/sg_execution_times.rst
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# environment
+.ropeproject/
+.zed/
