@@ -56,7 +56,7 @@ where you would want to run this for FPMB too as the ``"A"`` in all the file nam
 The finale step is to get the spectral files we need for spectral fitting. For FPMA again, something like the following will do
 
 ```bash
-nuproducts indir=./ instrument=FPMA steminputs=nu"$OBSID" outdir=../4-nuproducts-timeAndSpaceSelection-test/ extended=no runmkarf=yes runmkrmf=yes infile=nu"$OBSID"A06_cl_grade0.evt bkgextract=no srcregionfile="$REGION_FILEA" attfile=./nu"$OBSID"_att.fits hkfile=./nu"$OBSID"A_fpm.hk usrgtifile="$TIME_INTERVAL_FILE"
+nuproducts indir=./ instrument=FPMA steminputs=nu"$OBSID" outdir=./ extended=no runmkarf=yes runmkrmf=yes infile=nu"$OBSID"A06_cl_grade0.evt bkgextract=no srcregionfile="$REGION_FILEA" attfile=./nu"$OBSID"_att.fits hkfile=./nu"$OBSID"A_fpm.hk usrgtifile="$TIME_INTERVAL_FILE"
 ```
 
 where ``REGION_FILEA`` and ``$TIME_INTERVAL_FILE`` represent a ``.reg`` file and a ``gti.fits`` file for region and time selection, respectively.

@@ -3,9 +3,10 @@ from astropy.time import Time
 import astropy.units as u
 import ntpath
 import numpy as np
+import nustar_pysolar
 import re
 
-__all__ = ["NUSTAR_EPOCH", "NustarSunposEvt", "bad_pix", "by_energy", "gradezero", "in_time_range_inds", "event_filter"]
+__all__ = ["NUSTAR_EPOCH", "NustarSunposEvt", "sunpos_evt", "bad_pix", "by_energy", "gradezero", "in_time_range_inds", "event_filter"]
 
 NUSTAR_EPOCH = Time("2010-01-01T00:00:00.000", format='isot',scale='utc') 
 
@@ -69,6 +70,14 @@ class NustarSunposEvt():
         time_bins = np.arange(start_time.value, end_time.value+time_binning.value, time_binning.value)
         counts, time_bins =  np.histogram(event_data['TIME'], time_bins)
         return counts, self.utc_from_nustar_time(time_bins<<u.second)
+
+def sunpos_evt(file, load_path=None):
+    """Convert a `.evt` NuSTAR file to a `_sunpos.evt` file
+    
+    The new file will contain Solar-X/-Y coordinates for each event.
+    """
+    load_path = "./" if load_path is None else load_path
+    nustar_pysolar.convert.convert_file(file, load_path=load_path)
 
 def bad_pix(evtdata, fpm):
     """Do some basic filtering on known bad pixels.
