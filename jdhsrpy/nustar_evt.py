@@ -3,7 +3,7 @@ from astropy.time import Time
 import astropy.units as u
 import ntpath
 import numpy as np
-import nustar_pysolar
+# import nustar_pysolar
 import re
 
 __all__ = ["NUSTAR_EPOCH", "NustarSunposEvt", "sunpos_evt", "bad_pix", "by_energy", "gradezero", "in_time_range_inds", "event_filter"]
