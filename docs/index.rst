@@ -6,7 +6,7 @@
 The Jessie Duncan HSR Project documentation! |:fox:|
 ====================================================
 
-Welcome! This is the online documentation for the `jdhsrpy <https://github.com/foxsi/jdhsrpy>`__ code repository.
+Welcome! This is the online documentation for the `jdhsrpy <https://github.com/KriSun95/jdhsrpy>`__ code repository.
 
 .. toctree::
    :maxdepth: 2
