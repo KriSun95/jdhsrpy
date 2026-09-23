@@ -72,7 +72,7 @@ class NustarSunposEvt():
         return counts, self.utc_from_nustar_time(time_bins<<u.second)
 
 def sunpos_evt(file, load_path=None):
-    """Convert a `.evt` NuSTAR file to a `_sunpos.evt` file
+    """Convert a .evt NuSTAR file to a _sunpos.evt file.
     
     The new file will contain Solar-X/-Y coordinates for each event.
     """
