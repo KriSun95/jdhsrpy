@@ -1,3 +1,5 @@
+import warnings
+
 from astropy.io import fits
 from astropy.time import Time
 import astropy.units as u
@@ -14,16 +16,16 @@ class NustarSunposEvt():
     # nustar times are measured in seconds from this date
     nustar_epoch = NUSTAR_EPOCH 
 
-    def __init__(self, sunpos_evt_filename):
-        self._check_sunpos(sunpos_evt_filename)
+    def __init__(self, evt_filename):
+        self._check_sunpos(evt_filename)
 
         #extract the data within the provided parameters
-        with fits.open(sunpos_evt_filename) as hdulist: 
+        with fits.open(evt_filename) as hdulist: 
             self.evt_data = hdulist[1].data
             self.evt_header = hdulist[1].header
         self._hacky_pixel_scale_fix()
 
-        self.directory, self.filename = ntpath.split(sunpos_evt_filename)
+        self.directory, self.filename = ntpath.split(evt_filename)
         #search for 2 digits, a non-digit, then 2 digits again
         self.fpm = re.compile(r'\d{2}\D\d{2}').findall(self.filename)[0][2]
 
@@ -43,7 +45,13 @@ class NustarSunposEvt():
     def _check_sunpos(self, evt_filename):
         # for a sunpy map object to be made then the file has to be positioned on the Sun
         if "sunpos" not in evt_filename:
-            raise ValueError('The file must be a \'sunpos\' file, i.e. the observation is converted to appropriate solar coordinates.\nSee `nustar_pysolar.convert.convert_file`.')
+            warnings.warn(
+                """
+                The provided file does not look like a sunpos file. Limited 
+                functionality with solar coordinate related functions. See 
+                ``~jdhsrpy.nustar_evt.sunpos_evt`` for help.
+                """
+                )
 
     def _hacky_pixel_scale_fix(self):
         ############*********** this is a hacky fix but will do for now ***********############
@@ -90,7 +98,6 @@ def bad_pix(evtdata, fpm):
 
     fpm: {"A" | "B"}
         Which FPM you're filtering on. Assumes A if not set.
-
 
     Returns
     -------
