@@ -1,0 +1,213 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jdhsrpy.screening &mdash; jdhsr 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            jdhsr
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">JDHSRPY examples and scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html#jdhsrpy-analysis">JDHSRPY Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">jdhsr</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jdhsrpy.screening</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jdhsrpy.screening</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ntpath</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">NUSTAR_EPOCH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy.filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">in_time_range_inds</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"time_filtered_evt_file"</span><span class="p">,</span> <span class="s2">"make_gti_file"</span><span class="p">]</span>
+
+<div class="viewcode-block" id="time_filtered_evt_file">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.screening.time_filtered_evt_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">time_filtered_evt_file</span><span class="p">(</span><span class="n">evt_file</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Takes a .evt file and filters the events list to a given time range. </span>
+<span class="sd">    Only for region selection, do not use directly with spectral fitting </span>
+<span class="sd">    software.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file : Str</span>
+<span class="sd">            File (or directory/file) of the .evt file to be filtered by time.</span>
+<span class="sd">    </span>
+<span class="sd">    time_range : list</span>
+<span class="sd">            A list of length 2 with the start and end date and time. Must </span>
+<span class="sd">            be given in a specific format, e.g. time_range=['2018/09/10, 16:22:30', '2018/09/10, 16:24:30'].</span>
+<span class="sd">            Default: None</span>
+<span class="sd">            </span>
+<span class="sd">    save_dir : Str</span>
+<span class="sd">            String of the directory for the filtered file to be saved.</span>
+<span class="sd">            Default: None</span>
+<span class="sd">            </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Creates a new file file with '_time_filtered' before the file extension </span>
+<span class="sd">    and returns the name of the new file.</span>
+<span class="sd">    """</span>
+    
+    <span class="k">if</span> <span class="n">time_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'No time_range given. Nothing will be done.'</span><span class="p">)</span>
+        <span class="k">return</span>
+    
+    <span class="n">directory</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">evt_file</span><span class="p">)</span>
+    <span class="n">tf_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span><span class="si">}</span><span class="s2">_time_filtered.evt"</span>
+    <span class="n">save_dir</span> <span class="o">=</span> <span class="n">directory</span> <span class="k">if</span> <span class="n">save_dir</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">save_dir</span>
+    <span class="n">new_file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">tf_name</span><span class="p">)</span> 
+    
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">evt_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdulist</span><span class="p">:</span>
+        <span class="n">evtdata</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="c1"># data to be filtered</span>
+
+        <span class="n">timeinds</span> <span class="o">=</span> <span class="n">in_time_range_inds</span><span class="p">(</span><span class="n">evtdata</span><span class="p">,</span> <span class="n">time_range</span><span class="p">)</span> <span class="c1"># picks events inside time range</span>
+        <span class="n">evt_in_time</span> <span class="o">=</span> <span class="n">evtdata</span><span class="p">[</span><span class="n">timeinds</span><span class="p">]</span>
+
+        <span class="n">hdulist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">evt_in_time</span> <span class="c1"># replaces this hdu with the filtered events list</span>
+        <span class="n">hdulist</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">new_file_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># saves the edited file, original stays as is</span>
+
+    <span class="k">return</span> <span class="n">new_file_name</span></div>
+
+
+<div class="viewcode-block" id="make_gti_file">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.screening.make_gti_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_gti_file</span><span class="p">(</span><span class="n">gti_file</span><span class="p">,</span> <span class="n">save_name</span><span class="p">,</span> <span class="n">good_time_interval</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Create a new GTI file with your own start and stop time.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gti_file : str</span>
+<span class="sd">            The original GTI file for the NuSTAR observation. E.g., gti_file="./nu80414201001B06_gti.fits".</span>
+<span class="sd">    </span>
+<span class="sd">    save_name : str</span>
+<span class="sd">            The name of your new GTI file. E.g., save_name = "./new_gti.fits"</span>
+<span class="sd">            </span>
+<span class="sd">    good_time_interval : [str, str]</span>
+<span class="sd">            A list made of 2 string with the start and stop time for your good time interval. </span>
+<span class="sd">            E.g., good_time_interval = ['2018-09-09 09:13:36', '2018-09-09 09:17:00'] will produce </span>
+<span class="sd">            a new GTI file with data START='2018-09-09 09:13:36' and STOP='2018-09-09 09:17:00'.</span>
+<span class="sd">            </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    gtiFile = "./nu80414201001B06_gti.fits"</span>
+<span class="sd">    saveName = "./new_gti.fits"</span>
+<span class="sd">    goodTimeInterval = ['2018-09-09T09:13:36', '2018-09-09T09:17:00']</span>
+
+<span class="sd">    make_gti(gtiFile, saveName, goodTimeInterval, overwrite=True)</span>
+<span class="sd">    """</span>
+
+    <span class="c1"># custom GTI</span>
+    <span class="n">time1</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">good_time_interval</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'isot'</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="s1">'utc'</span><span class="p">)</span>
+    <span class="n">time2</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">good_time_interval</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">'isot'</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="s1">'utc'</span><span class="p">)</span>
+
+    <span class="c1"># now open the file, change the start and stop times and save to new file without changing original</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">gti_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdulist</span><span class="p">:</span>
+
+        <span class="c1"># it turns out changing TSTART and TSTOP in hdulist[1].header does nothing, need to change the actual data</span>
+        <span class="n">hdulist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"START"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">time1</span> <span class="o">-</span> <span class="n">NUSTAR_EPOCH</span><span class="p">)</span><span class="o">.</span><span class="n">sec</span> <span class="c1"># replaces this hdu with the new time</span>
+        <span class="n">hdulist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">"STOP"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">time2</span> <span class="o">-</span> <span class="n">NUSTAR_EPOCH</span><span class="p">)</span><span class="o">.</span><span class="n">sec</span> 
+
+        <span class="n">hdulist</span><span class="o">.</span><span class="n">writeto</span><span class="p">(</span><span class="n">save_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># saves the edited file, original stays as is. </span></div>
+
+        <span class="c1">#overwrite=True overwrites save_name file if it's there, not original GTI file</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

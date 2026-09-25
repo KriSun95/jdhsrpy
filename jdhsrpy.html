@@ -1,0 +1,476 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jdhsrpy package &mdash; jdhsr 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="jdhsrpy" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            jdhsr
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">JDHSRPY examples and scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html#jdhsrpy-analysis">JDHSRPY Analysis</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">jdhsrpy</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">jdhsrpy package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.filter">jdhsrpy.filter module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.filter.bad_pix"><code class="docutils literal notranslate"><span class="pre">bad_pix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.filter.by_energy"><code class="docutils literal notranslate"><span class="pre">by_energy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.filter.event_filter"><code class="docutils literal notranslate"><span class="pre">event_filter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.filter.gradezero"><code class="docutils literal notranslate"><span class="pre">gradezero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.filter.in_time_range_inds"><code class="docutils literal notranslate"><span class="pre">in_time_range_inds()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.nustar_evt">jdhsrpy.nustar_evt module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_evt.NustarEvt"><code class="docutils literal notranslate"><span class="pre">NustarEvt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_evt.sunpos_evt"><code class="docutils literal notranslate"><span class="pre">sunpos_evt()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.screening">jdhsrpy.screening module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.screening.make_gti_file"><code class="docutils literal notranslate"><span class="pre">make_gti_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.screening.time_filtered_evt_file"><code class="docutils literal notranslate"><span class="pre">time_filtered_evt_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#jdhsrpy-spectral-fitting-module">jdhsrpy.spectral_fitting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.utils">jdhsrpy.utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.utils.only_numbers"><code class="docutils literal notranslate"><span class="pre">only_numbers()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.visualize">jdhsrpy.visualize module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.visualize.time_profile_plot"><code class="docutils literal notranslate"><span class="pre">time_profile_plot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.visualize.vertical_line_of_time"><code class="docutils literal notranslate"><span class="pre">vertical_line_of_time()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jdhsr</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">jdhsrpy</a></li>
+      <li class="breadcrumb-item active">jdhsrpy package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/jdhsrpy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jdhsrpy-package">
+<h1>jdhsrpy package<a class="headerlink" href="#jdhsrpy-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-jdhsrpy.filter">
+<span id="jdhsrpy-filter-module"></span><h2>jdhsrpy.filter module<a class="headerlink" href="#module-jdhsrpy.filter" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.filter.bad_pix">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.filter.</span></span><span class="sig-name descname"><span class="pre">bad_pix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evtdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fpm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/filter.html#bad_pix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.filter.bad_pix" title="Link to this definition"></a></dt>
+<dd><p>Do some basic filtering on known bad pixels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>evtdata</strong> (<em>FITS data class</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p></li>
+<li><p><strong>fpm</strong> (<em>{&quot;A&quot;</em><em> | </em><em>&quot;B&quot;}</em>) – Which FPM you’re filtering on. Assumes A if not set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>goodinds</strong> – Index of evtdata that passes the filtering.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>iterable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.filter.by_energy">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.filter.</span></span><span class="sig-name descname"><span class="pre">by_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evtdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/filter.html#by_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.filter.by_energy" title="Link to this definition"></a></dt>
+<dd><p>Apply energy filtering to the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>evtdata</strong> (<em>FITS data class</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p></li>
+<li><p><strong>energy_low</strong> (<em>float</em>) – Low-side energy bound for the map you want to produce (in keV).
+Defaults to 2.5 keV.</p></li>
+<li><p><strong>energy_high</strong> (<em>float</em>) – High-side energy bound for the map you want to produce (in keV).
+Defaults to 10 keV.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.filter.event_filter">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.filter.</span></span><span class="sig-name descname"><span class="pre">event_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evtdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fpm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FPMA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmrng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/filter.html#event_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.filter.event_filter" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>All in one filter module. By default applies an energy cut,</dt><dd><p>selects only events with grade == 0, and removes known hot pixel.</p>
+<p>Note that this module returns a cleaned eventlist rather than
+the indices to the cleaned events.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>evtdata</strong> (<em>FITS data structure</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p></li>
+<li><p><strong>fpm</strong> (<em>{&quot;FPMA&quot;</em><em> | </em><em>&quot;FPMB&quot;}</em>) – Which FPM you’re filtering on. Defaults to FPMA.</p></li>
+<li><p><strong>energy_low</strong> (<em>float</em>) – Low-side energy bound for the map you want to produce (in keV).
+Defaults to 2.5 keV.</p></li>
+<li><p><strong>energy_high</strong> (<em>float</em>) – High-side energy bound for the map you want to produce (in keV).
+Defaults to 10 keV.</p></li>
+<li><p><strong>tmrng</strong> (<em>list</em><em> of </em><em>strings</em><em>, </em><em>length 2</em>) – Input two times in the form ‘yyyy-mm-ddTHH:MM:SS.ZZZ’
+(e.g. ‘2010-01-01T00:00:00.000’) for the time range,
+default is the whole observation for the file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>cleanevt</strong> – This is the subset of evtdata that pass the data selection cuts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FITS data class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.filter.gradezero">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.filter.</span></span><span class="sig-name descname"><span class="pre">gradezero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evtdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/filter.html#gradezero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.filter.gradezero" title="Link to this definition"></a></dt>
+<dd><p>Only accept counts with GRADE==0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>evtdata</strong> (<em>FITS data class</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>goodinds</strong> – Index of evtdata that passes the filtering.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>iterable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.filter.in_time_range_inds">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.filter.</span></span><span class="sig-name descname"><span class="pre">in_time_range_inds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evtdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmrng</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/filter.html#in_time_range_inds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.filter.in_time_range_inds" title="Link to this definition"></a></dt>
+<dd><p>Only include counts within a given time range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>evtdata</strong> (<em>FITS data class</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p></li>
+<li><p><strong>tmrng</strong> (<em>list</em><em> of </em><em>length 2</em>) – Input two times in the form ‘yyyy/mm/dd, HH:MM:SS’
+(e.g. ‘2019/03/06, 16:45:30’) for the time range,
+default is the whole observation for the file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>goodinds</strong> – Index of evtdata that lies within the time range.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>iterable</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.nustar_evt">
+<span id="jdhsrpy-nustar-evt-module"></span><h2>jdhsrpy.nustar_evt module<a class="headerlink" href="#module-jdhsrpy.nustar_evt" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_evt.</span></span><span class="sig-name descname"><span class="pre">NustarEvt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to load in and work with NuSTAR EVT and EVT related files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>evt_filename</strong> (<cite>str</cite>) – The path and file name to the EVT file.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.clean_evt">
+<span class="sig-name descname"><span class="pre">clean_evt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fpm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.clean_evt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.clean_evt" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.nustar_epoch">
+<span class="sig-name descname"><span class="pre">nustar_epoch</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Time</span> <span class="pre">object:</span> <span class="pre">scale='utc'</span> <span class="pre">format='isot'</span> <span class="pre">value=2010-01-01T00:00:00.000&gt;</span></span><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.nustar_epoch" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.nustar_time_from_utc">
+<span class="sig-name descname"><span class="pre">nustar_time_from_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">utc_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.nustar_time_from_utc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.nustar_time_from_utc" title="Link to this definition"></a></dt>
+<dd><p>Get the number of seconds from 2010-01-01 for a given UTC time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>utc_time</strong> (<cite>~astropy.time.Time</cite>) – The UTC time Astropy object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number of seconds from the NuSTAR epoch.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~astropy.units.Quantity</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.time_profile_array">
+<span class="sig-name descname"><span class="pre">time_profile_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_binning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.time_profile_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.time_profile_array" title="Link to this definition"></a></dt>
+<dd><p>Get counts and time bins for plotting a NuSTAR time profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_data</strong> – Default: None</p></li>
+<li><p><strong>time_bins</strong> – Takes priority over <cite>time_binning</cite>, <cite>start_time</cite>, and
+<cite>stop_time</cite>.
+Default: None</p></li>
+<li><p><strong>time_binning</strong> – If <cite>None</cite> then a default value is used.
+Default: None</p></li>
+<li><p><strong>start_time</strong> – If <cite>None</cite> then a default value is used.
+Default: None</p></li>
+<li><p><strong>end_time</strong> – If <cite>None</cite> then a default value is used.
+Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.time_profile_array_from_binning_array">
+<span class="sig-name descname"><span class="pre">time_profile_array_from_binning_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.time_profile_array_from_binning_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.time_profile_array_from_binning_array" title="Link to this definition"></a></dt>
+<dd><p>Get counts and time bins for plotting a NuSTAR time profile.</p>
+<p>User given time bins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_data</strong> – Default: None</p></li>
+<li><p><strong>time_bins</strong> – Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.time_profile_array_from_start_stop_binning">
+<span class="sig-name descname"><span class="pre">time_profile_array_from_start_stop_binning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_binning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.time_profile_array_from_start_stop_binning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.time_profile_array_from_start_stop_binning" title="Link to this definition"></a></dt>
+<dd><p>Get counts and time bins for plotting a NuSTAR time profile.</p>
+<p>User given start, stop, and/or time bin size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_data</strong> – Default: None</p></li>
+<li><p><strong>time_binning</strong> – Default: None</p></li>
+<li><p><strong>start_time</strong> – Default: None</p></li>
+<li><p><strong>end_time</strong> – Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.utc_from_nustar_time">
+<span class="sig-name descname"><span class="pre">utc_from_nustar_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nustar_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Quantity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.utc_from_nustar_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.utc_from_nustar_time" title="Link to this definition"></a></dt>
+<dd><p>Get the UTC time from a number of seconds after 2010-01-01.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nustar_time</strong> (<cite>~astropy.units.Quantity</cite>) – The number of seconds from the NuSTAR epoch.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Astropy time object in UTC.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~astropy.time.Time</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.sunpos_evt">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_evt.</span></span><span class="sig-name descname"><span class="pre">sunpos_evt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#sunpos_evt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.sunpos_evt" title="Link to this definition"></a></dt>
+<dd><p>Convert a .evt NuSTAR file to a _sunpos.evt file.</p>
+<p>The new file will contain Solar-X/-Y coordinates for each event.</p>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.screening">
+<span id="jdhsrpy-screening-module"></span><h2>jdhsrpy.screening module<a class="headerlink" href="#module-jdhsrpy.screening" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.screening.make_gti_file">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.screening.</span></span><span class="sig-name descname"><span class="pre">make_gti_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gti_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">good_time_interval</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/screening.html#make_gti_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.screening.make_gti_file" title="Link to this definition"></a></dt>
+<dd><p>Create a new GTI file with your own start and stop time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gti_file</strong> (<em>str</em>) – The original GTI file for the NuSTAR observation. E.g., gti_file=”./nu80414201001B06_gti.fits”.</p></li>
+<li><p><strong>save_name</strong> (<em>str</em>) – The name of your new GTI file. E.g., save_name = “./new_gti.fits”</p></li>
+<li><p><strong>good_time_interval</strong> (<em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – A list made of 2 string with the start and stop time for your good time interval.
+E.g., good_time_interval = [‘2018-09-09 09:13:36’, ‘2018-09-09 09:17:00’] will produce
+a new GTI file with data START=’2018-09-09 09:13:36’ and STOP=’2018-09-09 09:17:00’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>gtiFile = “./nu80414201001B06_gti.fits”
+saveName = “./new_gti.fits”
+goodTimeInterval = [‘2018-09-09T09:13:36’, ‘2018-09-09T09:17:00’]</p>
+<p>make_gti(gtiFile, saveName, goodTimeInterval, overwrite=True)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.screening.time_filtered_evt_file">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.screening.</span></span><span class="sig-name descname"><span class="pre">time_filtered_evt_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/screening.html#time_filtered_evt_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.screening.time_filtered_evt_file" title="Link to this definition"></a></dt>
+<dd><p>Takes a .evt file and filters the events list to a given time range.
+Only for region selection, do not use directly with spectral fitting
+software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>Str</em>) – File (or directory/file) of the .evt file to be filtered by time.</p></li>
+<li><p><strong>time_range</strong> (<em>list</em>) – A list of length 2 with the start and end date and time. Must
+be given in a specific format, e.g. time_range=[‘2018/09/10, 16:22:30’, ‘2018/09/10, 16:24:30’].
+Default: None</p></li>
+<li><p><strong>save_dir</strong> (<em>Str</em>) – String of the directory for the filtered file to be saved.
+Default: None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Creates a new file file with ‘_time_filtered’ before the file extension</em></p></li>
+<li><p><em>and returns the name of the new file.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="jdhsrpy-spectral-fitting-module">
+<h2>jdhsrpy.spectral_fitting module<a class="headerlink" href="#jdhsrpy-spectral-fitting-module" title="Link to this heading"></a></h2>
+</section>
+<section id="module-jdhsrpy.utils">
+<span id="jdhsrpy-utils-module"></span><h2>jdhsrpy.utils module<a class="headerlink" href="#module-jdhsrpy.utils" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.utils.only_numbers">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.utils.</span></span><span class="sig-name descname"><span class="pre">only_numbers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/utils.html#only_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.utils.only_numbers" title="Link to this definition"></a></dt>
+<dd><p>Remove all non-numeric characters from a string.</p>
+<p>For example, “1a2H 3;” becomes “123”.</p>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.visualize">
+<span id="jdhsrpy-visualize-module"></span><h2>jdhsrpy.visualize module<a class="headerlink" href="#module-jdhsrpy.visualize" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.visualize.time_profile_plot">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.visualize.</span></span><span class="sig-name descname"><span class="pre">time_profile_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/visualize.html#time_profile_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.visualize.time_profile_plot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.visualize.vertical_line_of_time">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.visualize.</span></span><span class="sig-name descname"><span class="pre">vertical_line_of_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Time</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/visualize.html#vertical_line_of_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.visualize.vertical_line_of_time" title="Link to this definition"></a></dt>
+<dd><p>Use <cite>axvline</cite> to plot <cite>time</cite> input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time</strong> (<cite>str`|`astropy.time.core.Time`|`datetime</cite>) – If <cite>str</cite> then need ISOT format. E.g., 2021-11-20T02:25:30.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-jdhsrpy" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="jdhsrpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

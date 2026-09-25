@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Downloading and Processing NuSTAR Data &mdash; jdhsr 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="JDHSRPY examples and scripts" href="auto_examples/index.html" />
+    <link rel="prev" title="The Jessie Duncan HSR Project documentation! 🦊" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            jdhsr
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Downloading and Processing NuSTAR Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#downloading-nustar-data">Downloading NuSTAR data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#directly-download-with-the-obsid">Directly download with the OBSID</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#processing-nustar-data">Processing NuSTAR Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#heasoft-install">HEASoft install</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#troubles">Troubles</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#get-useable-science-files">Get useable science files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-grade-0-filtered-files">Get grade 0 filtered files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-the-pha-arf-and-rmf-spectral-files">Get the PHA, ARF, and RMF spectral files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#getting-a-region-file">Getting a region file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#getting-a-good-time-interval-file">Getting a good time interval file</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">JDHSRPY examples and scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html#jdhsrpy-analysis">JDHSRPY Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jdhsr</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Downloading and Processing NuSTAR Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/setting_up_nustar_data.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="downloading-and-processing-nustar-data">
+<h1>Downloading and Processing NuSTAR Data<a class="headerlink" href="#downloading-and-processing-nustar-data" title="Link to this heading"></a></h1>
+<p>A repository that might help is another I own called <a class="reference external" href="https://github.com/KriSun95/heasoft-test-base">heasoft-test-base</a>. I will heavily pull from information there as it’s purpose is to describe how to get NuSTAR data then process it for spectral fitting using terminal commands and Python.</p>
+<section id="downloading-nustar-data">
+<h2>Downloading NuSTAR data<a class="headerlink" href="#downloading-nustar-data" title="Link to this heading"></a></h2>
+<p>Visit the <a class="reference external" href="https://heasarc.gsfc.nasa.gov/db-perl/W3Browse/w3table.pl?tablehead=name%3Dnumaster&amp;Action=More+Options">NuSTAR Catalog webite</a>. You can search for the observation you want with any field but the solar ones will begin with <code class="docutils literal notranslate"><span class="pre">&quot;Sol&quot;</span></code> in the <code class="docutils literal notranslate"><span class="pre">&quot;name&quot;</span></code> field.</p>
+<p>The easiest might be to search using the <code class="docutils literal notranslate"><span class="pre">&quot;obsid&quot;</span></code> field and you can find a nice summary of all NuSTAR solar observations and corresponding IDs from <a class="reference external" href="https://ianan.github.io/nsigh_all/">Iain Hannah’s work</a>.</p>
+<p>Once you have found the data you want, hit <code class="docutils literal notranslate"><span class="pre">Retrieve</span></code> and download the file from the link.</p>
+<p>When you get the data, it will be compressed so you’ll have to do something similar to <code class="docutils literal notranslate"><span class="pre">tar</span> <span class="pre">-xf</span></code> then <code class="docutils literal notranslate"><span class="pre">gunzip</span> <span class="pre">-r</span></code> to that output to get workable files.</p>
+<section id="directly-download-with-the-obsid">
+<h3>Directly download with the OBSID<a class="headerlink" href="#directly-download-with-the-obsid" title="Link to this heading"></a></h3>
+<p>If you know the exact NuSTAR observation ID you want to download then you can use something like</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>-q<span class="w"> </span>-nH<span class="w"> </span>--no-check-certificate<span class="w"> </span>--cut-dirs<span class="o">=</span><span class="m">6</span><span class="w"> </span>-r<span class="w"> </span>-l0<span class="w"> </span>-c<span class="w"> </span>-N<span class="w"> </span>-np<span class="w"> </span>-R<span class="w"> </span><span class="s1">'index*'</span><span class="w"> </span>-erobots<span class="o">=</span>off<span class="w"> </span>--retr-symlinks<span class="w"> </span>https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20619003001/
+</pre></div>
+</div>
+<p>where I’ve used the observation ID <code class="docutils literal notranslate"><span class="pre">20619003001</span></code> in the URL. The <code class="docutils literal notranslate"><span class="pre">06/2//</span></code> section in the URL also comes from the ID too. The <code class="docutils literal notranslate"><span class="pre">2//</span></code> is the first number and the <code class="docutils literal notranslate"><span class="pre">06/</span></code> come from the second and third digit.</p>
+<p>The a user only has to run <code class="docutils literal notranslate"><span class="pre">gunzip</span> <span class="pre">-r</span> <span class="pre">20619003001</span></code> to get the files ready to work with.</p>
+</section>
+</section>
+<section id="processing-nustar-data">
+<h2>Processing NuSTAR Data<a class="headerlink" href="#processing-nustar-data" title="Link to this heading"></a></h2>
+<p>Processing NuSTAR data can have a lot of steps to it so let’s get started.</p>
+<section id="heasoft-install">
+<h3>HEASoft install<a class="headerlink" href="#heasoft-install" title="Link to this heading"></a></h3>
+<p>In order to process NuSTAR data, you will require a working <code class="docutils literal notranslate"><span class="pre">HEASoft</span></code> install. I have a walkthrough in <a class="reference external" href="https://github.com/KriSun95/heasoft-test-base/blob/main/heasoft_install_instructions/README.md">heasoft-test-base/heasoft_install_instructions</a> but you can also use the <a class="reference external" href="https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/download.html">official instructions</a> which look <em>a lot</em> nicer than when I went through them a while ago (there are videos and Docker containers now).</p>
+<p>Make sure to source the executable for your HEASoft install anytime you want to use it if necessary.</p>
+<section id="troubles">
+<h4>Troubles<a class="headerlink" href="#troubles" title="Link to this heading"></a></h4>
+<p>I have had many errors installing and using HEASoft over the years. I’ll try and leave some useful tips:</p>
+<ul class="simple">
+<li><p>The absolute paths to your files are too long.</p>
+<ul>
+<li><p>I have this account for a variety of cryptic errors and the solution is moving whatever folder your data is in to a higher level on your machine.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="get-useable-science-files">
+<h3>Get useable science files<a class="headerlink" href="#get-useable-science-files" title="Link to this heading"></a></h3>
+<p>Now we can use HEASoft to generate some event files in the <code class="docutils literal notranslate"><span class="pre">event_cl</span></code> folder. The following is what I have used:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nupipeline<span class="w"> </span><span class="nv">obsmode</span><span class="o">=</span>SCIENCE_SC<span class="w"> </span><span class="nv">indir</span><span class="o">=</span>./<span class="nv">$OBSID</span><span class="w"> </span><span class="nv">steminputs</span><span class="o">=</span>nu<span class="nv">$OBSID</span><span class="w"> </span><span class="nv">outdir</span><span class="o">=</span>event_cl<span class="w"> </span><span class="nv">entrystage</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">exitstage</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="nv">pntra</span><span class="o">=</span>OBJECT<span class="w"> </span><span class="nv">pntdec</span><span class="o">=</span>OBJECT<span class="w"> </span><span class="nv">statusexpr</span><span class="o">=</span><span class="nv">STATUS</span><span class="o">==</span>b0000xx00xx0xx000<span class="w"> </span><span class="nv">cleanflick</span><span class="o">=</span>no<span class="w"> </span><span class="nv">hkevtexpr</span><span class="o">=</span>NONE<span class="w"> </span><span class="nv">clobber</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">runsplitsc</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">splitmode</span><span class="o">=</span>STRICT
+</pre></div>
+</div>
+<p>where I’m assuming I’m running this command in the directory above the <code class="docutils literal notranslate"><span class="pre">$OBSID</span></code> folder, this being the same number as the <code class="docutils literal notranslate"><span class="pre">&quot;obsid&quot;</span></code> field mentioned in the downloading data instructions.</p>
+<p><em>We should now have a bunch of files we can do a lot with so you might want to pick and choose what bits you need from this from now on.</em></p>
+</section>
+<section id="get-grade-0-filtered-files">
+<h3>Get grade 0 filtered files<a class="headerlink" href="#get-grade-0-filtered-files" title="Link to this heading"></a></h3>
+<p>To get files that have been filtered to only include grade 0 files, try:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nuscreen<span class="w"> </span><span class="nv">infile</span><span class="o">=</span>nu<span class="s2">"</span><span class="nv">$OBSID</span><span class="s2">"</span>A06_cl.evt<span class="w"> </span><span class="nv">gtiscreen</span><span class="o">=</span>no<span class="w"> </span><span class="nv">evtscreen</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">gtiexpr</span><span class="o">=</span>NONE<span class="w"> </span><span class="nv">gradeexpr</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">statusexpr</span><span class="o">=</span>NONE<span class="w"> </span><span class="nv">outdir</span><span class="o">=</span>./<span class="w"> </span><span class="nv">hkfile</span><span class="o">=</span>./nu<span class="s2">"</span><span class="nv">$OBSID</span><span class="s2">"</span>A_fpm.hk<span class="w"> </span><span class="nv">outfile</span><span class="o">=</span>nu<span class="s2">"</span><span class="nv">$OBSID</span><span class="s2">"</span>A06_cl_grade0.evt
+</pre></div>
+</div>
+<p>where you would want to run this for FPMB too as the <code class="docutils literal notranslate"><span class="pre">&quot;A&quot;</span></code> in all the file names above represent this is using the FPMA files.</p>
+</section>
+<section id="get-the-pha-arf-and-rmf-spectral-files">
+<h3>Get the PHA, ARF, and RMF spectral files<a class="headerlink" href="#get-the-pha-arf-and-rmf-spectral-files" title="Link to this heading"></a></h3>
+<p>The finale step is to get the spectral files we need for spectral fitting. For FPMA again, something like the following will do</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nuproducts<span class="w"> </span><span class="nv">indir</span><span class="o">=</span>./<span class="w"> </span><span class="nv">instrument</span><span class="o">=</span>FPMA<span class="w"> </span><span class="nv">steminputs</span><span class="o">=</span>nu<span class="s2">"</span><span class="nv">$OBSID</span><span class="s2">"</span><span class="w"> </span><span class="nv">outdir</span><span class="o">=</span>./<span class="w"> </span><span class="nv">extended</span><span class="o">=</span>no<span class="w"> </span><span class="nv">runmkarf</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">runmkrmf</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">infile</span><span class="o">=</span>nu<span class="s2">"</span><span class="nv">$OBSID</span><span class="s2">"</span>A06_cl_grade0.evt<span class="w"> </span><span class="nv">bkgextract</span><span class="o">=</span>no<span class="w"> </span><span class="nv">srcregionfile</span><span class="o">=</span><span class="s2">"</span><span class="nv">$REGION_FILEA</span><span class="s2">"</span><span class="w"> </span><span class="nv">attfile</span><span class="o">=</span>./nu<span class="s2">"</span><span class="nv">$OBSID</span><span class="s2">"</span>_att.fits<span class="w"> </span><span class="nv">hkfile</span><span class="o">=</span>./nu<span class="s2">"</span><span class="nv">$OBSID</span><span class="s2">"</span>A_fpm.hk<span class="w"> </span><span class="nv">usrgtifile</span><span class="o">=</span><span class="s2">"</span><span class="nv">$TIME_INTERVAL_FILE</span><span class="s2">"</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">REGION_FILEA</span></code> and <code class="docutils literal notranslate"><span class="pre">$TIME_INTERVAL_FILE</span></code> represent a <code class="docutils literal notranslate"><span class="pre">.reg</span></code> file and a <code class="docutils literal notranslate"><span class="pre">gti.fits</span></code> file for region and time selection, respectively.</p>
+<p>Once the above has run, you should now have PHA, ARF, and RMF files created from the <code class="docutils literal notranslate"><span class="pre">nu&quot;$OBSID&quot;A06_cl_grade0.evt</span></code> file you provided for the <code class="docutils literal notranslate"><span class="pre">infile</span></code> argument.</p>
+<section id="getting-a-region-file">
+<h4>Getting a region file<a class="headerlink" href="#getting-a-region-file" title="Link to this heading"></a></h4>
+<p>You can obtain a region file using FITS viewing software like <a class="reference external" href="https://sites.google.com/cfa.harvard.edu/saoimageds9?pli=1&amp;authuser=0">SAOImageDS9</a>.</p>
+</section>
+<section id="getting-a-good-time-interval-file">
+<h4>Getting a good time interval file<a class="headerlink" href="#getting-a-good-time-interval-file" title="Link to this heading"></a></h4>
+<p>You can use the function <code class="docutils literal notranslate"><span class="pre">~jdhsrpy.screening.make_gti_file</span></code>.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="The Jessie Duncan HSR Project documentation! 🦊" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="auto_examples/index.html" class="btn btn-neutral float-right" title="JDHSRPY examples and scripts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+jdhsrpy package
+===============
+
+Submodules
+----------
+
+jdhsrpy.filter module
+---------------------
+
+.. automodule:: jdhsrpy.filter
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.nustar\_evt module
+--------------------------
+
+.. automodule:: jdhsrpy.nustar_evt
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.screening module
+------------------------
+
+.. automodule:: jdhsrpy.screening
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.spectral\_fitting module
+--------------------------------
+
+.. automodule:: jdhsrpy.spectral_fitting
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.utils module
+--------------------
+
+.. automodule:: jdhsrpy.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.visualize module
+------------------------
+
+.. automodule:: jdhsrpy.visualize
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: jdhsrpy
+   :members:
+   :show-inheritance:
+   :undoc-members:
