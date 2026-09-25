@@ -1,0 +1,17 @@
+# The following commands will download selected data products.
+#
+# Note: The network utility wget is included with most
+# systems.  To download wget or get more information visit the
+# GNU website http://www.gnu.org/software/wget/wget.html
+#
+
+# I added the "&&" so it just becomes the one big line
+
+wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20619003001/ && echo "Done" && wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20620001001/ && echo "Done" &&  wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20618001001/ && echo "Done" &&  wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20618002001/ && echo "Done" &&  wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20620004001/ && echo "Done" &&  wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20620002001/ && echo "Done" &&  wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20619002001/ && echo "Done" &&  wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20620003001/ && echo "Done" &&  wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20619001001/ && echo "Done" &&  wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20618003001/
+
+# Total size of data product files local to the HEASARC system: 6 GB
+# File sizes of remote data products are not available
+
+##https://heasarc.gsfc.nasa.gov/db-perl/W3Browse/w3table.pl?tablehead=name%3Dnumaster&Action=More+Options
+##https://heasarc.gsfc.nasa.gov/db-perl/W3Browse/w3query.pl
+##https://heasarc.gsfc.nasa.gov/db-perl/W3Browse/w3hdprods.pl

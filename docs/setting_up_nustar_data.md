@@ -10,7 +10,19 @@ The easiest might be to search using the ``"obsid"`` field and you can find a ni
 
 Once you have found the data you want, hit ``Retrieve`` and download the file from the link.
 
-Whe you get the data, it will be compressed so you'll have to do something similar to ``tar -xf`` then ``gunzip -r`` to that output to get workable files.
+When you get the data, it will be compressed so you'll have to do something similar to ``tar -xf`` then ``gunzip -r`` to that output to get workable files.
+
+### Directly download with the OBSID
+
+If you know the exact NuSTAR observation ID you want to download then you can use something like
+
+```bash
+wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20619003001/
+```
+
+where I've used the observation ID ``20619003001`` in the URL. The ``06/2//`` section also comes from the ID too. The ``2//`` is the first number and the ``06/`` come from the second and third digit.
+
+The a user only has to run ``gunzip -r 20619003001`` to get the files ready to work with.
 
 ## Processing NuSTAR Data
 
