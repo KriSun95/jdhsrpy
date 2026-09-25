@@ -3,7 +3,7 @@ name = "jdhsrpy"
 version = "0.1.0"
 description = "Software used for Jessie Duncan's HSR project."
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.12"
 dependencies = [
             "setuptools",
             "numpy",

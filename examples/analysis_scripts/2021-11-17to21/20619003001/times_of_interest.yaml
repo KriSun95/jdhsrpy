@@ -1,0 +1,8 @@
+---
+    # times of interest for the OBSID 20619003001
+    flare1: 
+        time0: "2021-11-20T02:25:30"
+        time1: "2021-11-20T02:28:50"
+        preflare:
+            time0: "2021-11-20T02:22:10"
+            time1: "2021-11-20T02:25:30"
