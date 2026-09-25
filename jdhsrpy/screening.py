@@ -3,7 +3,8 @@ from astropy.time import Time
 import ntpath
 import os
 
-from jdhsrpy.nustar_evt import NUSTAR_EPOCH, in_time_range_inds
+from jdhsrpy import NUSTAR_EPOCH
+from jdhsrpy.filter import in_time_range_inds
 
 __all__ = ["time_filtered_evt_file", "make_gti_file"]
 

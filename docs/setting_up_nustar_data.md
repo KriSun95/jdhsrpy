@@ -20,7 +20,7 @@ If you know the exact NuSTAR observation ID you want to download then you can us
 wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20619003001/
 ```
 
-where I've used the observation ID ``20619003001`` in the URL. The ``06/2//`` section also comes from the ID too. The ``2//`` is the first number and the ``06/`` come from the second and third digit.
+where I've used the observation ID ``20619003001`` in the URL. The ``06/2//`` section in the URL also comes from the ID too. The ``2//`` is the first number and the ``06/`` come from the second and third digit.
 
 The a user only has to run ``gunzip -r 20619003001`` to get the files ready to work with.
 
@@ -77,7 +77,7 @@ Once the above has run, you should now have PHA, ARF, and RMF files created from
 
 #### Getting a region file
 
-You can obtain a region file using FITS viewing software like DS9.
+You can obtain a region file using FITS viewing software like [SAOImageDS9](https://sites.google.com/cfa.harvard.edu/saoimageds9?pli=1&authuser=0).
 
 #### Getting a good time interval file
 

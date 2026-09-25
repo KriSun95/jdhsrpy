@@ -2,6 +2,15 @@
 
 from sunkit_spex.legacy.fitting.fitter import Fitter
 
+__all__ = ["get_fitter_object", 
+           "multi_or_single_fit_model", 
+           "set_single_thermal_model", 
+           "set_double_thermal_model", 
+           "set_triple_thermal_model",
+           "set_single_thermal_single_nonthermal_model",
+           "set_double_thermal_single_nonthermal_model",
+           ]
+
 def get_fitter_object(*args, arf_files=None, rmf_files=None):
     """ Returns the ``sunkit-spex.legacy.fitting.fitter.Fitter`` object.
     

@@ -7,16 +7,25 @@ import ntpath
 import numpy as np
 import re
 
-__all__ = ["NUSTAR_EPOCH", "NustarSunposEvt", "sunpos_evt", "bad_pix", "by_energy", "gradezero", "in_time_range_inds", "event_filter"]
+from jdhsrpy import NUSTAR_EPOCH
+from jdhsrpy.filter import bad_pix, by_energy, gradezero
 
-NUSTAR_EPOCH = Time("2010-01-01T00:00:00.000", format='isot',scale='utc') 
+__all__ = ["NUSTAR_EPOCH", "NustarEvt", "sunpos_evt"]
 
-class NustarSunposEvt():
+
+class NustarEvt():
+    """A class to load in and work with NuSTAR EVT and EVT related files.
+    
+    Parameters
+    ----------
+    evt_filename : `str`
+        The path and file name to the EVT file.
+    """
 
     # nustar times are measured in seconds from this date
     nustar_epoch = NUSTAR_EPOCH 
 
-    def __init__(self, evt_filename):
+    def __init__(self, evt_filename:str):
         self._check_sunpos(evt_filename)
 
         #extract the data within the provided parameters
@@ -43,6 +52,7 @@ class NustarSunposEvt():
         return _eng[goodpix]
 
     def _check_sunpos(self, evt_filename):
+        """Check for \"sunpos\" in the EVT file name."""
         # for a sunpy map object to be made then the file has to be positioned on the Sun
         if "sunpos" not in evt_filename:
             warnings.warn(
@@ -60,13 +70,95 @@ class NustarSunposEvt():
             self.evt_header['TCDLT13'] = 2.45810736 # x
             self.evt_header['TCDLT14'] = 2.45810736 # y
 
-    def nustar_time_from_utc(self, utc_time):
+    def nustar_time_from_utc(self, utc_time:Time):
+        """Get the number of seconds from 2010-01-01 for a given UTC time.
+        
+        Parameters
+        ----------
+        utc_time : `~astropy.time.Time`
+            The UTC time Astropy object.
+
+        Returns
+        -------
+        : `~astropy.units.Quantity`
+            The number of seconds from the NuSTAR epoch.
+        """
         return (utc_time - self.nustar_epoch).sec
 
-    def utc_from_nustar_time(self, nustar_time):
+    def utc_from_nustar_time(self, nustar_time:u.Quantity):
+        """Get the UTC time from a number of seconds after 2010-01-01.
+        
+        Parameters
+        ----------
+        nustar_time : `~astropy.units.Quantity`
+            The number of seconds from the NuSTAR epoch.
+
+        Returns
+        -------
+        : `~astropy.time.Time`
+            The Astropy time object in UTC.
+        """
         return self.nustar_epoch + nustar_time
 
-    def time_profile_array(self, event_data=None, time_binning=None, start_time=None, end_time=None):
+    def time_profile_array(self, event_data=None, time_bins=None, time_binning=None, start_time=None, end_time=None):
+        """Get counts and time bins for plotting a NuSTAR time profile.
+        
+        Parameters
+        ----------
+        event_data :
+
+            Default: None
+
+        time_bins :
+            Takes priority over `time_binning`, `start_time`, and 
+            `stop_time`.
+            Default: None
+
+        time_binning :
+            If `None` then a default value is used.
+            Default: None
+
+        start_time :
+            If `None` then a default value is used.
+            Default: None
+        
+        end_time :
+            If `None` then a default value is used.
+            Default: None
+        
+        Returns
+        -------
+        """
+        if time_bins is None:
+            return self.time_profile_array_from_start_stop_binning(event_data=event_data, time_binning=time_binning, start_time=start_time, end_time=end_time)
+        return self.time_profile_array_from_binning_array(event_data=event_data, time_bins=time_bins)
+
+    def time_profile_array_from_start_stop_binning(self, event_data=None, time_binning=None, start_time=None, end_time=None):
+        """Get counts and time bins for plotting a NuSTAR time profile.
+
+        User given start, stop, and/or time bin size.
+        
+        Parameters
+        ----------
+        event_data :
+
+            Default: None
+
+        time_binning :
+
+            Default: None
+
+        start_time :
+
+            Default: None
+        
+        end_time :
+
+            Default: None
+        
+        Returns
+        -------
+        """
         time_binning = 10<<u.second if time_binning is None else time_binning
         event_data = self.cleaned_evt_data if event_data is None else event_data
         start_time = np.min(event_data['TIME'])<<u.second if start_time is None else start_time
@@ -75,6 +167,27 @@ class NustarSunposEvt():
         end_time <<= u.second
         time_binning <<= u.second
         time_bins = np.arange(start_time.value, end_time.value+time_binning.value, time_binning.value)
+        counts, time_bins =  np.histogram(event_data['TIME'], time_bins)
+        return counts, self.utc_from_nustar_time(time_bins<<u.second)
+    
+    def time_profile_array_from_binning_array(self, event_data=None, time_bins=None):
+        """Get counts and time bins for plotting a NuSTAR time profile.
+
+        User given time bins.
+        
+        Parameters
+        ----------
+        event_data :
+
+            Default: None
+
+        time_bins :
+
+            Default: None
+        
+        Returns
+        -------
+        """
         counts, time_bins =  np.histogram(event_data['TIME'], time_bins)
         return counts, self.utc_from_nustar_time(time_bins<<u.second)
 
@@ -87,174 +200,3 @@ def sunpos_evt(file, load_path=None):
     import nustar_pysolar
     load_path = "./" if load_path is None else load_path
     nustar_pysolar.convert.convert_file(file, load_path=load_path)
-
-def bad_pix(evtdata, fpm):
-    """Do some basic filtering on known bad pixels.
-    
-    Parameters
-    ----------
-    evtdata: FITS data class
-        This should be an hdu.data structure from a NuSTAR FITS file.
-
-    fpm: {"A" | "B"}
-        Which FPM you're filtering on. Assumes A if not set.
-
-    Returns
-    -------
-
-    goodinds: iterable
-        Index of evtdata that passes the filtering.
-    """
-    # Hot pixel filters
-    
-    # FPMA or FPMB
-    
-    if fpm.find('B') == -1 :
-        pix_filter = np.invert( ( (evtdata['DET_ID'] == 2) & (evtdata['RAWX'] == 16) & (evtdata['RAWY'] == 5) |
-                                (evtdata['DET_ID'] == 2) & (evtdata['RAWX'] == 24) & (evtdata['RAWY'] == 22) |
-                                (evtdata['DET_ID'] == 2) & (evtdata['RAWX'] == 27) & (evtdata['RAWY'] == 6) |
-                                (evtdata['DET_ID'] == 2) & (evtdata['RAWX'] == 27) & (evtdata['RAWY'] == 21) |
-                                (evtdata['DET_ID'] == 3) & (evtdata['RAWX'] == 22) & (evtdata['RAWY'] == 1) |
-                                (evtdata['DET_ID'] == 3) & (evtdata['RAWX'] == 15) & (evtdata['RAWY'] == 3) |
-                                (evtdata['DET_ID'] == 3) & (evtdata['RAWX'] == 5) & (evtdata['RAWY'] == 5) | 
-                                (evtdata['DET_ID'] == 3) & (evtdata['RAWX'] == 22) & (evtdata['RAWY'] == 7) | 
-                                (evtdata['DET_ID'] == 3) & (evtdata['RAWX'] == 16) & (evtdata['RAWY'] == 11) | 
-                                (evtdata['DET_ID'] == 3) & (evtdata['RAWX'] == 18) & (evtdata['RAWY'] == 3) | 
-                                (evtdata['DET_ID'] == 3) & (evtdata['RAWX'] == 24) & (evtdata['RAWY'] == 4) | 
-                                (evtdata['DET_ID'] == 3) & (evtdata['RAWX'] == 25) & (evtdata['RAWY'] == 5) ) )
-    else:
-        pix_filter = np.invert( ( (evtdata['DET_ID'] == 0) & (evtdata['RAWX'] == 24) & (evtdata['RAWY'] == 24)) )
-
-
-    inds = (pix_filter).nonzero()
-    goodinds=inds[0]
-    
-    return goodinds
-    
-def by_energy(evtdata, energy_low=2.5, energy_high=10.):
-    """ Apply energy filtering to the data.
-    
-    Parameters
-    ----------
-    evtdata: FITS data class
-        This should be an hdu.data structure from a NuSTAR FITS file.
-        
-    energy_low: float
-        Low-side energy bound for the map you want to produce (in keV).
-        Defaults to 2.5 keV.
-
-    energy_high: float
-        High-side energy bound for the map you want to produce (in keV).
-        Defaults to 10 keV.
-    """        
-    pilow = (energy_low - 1.6) / 0.04
-    pihigh = (energy_high - 1.6) / 0.04
-    pi_filter = ( ( evtdata['PI']>pilow ) &  ( evtdata['PI']<pihigh))
-    inds = (pi_filter).nonzero()
-    goodinds=inds[0]
-    
-    return goodinds
-    
-def gradezero(evtdata):
-    """ Only accept counts with GRADE==0.
-        
-    Parameters
-    ----------
-    evtdata: FITS data class
-        This should be an hdu.data structure from a NuSTAR FITS file.
-        
-    Returns
-    -------
-
-    goodinds: iterable
-        Index of evtdata that passes the filtering.
-    """
-
-    # Grade filter
-    
-    grade_filter = ( evtdata['GRADE'] == 0)
-    inds = (grade_filter).nonzero()
-    goodinds = inds[0]
-    
-    return goodinds
-
-def in_time_range_inds(evtdata, tmrng):    
-    """ Only include counts within a given time range.
-
-    Parameters
-    ----------
-    evtdata: FITS data class
-        This should be an hdu.data structure from a NuSTAR FITS file.
-    
-    tmrng : list of length 2   
-        Input two times in the form 'yyyy/mm/dd, HH:MM:SS'
-        (e.g. '2019/03/06, 16:45:30') for the time range,
-        default is the whole observation for the file. 
-
-    Returns
-    -------
-    goodinds: iterable
-        Index of evtdata that lies within the time range.
-    """
-    if tmrng is None:
-        return np.arange(len(evtdata))
-    
-    tstart = Time(tmrng[0], format='isot',scale='utc') 
-    tend = Time(tmrng[1], format='isot',scale='utc')  
-    tstart_s = (tstart - NUSTAR_EPOCH).sec #both dates are converted to number of seconds from 2010-Jan-1  
-    tend_s = (tend - NUSTAR_EPOCH).sec
-    tmrng = [tstart_s, tend_s] 
-        
-    time_filter = ( (evtdata['TIME']>tmrng[0]) & (evtdata['TIME']<tmrng[1]) )
-    inds = (time_filter).nonzero()  
-    goodinds=inds[0]       
- 
-    return goodinds 
-
-def event_filter(evtdata, fpm='FPMA',
-    energy_low=2.5, energy_high=10, tmrng = None):
-    # was event_filter(evtdata, fpm='FPMA', energy_low=2.5, energy_high=10) # Kris #
-    """ All in one filter module. By default applies an energy cut, 
-        selects only events with grade == 0, and removes known hot pixel.
-        
-        Note that this module returns a cleaned eventlist rather than
-        the indices to the cleaned events.
-
-    Parameters
-    ----------
-    evtdata: FITS data structure
-        This should be an hdu.data structure from a NuSTAR FITS file.
-    
-    fpm: {"FPMA" | "FPMB"}
-        Which FPM you're filtering on. Defaults to FPMA.
-        
-    energy_low: float
-        Low-side energy bound for the map you want to produce (in keV).
-        Defaults to 2.5 keV.
-
-    energy_high: float
-        High-side energy bound for the map you want to produce (in keV).
-        Defaults to 10 keV.
-
-    tmrng : list of strings, length 2                         
-        Input two times in the form 'yyyy-mm-ddTHH:MM:SS.ZZZ'     
-        (e.g. '2010-01-01T00:00:00.000') for the time range,    
-        default is the whole observation for the file.      
-        
-    Returns
-    -------
-
-    cleanevt: FITS data class.
-        This is the subset of evtdata that pass the data selection cuts.
-    """
-    
-    goodinds = in_time_range_inds(evtdata, tmrng)          
-    evt_timefilter = evtdata[goodinds]     
-    goodinds = bad_pix(evt_timefilter, fpm=fpm) 
-    evt_badfilter = evt_timefilter[goodinds] 
-    goodinds = by_energy(evt_badfilter,
-                        energy_low=energy_low, energy_high = energy_high)
-    evt_energy = evt_badfilter[goodinds]
-    goodinds = gradezero(evt_energy)
-    cleanevt = evt_energy[goodinds]
-    return cleanevt
