@@ -7,7 +7,7 @@ import numpy as np
 from jdhsrpy import spectral_fitting
 
 DIRECTORY, FILENAME = ntpath.split(__file__)
-DESCRIPTION = f"DOUBLE_THERMAL_FLARE_FROM_{FILENAME[ :-3]}"
+DESCRIPTION = f"SINGLE_THERMAL_SINGLE_NONTHERMAL_FLARE_FROM_{FILENAME[ :-3]}"
 
 SAVE_DIRECTORY = os.path.join(DIRECTORY, DESCRIPTION)
 os.makedirs(SAVE_DIRECTORY, exist_ok=True)
@@ -20,16 +20,17 @@ nustar_pha_files = {"FPMA":"/Users/kris/Documents/umnPostdoc/projects/analysis/n
 # pass the files to the fitter object
 fitter = spectral_fitting.get_fitter_object(*nustar_pha_files.values())
 # define the model we want
-spectral_fitting.set_triple_thermal_model(fitter)
+spectral_fitting.set_double_thermal_single_nonthermal_model(fitter)
 # Define the energy range for the fit in keV
 fitter.energy_fitting_range = [2.5, 5]
 # Give starting points and bounds for the parameters
 fitter.params["T1_spectrum1"] = {"Status":"freeze", "Value":3.3}
 fitter.params["EM1_spectrum1"] = {"Status":"freeze", "Value":9.42e-1}
-fitter.params["T2_spectrum1"] = {"Value":6.5, "Bounds":(5, 8)}
-fitter.params["EM2_spectrum1"] = {"Value":5.5e-2, "Bounds":(1e-3, 1e-1)}
-fitter.params["T3_spectrum1"] = {"Status":"freeze", "Value":10, "Bounds":(5, 15)}
-fitter.params["EM3_spectrum1"] = {"Status":"freeze", "Value":5.5e-4, "Bounds":(1e-5, 1e-2)}
+fitter.params["T2_spectrum1"] = {"Value":6.5, "Bounds":(5, 10)}
+fitter.params["EM2_spectrum1"] = {"Value":5.5e-2, "Bounds":(5e-3, 5e-1)}
+fitter.params["total_eflux1_spectrum1"] = {"Status":"freeze", "Value":8e-5, "Bounds":(1e-5, 1e-2)}#1.4e-2, (1e-4, 1e0)
+fitter.params["index1_spectrum1"] = {"Status":"freeze", "Value":9, "Bounds":(2.1, 25)}#8#(2.1, 5e1)
+fitter.params["e_c1_spectrum1"] = {"Status":"freeze", "Value":7.7, "Bounds":(2, 20)}#7.1
 fitter.params["C_spectrum1"] = "freeze"
 fitter.params["C_spectrum2"] = {"Status":"free", "Value":1, "Bounds":(0.8, 1.1)}
 
@@ -40,8 +41,9 @@ fitter.energy_fitting_range = [5, 8]
 fitter.params["T2_spectrum1"] = {"Status":"freeze"}
 fitter.params["EM2_spectrum1"] = {"Status":"freeze"}
 fitter.params["C_spectrum2"] = {"Status":"freeze"}
-fitter.params["T3_spectrum1"] = {"Status":"free"}
-fitter.params["EM3_spectrum1"] = {"Status":"free"}
+fitter.params["total_eflux1_spectrum1"] = {"Status":"free"}
+fitter.params["index1_spectrum1"] = {"Status":"free"}
+fitter.params["e_c1_spectrum1"] = {"Status":"free"}
 fitter.fit()
 
 fitter.energy_fitting_range = [2.5, 8]

@@ -13,5 +13,7 @@ Welcome! This is the online documentation for the `jdhsrpy <https://github.com/K
    :caption: Contents:
 
    setting_up_nustar_data
+   other_processing
+   publications
    auto_examples/index
    modules
