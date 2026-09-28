@@ -61,7 +61,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
-html_logo = "nustarbranding_1280_lq_name Small.png"
+html_logo = "nustarbranding_1280_lq.png"
 html_favicon = "nustarbranding_1280_lq_model.png"
 
 # Add any paths that contain custom static files (such as style sheets) here,
