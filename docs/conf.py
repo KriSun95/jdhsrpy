@@ -18,7 +18,7 @@ this_folder = os.path.dirname(__file__)
 
 # -- Project information -----------------------------------------------------
 
-project = "jdhsr"
+project = "jdhsrpy"
 copyright = "2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration"
 author = "Kristopher Cooper"
 

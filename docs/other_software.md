@@ -1,4 +1,4 @@
-# Additional NuSTAR Data Processing
+# Additional NuSTAR Software
 
 There is a lot of software out there to work with NuSTAR data. A non-exhaustive list exists here:
 
