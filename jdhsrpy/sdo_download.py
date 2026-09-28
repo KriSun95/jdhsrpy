@@ -193,10 +193,3 @@ def handle_retries(filepaths, tries=5, needed_files=None):
         needed_files.append(filepaths.errors)
 
     return needed_files
-
-if __name__=="__main__":
-    # sdo_download(directory="./data/")
-    sdo_download(start_time="2018-09-09T10:25:00", 
-                 end_time="2018-09-09T10:40:00",
-                 directory="/Users/kris/Documents/umnPostdoc/projects/analysis/jessie-hsr/data/2018-sep-9-cooper2021/sdo_data_m3/",
-                 get_hmi=True)
