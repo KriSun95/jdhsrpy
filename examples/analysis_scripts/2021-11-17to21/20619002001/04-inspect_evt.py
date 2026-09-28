@@ -1,0 +1,70 @@
+import os.path
+from astropy.visualization import time_support
+import sys
+from astropy.time import Time
+import ntpath
+sys.path.insert(0, '/Users/kris/Documents/umnPostdoc/projects/analysis/jessie-hsr/jdhsrpy/')
+from jdhsrpy import nustar_evt, visualize, screening, utils
+import matplotlib.pyplot as plt
+
+DIRECTORY, FILENAME = ntpath.split(__file__)
+
+CREATE_FILES_PREFLARE = False
+CREATE_FILES_FLARE = False
+
+obs_id = "20619002001"
+
+file_dir = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619002001/event_cl/"
+
+orig_files = [os.path.join(file_dir, f"nu{obs_id}A06_cl_grade0.evt"), 
+              os.path.join(file_dir, f"nu{obs_id}B06_cl_grade0.evt")]
+
+for f in orig_files:
+    nu_obj = nustar_evt.NustarEvt(evt_filename=f)
+    ct, times = nu_obj.time_profile_array() 
+
+    time_support(format='unix_tai')
+    plt.figure()
+    plot_times = Time(times, format='unix_tai',scale='utc').datetime
+    axes = visualize.time_profile_plot(times, ct)
+    time_1 = "2021-11-20T00:46:30"
+    time0 = "2021-11-20T00:51:00"
+    time1 = "2021-11-20T00:55:30"
+    visualize.vertical_line_of_time(time_1, c="r", axes=axes)
+    visualize.vertical_line_of_time(time0, c="r", axes=axes)
+    visualize.vertical_line_of_time(time0, c="g", axes=axes, ls=":")
+    visualize.vertical_line_of_time(time1, c="g", axes=axes, ls=":")
+    plt.title(f"FPM{nu_obj.fpm} time profile")
+    plt.xticks(rotation=30, ha='right')
+    plt.ylabel("Counts")
+    plt.xlabel("Time")
+    plt.savefig(os.path.join(DIRECTORY, f"intermediate_work/fpm{nu_obj.fpm}-time-profile.png"), bbox_inches="tight")
+    plt.show()
+    if CREATE_FILES_PREFLARE:
+        save_dir = f"/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619002001/event_cl/{utils.only_numbers(time_1)}_to_{utils.only_numbers(time0)}"
+        os.makedirs(save_dir, exist_ok=True)
+        screening.make_gti_file("/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619002001/event_cl/nu20619002001A06_gti.fits", 
+                                save_name=f"{save_dir}/{utils.only_numbers(time_1)[-4:]}_to_{utils.only_numbers(time0)[-4:]}_gti.fits", 
+                                good_time_interval=[time_1, time0], 
+                                overwrite=True,
+                                )
+        screening.time_filtered_evt_file(evt_file=f, 
+                                        time_range=[time_1, time0], 
+                                        save_dir=f"{save_dir}/", 
+                                        overwrite=True,
+                                        )
+    if CREATE_FILES_FLARE:
+        save_dir = f"/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619002001/event_cl/{utils.only_numbers(time0)}_to_{utils.only_numbers(time1)}"
+        os.makedirs(save_dir, exist_ok=True)
+        screening.make_gti_file("/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619002001/event_cl/nu20619002001A06_gti.fits", 
+                                save_name=f"{save_dir}/{utils.only_numbers(time0)[-4:]}_to_{utils.only_numbers(time1)[-4:]}_gti.fits", 
+                                good_time_interval=[time0, time1], 
+                                overwrite=True,
+                                )
+        screening.time_filtered_evt_file(evt_file=f, 
+                                        time_range=[time0, time1], 
+                                        save_dir=f"{save_dir}/", 
+                                        overwrite=True,
+                                        )
+
+print('Finished.')
