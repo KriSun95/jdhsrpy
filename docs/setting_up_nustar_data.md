@@ -2,6 +2,8 @@
 
 A repository that might help is another I own called [heasoft-test-base](https://github.com/KriSun95/heasoft-test-base). I will heavily pull from information there as it's purpose is to describe how to get NuSTAR data then process it for spectral fitting using terminal commands and Python.
 
+Some steps below will obviously need to be performed before others, e.g., you'll likely need to download the data to be able to do anything else. However, most steps can be done in a variety of orders depending on wehat you require first.
+
 ## Downloading NuSTAR data
 
 Visit the [NuSTAR Catalog webite](https://heasarc.gsfc.nasa.gov/db-perl/W3Browse/w3table.pl?tablehead=name%3Dnumaster&Action=More+Options). You can search for the observation you want with any field but the solar ones will begin with ``"Sol"`` in the ``"name"`` field.
@@ -39,17 +41,18 @@ Make sure to source the executable for your HEASoft install anytime you want to 
 I have had many errors installing and using HEASoft over the years. I'll try and leave some useful tips:
 
 - The absolute paths to your files are too long.
-  - I have this account for a variety of cryptic errors and the solution is moving whatever folder your data is in to a higher level on your machine.
+  - I have had this be the cause for a variety of cryptic errors (one that just said "you should not see this!") and the solution is moving whatever folder your data is in to a higher level on your machine.
+  - Apparently there is an 80 character limit (or something clsoe to that) and if a path is longer than that then weird errors can crop up.
 
 ### Get useable science files
 
 Now we can use HEASoft to generate some event files in the ``event_cl`` folder. The following is what I have used:
 
 ```bash
-nupipeline obsmode=SCIENCE_SC indir=./$OBSID steminputs=nu$OBSID outdir=event_cl entrystage=1 exitstage=2 pntra=OBJECT pntdec=OBJECT statusexpr=STATUS==b0000xx00xx0xx000 cleanflick=no hkevtexpr=NONE clobber=yes runsplitsc=yes splitmode=STRICT
+nupipeline obsmode=SCIENCE_SC indir=./"$OBSID" steminputs=nu"$OBSID" outdir=event_cl entrystage=1 exitstage=2 pntra=OBJECT pntdec=OBJECT statusexpr=STATUS==b0000xx00xx0xx000 cleanflick=no hkevtexpr=NONE clobber=yes runsplitsc=yes splitmode=STRICT
 ```
 
-where I'm assuming I'm running this command in the directory above the ``$OBSID`` folder, this being the same number as the ``"obsid"`` field mentioned in the downloading data instructions.
+where I'm assuming I'm running this command in the directory above the ``"$OBSID"`` folder, this being the same number as the ``"obsid"`` field mentioned in the downloading data instructions.
 
 _We should now have a bunch of files we can do a lot with so you might want to pick and choose what bits you need from this from now on._
 
