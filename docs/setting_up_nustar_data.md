@@ -54,6 +54,8 @@ nupipeline obsmode=SCIENCE_SC indir=./"$OBSID" steminputs=nu"$OBSID" outdir=even
 
 where I'm assuming I'm running this command in the directory above the ``"$OBSID"`` folder, this being the same number as the ``"obsid"`` field mentioned in the downloading data instructions.
 
+**If data in your observation is subject to pileup, see the ["Pileup" section here](other_processing.md#pileup) for instructions on the *necessary* modification to the above `nupipeline` call.**
+
 _We should now have a bunch of files we can do a lot with so you might want to pick and choose what bits you need from this from now on._
 
 ### Get grade 0 filtered files
