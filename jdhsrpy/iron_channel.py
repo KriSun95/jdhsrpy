@@ -43,6 +43,8 @@ def create_iron18(dir_094, dir_171, dir_211, outdir, needing_prepped=False, TABL
     Filenames of the iron 18 files.
     """
 
+    os.makedirs(outdir, exist_ok=True)
+
     files_094_list = list(os.listdir(dir_094))
     files_094 = [ f for f in files_094_list if f.endswith('.fits')]
     files_094.sort()
@@ -137,15 +139,15 @@ def create_iron18(dir_094, dir_171, dir_211, outdir, needing_prepped=False, TABL
         dim0delta, dim1delta = dim0-shape_211[0], dim1-shape_211[1]
         data_211 = np.pad(data_211, [(int(dim0delta/2), int(dim0delta/2)), (int(dim1delta/2), int(dim1delta/2))], mode='constant')
 
-        Iron_18 = data_094/degs[0] - data_211/(120*degs[2]) - data_171/(450*degs[1])
-        Iron_18[Iron_18 < 0] = 0
-        aia_map_Fe18 = sunpy.map.Map(Iron_18, aia_map_094.meta)
-        aia_map_Fe18.save(os.path.join(outdir, "fe18".join(f094.split("94A"))))
+        iron_18 = data_094/degs[0] - data_211/(120*degs[2]) - data_171/(450*degs[1])
+        iron_18[iron_18 < 0] = 0
+        aia_map_fe18 = sunpy.map.Map(iron_18, aia_map_094.meta)
+        aia_map_fe18.save(os.path.join(outdir, "fe18".join(f094.split("94A"))))
         
         del aia_map_094
         del aia_map_171
         del aia_map_211
-        del aia_map_Fe18
+        del aia_map_fe18
 
         print(f'\r[function: {sys._getframe().f_code.co_name}] Saved {d} submap(s) of {d_total}.        ', end='') 
 
