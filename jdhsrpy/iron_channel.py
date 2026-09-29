@@ -141,6 +141,8 @@ def create_iron18(dir_094, dir_171, dir_211, outdir, needing_prepped=False, TABL
 
         iron_18 = data_094/degs[0] - data_211/(120*degs[2]) - data_171/(450*degs[1])
         iron_18[iron_18 < 0] = 0
+        header = aia_map_094.meta
+        header["wavelnth"] = "18"
         aia_map_fe18 = sunpy.map.Map(iron_18, aia_map_094.meta)
         aia_map_fe18.save(os.path.join(outdir, "fe18".join(f094.split("94A"))))
         
