@@ -2,9 +2,10 @@ import os.path
 from astropy.visualization import time_support
 import sys
 from astropy.time import Time
+import matplotlib.dates as mdates
 import ntpath
 sys.path.insert(0, '/Users/kris/Documents/umnPostdoc/projects/analysis/jessie-hsr/jdhsrpy/')
-from jdhsrpy import nustar_evt, visualize, screening, utils
+from jdhsrpy import nustar_evt, visualize, screening, utils, filters
 import matplotlib.pyplot as plt
 
 DIRECTORY, FILENAME = ntpath.split(__file__)
@@ -14,32 +15,87 @@ CREATE_FILES_FLARE = False
 
 obs_id = "20619003001"
 
+
+time_1 = "2021-11-20T02:22:10"
+time0 = "2021-11-20T02:25:30"
+time1 = "2021-11-20T02:28:50"
+
+plt.figure()
+cf = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/hk/nu20619003001_chu123.fits"
+chu_times, chus, labels = nustar_evt.chu_state_array(cf)
+axes = visualize.chu_plot(chu_times, chus, labels)
+plt.title(f'CHU States of NuSTAR on ' + chu_times[0].strftime('%Y/%m/%d')) #get the date in the title
+plt.xlabel('Start Time - ' + chu_times[0].strftime('%H:%M:%S'))
+plt.ylabel('NuSTAR CHUs')
+visualize.vertical_line_of_time(time_1, c="r", axes=axes)
+visualize.vertical_line_of_time(time0, c="r", axes=axes)
+visualize.vertical_line_of_time(time0, c="g", axes=axes, ls=":")
+visualize.vertical_line_of_time(time1, c="g", axes=axes, ls=":")
+fmt = mdates.DateFormatter('%H:%M')
+axes.xaxis.set_major_formatter(fmt)
+plt.xticks(rotation=30)
+plt.tight_layout()
+plt.savefig(os.path.join(DIRECTORY, f"intermediate_work/chu-time-profile.png"), bbox_inches="tight")
+plt.show()
+
 file_dir = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/event_cl/"
+file_dir_hk = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/hk/"
 
 orig_files = [os.path.join(file_dir, f"nu{obs_id}A06_cl_grade0.evt"), 
               os.path.join(file_dir, f"nu{obs_id}B06_cl_grade0.evt")]
+lvt_files = [os.path.join(file_dir_hk, f"nu{obs_id}A_fpm.hk"), 
+              os.path.join(file_dir_hk, f"nu{obs_id}B_fpm.hk")]
 
-for f in orig_files:
+for f, lvtf in zip(orig_files, lvt_files):
     nu_obj = nustar_evt.NustarEvt(evt_filename=f)
-    ct, times = nu_obj.time_profile_array() 
+    ct, times = nu_obj.rate_time_profile_array(lvtf) 
 
     time_support(format='unix_tai')
     plt.figure()
-    plot_times = Time(times, format='unix_tai',scale='utc').datetime
     axes = visualize.time_profile_plot(times, ct)
-    time_1 = "2021-11-20T02:22:10"
-    time0 = "2021-11-20T02:25:30"
-    time1 = "2021-11-20T02:28:50"
     visualize.vertical_line_of_time(time_1, c="r", axes=axes)
     visualize.vertical_line_of_time(time0, c="r", axes=axes)
     visualize.vertical_line_of_time(time0, c="g", axes=axes, ls=":")
     visualize.vertical_line_of_time(time1, c="g", axes=axes, ls=":")
     plt.title(f"FPM{nu_obj.fpm} time profile")
     plt.xticks(rotation=30, ha='right')
-    plt.ylabel("Counts")
+    plt.ylabel(f"{ct.unit:latex}")
     plt.xlabel("Time")
     plt.savefig(os.path.join(DIRECTORY, f"intermediate_work/fpm{nu_obj.fpm}-time-profile.png"), bbox_inches="tight")
     plt.show()
+
+    time_support(format='unix_tai')
+    plt.figure()
+    for det in range(4):
+        ctd, timesd = nu_obj.count_time_profile_array(filters.by_detector(nu_obj.cleaned_evt_data, det)) 
+        axes = visualize.time_profile_plot(timesd, ctd, label=f"Det{det}")
+    visualize.vertical_line_of_time(time_1, c="r", axes=axes)
+    visualize.vertical_line_of_time(time0, c="r", axes=axes)
+    visualize.vertical_line_of_time(time0, c="g", axes=axes, ls=":")
+    visualize.vertical_line_of_time(time1, c="g", axes=axes, ls=":")
+    plt.title(f"FPM{nu_obj.fpm} time profile - by detector")
+    plt.xticks(rotation=30, ha='right')
+    plt.ylabel("Counts")
+    plt.xlabel("Time")
+    plt.legend()
+    plt.savefig(os.path.join(DIRECTORY, f"intermediate_work/fpm{nu_obj.fpm}-time-profile-dets.png"), bbox_inches="tight")
+    plt.show()
+
+    plt.figure()
+    axes = visualize.livetime_plot(*nustar_evt.livetime_array(lvtf))
+    visualize.vertical_line_of_time(time_1, c="r", axes=axes)
+    visualize.vertical_line_of_time(time0, c="r", axes=axes)
+    visualize.vertical_line_of_time(time0, c="g", axes=axes, ls=":")
+    visualize.vertical_line_of_time(time1, c="g", axes=axes, ls=":")
+    plt.title(f"FPM{nu_obj.fpm} livetime profile")
+    plt.xticks(rotation=30, ha='right')
+    plt.ylabel("Livetime [%]")
+    plt.xlabel("Time")
+    plt.savefig(os.path.join(DIRECTORY, f"intermediate_work/fpm{nu_obj.fpm}-livetime-profile.png"), bbox_inches="tight")
+    plt.show()
+
+    del nu_obj
+    
     if CREATE_FILES_PREFLARE:
         save_dir = f"/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/event_cl/{utils.only_numbers(time_1)}_to_{utils.only_numbers(time0)}"
         os.makedirs(save_dir, exist_ok=True)

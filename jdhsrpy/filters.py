@@ -3,7 +3,7 @@ import numpy as np
 
 from jdhsrpy import NUSTAR_EPOCH
 
-__all__ = ["bad_pix", "by_energy", "gradezero", "in_time_range_inds", "event_filter"]
+__all__ = ["bad_pix", "by_energy", "gradezero", "in_time_range_inds", "event_filter", "by_detector"]
 
 def bad_pix(evtdata, fpm):
     """Do some basic filtering on known bad pixels.
@@ -175,3 +175,9 @@ def event_filter(evtdata, fpm='FPMA',
     goodinds = gradezero(evt_energy)
     cleanevt = evt_energy[goodinds]
     return cleanevt
+
+def by_detector(event_list, detector):
+    """Filter and return event list filtered for the desired detector."""
+    if detector not in range(4):
+        raise ValueError("the `detector` input much be an int in [0,1,2,3].")
+    return event_list[event_list["DET_ID"]==detector]

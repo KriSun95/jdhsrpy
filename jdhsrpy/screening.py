@@ -4,7 +4,7 @@ import ntpath
 import os
 
 from jdhsrpy import NUSTAR_EPOCH
-from jdhsrpy.filter import in_time_range_inds
+from jdhsrpy.filters import in_time_range_inds
 
 __all__ = ["time_filtered_evt_file", "make_gti_file"]
 
