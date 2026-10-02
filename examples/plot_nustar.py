@@ -8,11 +8,14 @@ This example shows the useulness of the ``~jdhsrpy.nustar_evt.NustarEvt`` class.
 
 import astropy.units as u
 from astropy.visualization import time_support
+import matplotlib
 import matplotlib.pyplot as plt
 from parfive import Downloader
 
 from jdhsrpy.nustar_evt import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
+
+matplotlib.use('Agg') 
 
 # %%
 # Download an example "sunpos" NuSTAR EVT file.
@@ -36,7 +39,7 @@ counts, times = nustar_object.count_time_profile_array()
 
 time_support(format='unix_tai')
 plt.figure()
-axes = time_profile_plot(times, counts)
+time_profile_plot(times, counts)
 plt.title(f"FPM{nustar_object.fpm} time profile")
 plt.xticks(rotation=30, ha='right')
 plt.ylabel(f"{counts.unit:latex}")
