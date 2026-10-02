@@ -43,11 +43,22 @@ file_dir_hk = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/
 
 orig_files = [os.path.join(file_dir, f"nu{obs_id}A06_cl_grade0.evt"), 
               os.path.join(file_dir, f"nu{obs_id}B06_cl_grade0.evt")]
+orig_files = [os.path.join(file_dir, f"nu{obs_id}A06_cl_sunpos.evt"), 
+              os.path.join(file_dir, f"nu{obs_id}B06_cl_sunpos.evt")]
 lvt_files = [os.path.join(file_dir_hk, f"nu{obs_id}A_fpm.hk"), 
               os.path.join(file_dir_hk, f"nu{obs_id}B_fpm.hk")]
 
 for f, lvtf in zip(orig_files, lvt_files):
     nu_obj = nustar_evt.NustarEvt(evt_filename=f)
+    fig = plt.figure()
+    m = nu_obj.field_of_view_map()
+    # m = nu_obj.full_disk_map()
+    # ax = plt.subplot(projection=m, frame_on=False)
+    ax = fig.add_subplot(projection=m)
+    m.plot(axes=ax)
+    nustar_evt.draw_grid(m, ax)
+    plt.show()
+    break
     ct, times = nu_obj.rate_time_profile_array(lvtf) 
 
     time_support(format='unix_tai')
@@ -95,7 +106,7 @@ for f, lvtf in zip(orig_files, lvt_files):
     plt.show()
 
     del nu_obj
-    
+
     if CREATE_FILES_PREFLARE:
         save_dir = f"/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/event_cl/{utils.only_numbers(time_1)}_to_{utils.only_numbers(time0)}"
         os.makedirs(save_dir, exist_ok=True)

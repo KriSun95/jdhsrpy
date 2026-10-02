@@ -66,7 +66,7 @@ def by_energy(evtdata, energy_low=2.5, energy_high=10.):
     """        
     pilow = (energy_low - 1.6) / 0.04
     pihigh = (energy_high - 1.6) / 0.04
-    pi_filter = ( ( evtdata['PI']>pilow ) &  ( evtdata['PI']<pihigh))
+    pi_filter = ( ( evtdata['PI']>=pilow ) &  ( evtdata['PI']<pihigh))
     inds = (pi_filter).nonzero()
     goodinds=inds[0]
     
@@ -82,14 +82,31 @@ def gradezero(evtdata):
         
     Returns
     -------
+    goodinds: iterable
+        Index of evtdata that passes the filtering.
+    """
+    # Grade filter
+    return by_grade(evtdata, 0)
 
+def by_grade(event_list, grade:int):
+    """ Only accept counts with GRADE==`grade`.
+        
+    Parameters
+    ----------
+    evtdata: FITS data class
+        This should be an hdu.data structure from a NuSTAR FITS file.
+
+    grade : `int`
+        Must be a valid NuSTAR event grade.
+        
+    Returns
+    -------
     goodinds: iterable
         Index of evtdata that passes the filtering.
     """
 
     # Grade filter
-    
-    grade_filter = ( evtdata['GRADE'] == 0)
+    grade_filter = (event_list['GRADE'] == grade)
     inds = (grade_filter).nonzero()
     goodinds = inds[0]
     

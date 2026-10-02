@@ -1,19 +1,23 @@
 import warnings
 
+from astropy.coordinates import SkyCoord
 from astropy.io import fits
 from astropy.time import Time
 import astropy.units as u
+import matplotlib.colors
 import ntpath
 import numpy as np
 import re
+import sunpy.map
 
 from jdhsrpy import NUSTAR_EPOCH
 from jdhsrpy.filters import bad_pix, by_energy, gradezero
 from jdhsrpy.utils import regroup_any_array
 
-__all__ = ["NUSTAR_EPOCH", "NustarEvt", "sunpos_evt"]
+__all__ = ["NustarEvt", "sunpos_evt", "livetime_array", "chu_state_array", "nustar_time_from_utc", "utc_from_nustar_time", "make_sunpy_map"]
 
 
+PIXELUNIT = "arcsec"
 class NustarEvt():
     """A class to load in and work with NuSTAR EVT and EVT related files.
     
@@ -22,9 +26,6 @@ class NustarEvt():
     evt_filename : `str`
         The path and file name to the EVT file.
     """
-
-    # nustar times are measured in seconds from this date
-    nustar_epoch = NUSTAR_EPOCH 
 
     def __init__(self, evt_filename:str):
         self._check_sunpos(evt_filename)
@@ -42,6 +43,10 @@ class NustarEvt():
         self.cleaned_evt_data = self.clean_evt(self.evt_data)
 
     def clean_evt(self, event_data, fpm=None, energy_low=None, energy_high=None):
+        """Filter the event list.
+        
+        Filter by energy (default 2.5<=E<80), only grade 0, 
+        and remove events from bad pixels from the given FPM."""
         fpm = self.fpm if fpm is None else fpm
         energy_low = 2.5 if energy_low is None else energy_low
         energy_high = 80 if energy_high is None else energy_high
@@ -65,41 +70,12 @@ class NustarEvt():
                 )
 
     def _hacky_pixel_scale_fix(self):
+        """Hacky fix for nustar_pysolar not updating the header units with the value."""
         ############*********** this is a hacky fix but will do for now ***********############
         # if Python code is used for the sunpos file creation the re-written header keywords might not save properly, so...
         if not np.allclose([self.evt_header['TCDLT13'], self.evt_header['TCDLT14']], [2.5, 2.5], atol=1e-1):
             self.evt_header['TCDLT13'] = 2.45810736 # x
             self.evt_header['TCDLT14'] = 2.45810736 # y
-
-    def nustar_time_from_utc(self, utc_time:Time):
-        """Get the number of seconds from 2010-01-01 for a given UTC time.
-        
-        Parameters
-        ----------
-        utc_time : `~astropy.time.Time`
-            The UTC time Astropy object.
-
-        Returns
-        -------
-        : `~astropy.units.Quantity`
-            The number of seconds from the NuSTAR epoch.
-        """
-        return (utc_time - self.nustar_epoch).sec
-
-    def utc_from_nustar_time(self, nustar_time:u.Quantity):
-        """Get the UTC time from a number of seconds after 2010-01-01.
-        
-        Parameters
-        ----------
-        nustar_time : `~astropy.units.Quantity`
-            The number of seconds from the NuSTAR epoch.
-
-        Returns
-        -------
-        : `~astropy.time.Time`
-            The Astropy time object in UTC.
-        """
-        return self.nustar_epoch + nustar_time
 
     def count_time_profile_array(self, event_data=None, time_bins=None, time_binning=None, start_time=None, end_time=None):
         """Get counts and time bins for plotting a NuSTAR time profile.
@@ -169,7 +145,7 @@ class NustarEvt():
         time_binning <<= u.second
         time_bins = np.arange(start_time.value, end_time.value+time_binning.value, time_binning.value)
         counts, time_bins =  np.histogram(event_data['TIME'], time_bins)
-        return counts<<u.ct, self.utc_from_nustar_time(time_bins<<u.second)
+        return counts<<u.ct, utc_from_nustar_time(time_bins<<u.second)
     
     def count_time_profile_array_from_binning_array(self, event_data=None, time_bins=None):
         """Get counts and time bins for plotting a NuSTAR time profile.
@@ -190,7 +166,7 @@ class NustarEvt():
         -------
         """
         counts, time_bins = np.histogram(event_data['TIME'], time_bins)
-        return counts<<u.ct, self.utc_from_nustar_time(time_bins<<u.second)
+        return counts<<u.ct, utc_from_nustar_time(time_bins<<u.second)
 
     def rate_time_profile_array(self, hk_filename, event_data=None, time_bins=None, time_binning=None, start_time=None, end_time=None):
         """Get counts and time bins for plotting a NuSTAR time profile.
@@ -239,6 +215,59 @@ class NustarEvt():
                                           combine_by="mean")
         time_diff = (time_bins[1:] - time_bins[:-1]).sec << u.s
         return counts/(new_livetimes.value*time_diff), time_bins
+
+    def _native_map(self, event_data=None):
+        """Return a Sunpy map of the NuSTAR data."""
+        event_data = self.cleaned_evt_data if event_data is None else event_data
+        # TODO: update header time form event list
+        header = self.evt_header
+        return make_sunpy_map(event_data, 
+                              header, 
+                              norm_map=False)
+
+    def full_disk_bounds(self):
+        """Obtain the on-disk bounds of the NuSTAR event list."""
+        bottom_left = [-1200, -1200] << u.Unit("arcsec")
+        top_right = [1200, 1200] << u.Unit("arcsec")
+        return bottom_left, top_right
+
+    def full_disk_map(self, event_data=None):
+        """Return a Sunpy map of the NuSTAR data."""
+        nustar_map = self._native_map(event_data=event_data)
+        bottom_left, top_right = self.full_disk_bounds()
+        return get_submap(nustar_map, bottom_left, top_right)
+
+    def field_of_view_bounds(self, sunpy_map_obj):
+        """Obtain the on-disk bounds of the NuSTAR event list."""
+        pixel_pos = np.argwhere(sunpy_map_obj.data>0) * u.pixel
+        hpc_max = sunpy_map_obj.wcs.pixel_to_world(pixel_pos[:, 1], pixel_pos[:, 0])
+        bottom_left = [np.min(hpc_max.Tx.value), 
+                       np.min(hpc_max.Ty.value)] << u.Unit(PIXELUNIT)
+        top_right = [np.max(hpc_max.Tx.value), 
+                     np.max(hpc_max.Ty.value)] << u.Unit(PIXELUNIT)
+        return bottom_left, top_right
+
+    def field_of_view_map(self, event_data=None):
+        """Return a map that is bound by where the event counts are."""
+        nustar_map = self._native_map(event_data=event_data)
+        bottom_left, top_right = self.field_of_view_bounds(nustar_map)
+        return get_submap(nustar_map, bottom_left, top_right)
+
+    def nustar_map(self, bottom_left, top_right, event_data=None):
+        """Create a map with custom bounds.
+        
+        Parameters
+        ----------
+        bottom_left : `~astropy.units.Quantity`
+            The bottom left coordinates of the submap. Unit aware (e.g., 
+            arc-seconds)
+
+        top_right : `~astropy.units.Quantity`
+            The top right coordinates of the submap. Unit aware (e.g., 
+            arc-seconds)
+        """
+        nustar_map = self._native_map(event_data=event_data)
+        return get_submap(nustar_map, bottom_left, top_right)
 
 def sunpos_evt(file, load_path=None):
     """Convert a .evt NuSTAR file to a _sunpos.evt file.
@@ -313,7 +342,7 @@ def chu_state_array(chu_filename):
     chu_time = chu_time[chu_all > 0] # if there is still no chu assignment for that time then remove
     chu_all = chu_all[chu_all > 0]
 
-    chu_times = NUSTAR_EPOCH + (chu_time<<u.s)
+    chu_times = utc_from_nustar_time(chu_time<<u.s) 
 
     return Time(chu_times), chu_all, tick_label_map
 
@@ -333,7 +362,174 @@ def livetime_array(hk_filename):
     with fits.open(hk_filename) as hdulist:
         hk_data = hdulist[1].data
 
-    lvt_times = NUSTAR_EPOCH + (hk_data['time']<<u.s)
+    lvt_times = utc_from_nustar_time(hk_data['time']<<u.s) 
     hk_livetimes = hk_data['livetime']<<u.percent
 
     return Time(lvt_times), hk_livetimes
+
+def nustar_time_from_utc(utc_time:Time):
+    """Get the number of seconds from 2010-01-01 for a given UTC time.
+    
+    Parameters
+    ----------
+    utc_time : `~astropy.time.Time`
+        The UTC time Astropy object.
+
+    Returns
+    -------
+    : `~astropy.units.Quantity`
+        The number of seconds from the NuSTAR epoch.
+    """
+    return (utc_time - NUSTAR_EPOCH).sec
+
+def utc_from_nustar_time(nustar_time:u.Quantity):
+    """Get the UTC time from a number of seconds after 2010-01-01.
+    
+    Parameters
+    ----------
+    nustar_time : `~astropy.units.Quantity`
+        The number of seconds from the NuSTAR epoch.
+
+    Returns
+    -------
+    : `~astropy.time.Time`
+        The Astropy time object in UTC.
+    """
+    return NUSTAR_EPOCH + nustar_time
+
+def make_sunpy_map(evtdata, hdr, norm_map=False):
+    """ Make a sunpy map based on the NuSTAR data.
+    
+    Parameters
+    ----------
+    evtdata: FITS data structure
+        This should be an hdu.data structure from a NuSTAR FITS file.
+
+    hdr: FITS header containing the astrometric information
+
+    norm_map : `bool`
+        Normalise the map data by the exposure (live) time, so units 
+        of DN/s. Defaults to "False" and DN
+    """
+
+    # Parse Header keywords
+    for field in hdr.keys():
+        if field.find('TYPE') != -1:
+            if hdr[field] == 'X':
+                #print(hdr[field][5:8])
+                xval = field[5:8]
+            if hdr[field] == 'Y':
+                #print(hdr[field][5:8])
+                yval = field[5:8]
+        
+    min_x= hdr['TLMIN'+xval]
+    min_y= hdr['TLMIN'+yval]
+    max_x= hdr['TLMAX'+xval]
+    max_y= hdr['TLMAX'+yval]
+
+    delx = abs(hdr['TCDLT'+xval])
+
+    x = evtdata['X'][:]
+    y = evtdata['Y'][:]
+    met = evtdata['TIME'][:]*u.s
+    mjdref=hdr['MJDREFI']
+
+    mid_obs_time = Time(mjdref*u.d+met.mean(), format = 'mjd')
+    sta_obs_time = Time(mjdref*u.d+met.min(), format = 'mjd')
+
+    # Add in the exposure time (or livetime), just a number not units of seconds 
+    exp_time = hdr['EXPOSURE']
+
+    # Assume X and Y are the same size
+    resample = 1.0
+    scale = delx * resample
+    bins = int((max_x - min_x) / (resample))
+
+    H, _, _ = np.histogram2d(y, x, bins=bins, range = [[min_y,max_y], [min_x, max_x]])
+
+    #Normalise the data with the exposure (or live) time?
+    if norm_map is True:
+        H=H/exp_time
+        pixluname='DN/s'
+    else:
+        pixluname='DN'
+
+    dict_header = {
+        "DATE-OBS": sta_obs_time.iso, 
+        "EXPTIME": exp_time,
+        "CDELT1": scale,
+        "NAXIS1": bins,
+        "CRVAL1": 0.,
+        "CRPIX1": bins*0.5,
+        "CUNIT1": PIXELUNIT,
+        "CTYPE1": "HPLN-TAN",
+        "CDELT2": scale,
+        "NAXIS2": bins,
+        "CRVAL2": 0.,
+        "CRPIX2": bins*0.5 + 0.5,
+        "CUNIT2": PIXELUNIT,
+        "CTYPE2": "HPLT-TAN",
+        "PIXLUNIT": pixluname,
+        "HGLT_OBS": sunpy.coordinates.sun.B0(mid_obs_time), #get_sun_B0(mid_obs_time),
+        "HGLN_OBS": 0,
+        "RSUN_OBS": sunpy.coordinates.sun.angular_radius(mid_obs_time).value, #sun.solar_semidiameter_angular_size(mid_obs_time).value,
+        "RSUN_REF": sunpy.sun.constants.radius.value, #sun.constants.radius.value,
+        # Assumes dsun_obs in m if don't specify the units, so give units
+        "DSUN_OBS": sunpy.coordinates.sun.earth_distance(mid_obs_time).value*u.astrophys.au, #get_sunearth_distance(mid_obs_time).value*u.astrophys.au
+    }
+    # For some reason the DSUN_OBS crashed the save...
+    
+    header = sunpy.util.MetaDict(dict_header)
+
+    nustar_map = sunpy.map.Map(H, header)
+    nustar_map = _assign_plot_settings(nustar_map)
+    
+    return nustar_map
+
+def _assign_plot_settings(nustar_map):
+    """Function to set plot settings that are multiple lines."""
+    nustar_map.plot_settings['norm'] = matplotlib.colors.LogNorm()
+    nustar_map.plot_settings['cmap'] = "Spectral_r"
+    return nustar_map
+
+def get_submap(sunpy_map_obj, bottom_left:u.Quantity, top_right:u.Quantity):
+    """Create and return a submap of a Sunpy map object.
+    
+    Parameters
+    ----------
+    sunpy_map_obj : ``
+        The map object.
+    
+    bottom_left : `~astropy.units.Quantity`
+        The bottom left coordinates of the submap. Unit aware (e.g., 
+        arc-seconds)
+    
+    top_right : `~astropy.units.Quantity`
+        The top right coordinates of the submap. Unit aware (e.g., 
+        arc-seconds)
+    """
+    # fix really large plot, instead of going from -3600 to 3600 in x and y
+    bl = SkyCoord(*bottom_left, frame=sunpy_map_obj.coordinate_frame)
+    tr = SkyCoord(*top_right, frame=sunpy_map_obj.coordinate_frame)
+    _submap = sunpy_map_obj.submap(bl,top_right=tr) # submaps act differently to normal maps
+    return _assign_plot_settings(sunpy.map.Map(_submap.data, _submap.meta))
+
+def normalize_map(sunpy_map_obj):
+    """Normalize the given map data with its EXPOSURE header keyword.
+    
+    Updates the PIXLUNIT keyword value too.
+    """
+    new_data = sunpy_map_obj.data/sunpy_map_obj.meta["EXPOSURE"]
+    sunpy_map_obj.header["PIXLUNIT"] = f"{sunpy_map_obj.header["PIXLUNIT"]}/s"
+    return _assign_plot_settings(sunpy.map.Map(new_data, sunpy_map_obj.header))
+
+def draw_grid(sunpy_map_obj, axes):
+    """Draw a grid representing the Sun."""
+    sunpy_map_obj.draw_limb(axes=axes, color='black',linewidth=1,linestyle='dashed', zorder=0)
+    sunpy_map_obj.draw_grid(axes=axes, color='grey', alpha=0.5,linewidth=1,linestyle='dashed', zorder=0, annotate=False)
+
+def gaussian_smooth_map():
+    pass
+
+def deconvolve_map():
+    pass
