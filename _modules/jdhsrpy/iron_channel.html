@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jdhsrpy.iron_channel &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">JDHSRPY examples and scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html#jdhsrpy-analysis">JDHSRPY Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jdhsrpy.iron_channel</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jdhsrpy.iron_channel</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Functions to create proxy AIA channels.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sunpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sunpy.map</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">aiapy.calibrate</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">register</span><span class="p">,</span>
+    <span class="n">update_pointing</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aiapy.calibrate.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_correction_table</span><span class="p">,</span> <span class="n">get_pointing_table</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aiapy.calibrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">degradation</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+
+<div class="viewcode-block" id="prep">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.iron_channel.prep">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">prep</span><span class="p">(</span><span class="n">smap</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">register</span><span class="p">(</span><span class="n">update_pointing</span><span class="p">(</span><span class="n">smap</span><span class="p">,</span> <span class="n">pointing_table</span><span class="o">=</span><span class="n">table</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_unprepped_file_time">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.iron_channel.get_unprepped_file_time">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_unprepped_file_time</span><span class="p">(</span><span class="n">filename_time</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">filename_time</span><span class="p">,</span> <span class="s2">"%Y_%m_</span><span class="si">%d</span><span class="s2">T%H_%M_%S.</span><span class="si">%f</span><span class="s2">Z"</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_iron18">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.iron_channel.create_iron18">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_iron18</span><span class="p">(</span><span class="n">dir_094</span><span class="p">,</span> <span class="n">dir_171</span><span class="p">,</span> <span class="n">dir_211</span><span class="p">,</span> <span class="n">outdir</span><span class="p">,</span> <span class="n">needing_prepped</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">TABLE</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Takes the 94, 171, 211 channels from SDO/AIA to create an iron18 emission proxy (Del Zanna 2013).</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dir_*** : str</span>
+<span class="sd">            The string of the directory with the 94A (dir_094), 171A (dir_171), and 211A (dir_211) files.</span>
+<span class="sd">            </span>
+<span class="sd">    outdir : str</span>
+<span class="sd">            Directory for the output iron18 files.</span>
+
+<span class="sd">    needing_prepped : bool</span>
+<span class="sd">            Is the AIA data in dir_*** needing prepped?</span>
+<span class="sd">            </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Filenames of the iron 18 files.</span>
+<span class="sd">    """</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">files_094_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_094</span><span class="p">))</span>
+    <span class="n">files_094</span> <span class="o">=</span> <span class="p">[</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files_094_list</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'.fits'</span><span class="p">)]</span>
+    <span class="n">files_094</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+    <span class="n">files_171_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_171</span><span class="p">))</span>
+    <span class="n">files_171</span> <span class="o">=</span> <span class="p">[</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files_171_list</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'.fits'</span><span class="p">)]</span>
+    <span class="n">files_171</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+    <span class="n">files_211_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_211</span><span class="p">))</span>
+    <span class="n">files_211</span> <span class="o">=</span> <span class="p">[</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files_211_list</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">'.fits'</span><span class="p">)]</span>
+    <span class="n">files_211</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    
+    <span class="n">co_094</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">co_171</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">co_211</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># aia.lev1.94A_2024_04_17T22_18_23.12Z.image_lev1.fits</span>
+    <span class="k">for</span> <span class="n">fn094</span> <span class="ow">in</span> <span class="n">files_094</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">needing_prepped</span><span class="p">:</span>
+            <span class="n">time_094</span> <span class="o">=</span> <span class="n">get_unprepped_file_time</span><span class="p">(</span><span class="n">fn094</span><span class="p">[</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span><span class="o">-</span><span class="mi">16</span><span class="p">])</span><span class="c1"># 2024_04_17T22_18_23.12Z</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">time_094</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">fn094</span><span class="p">[</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span><span class="o">-</span><span class="mi">16</span><span class="p">],</span> <span class="s2">"%Y_%m_</span><span class="si">%d</span><span class="s2">T%H_%M_%S.</span><span class="si">%f</span><span class="s2">Z"</span><span class="p">)</span> <span class="c1"># replace when he structure is known</span>
+
+        <span class="k">for</span> <span class="n">fn171</span> <span class="ow">in</span> <span class="n">files_171</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">needing_prepped</span><span class="p">:</span>
+                <span class="n">time_171</span> <span class="o">=</span> <span class="n">get_unprepped_file_time</span><span class="p">(</span><span class="n">fn171</span><span class="p">[</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span><span class="o">-</span><span class="mi">16</span><span class="p">])</span><span class="c1"># 2024_04_17T22_18_23.12Z</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">time_171</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">fn171</span><span class="p">[</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span><span class="o">-</span><span class="mi">16</span><span class="p">],</span> <span class="s2">"%Y_%m_</span><span class="si">%d</span><span class="s2">T%H_%M_%S.</span><span class="si">%f</span><span class="s2">Z"</span><span class="p">)</span> <span class="c1">#datetime.datetime.strptime(fn171[3:18], '%Y%m%d_%H%M%S')</span>
+            
+            <span class="k">if</span> <span class="n">time_094</span> <span class="o">&lt;=</span> <span class="n">time_171</span> <span class="o">&lt;</span> <span class="n">time_094</span> <span class="o">+</span> <span class="p">(</span><span class="mi">12</span><span class="o">&lt;&lt;</span><span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">):</span>
+
+                <span class="k">for</span> <span class="n">fn211</span> <span class="ow">in</span> <span class="n">files_211</span><span class="p">:</span>     
+                    <span class="k">if</span> <span class="n">needing_prepped</span><span class="p">:</span>
+                        <span class="n">time_211</span> <span class="o">=</span> <span class="n">get_unprepped_file_time</span><span class="p">(</span><span class="n">fn211</span><span class="p">[</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span><span class="o">-</span><span class="mi">16</span><span class="p">])</span><span class="c1"># 2024_04_17T22_18_23.12Z</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">time_211</span> <span class="o">=</span> <span class="n">Time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">fn211</span><span class="p">[</span><span class="o">-</span><span class="mi">39</span><span class="p">:</span><span class="o">-</span><span class="mi">16</span><span class="p">],</span> <span class="s2">"%Y_%m_</span><span class="si">%d</span><span class="s2">T%H_%M_%S.</span><span class="si">%f</span><span class="s2">Z"</span><span class="p">)</span> <span class="c1">#datetime.datetime.strptime(fn211[3:18], '%Y%m%d_%H%M%S')</span>
+                    
+                    <span class="k">if</span> <span class="n">time_094</span> <span class="o">&lt;=</span> <span class="n">time_211</span> <span class="o">&lt;</span> <span class="n">time_094</span> <span class="o">+</span> <span class="p">(</span><span class="mi">12</span><span class="o">&lt;&lt;</span><span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">):</span>
+                        <span class="n">co_094</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fn094</span><span class="p">)</span>
+                        <span class="n">co_171</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fn171</span><span class="p">)</span>
+                        <span class="n">co_211</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fn211</span><span class="p">)</span>
+                        <span class="k">break</span>
+                <span class="k">break</span>
+    <span class="n">files_094</span> <span class="o">=</span> <span class="n">co_094</span>
+    <span class="n">files_171</span> <span class="o">=</span> <span class="n">co_171</span>
+    <span class="n">files_211</span> <span class="o">=</span> <span class="n">co_211</span>
+
+    <span class="n">_first_map</span> <span class="o">=</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_094</span><span class="p">,</span> <span class="n">files_094</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">degs</span> <span class="o">=</span> <span class="p">[</span><span class="n">degradation</span><span class="p">(</span><span class="mi">94</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span> <span class="n">Time</span><span class="p">(</span><span class="n">_first_map</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"T_OBS"</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"isot"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">"utc"</span><span class="p">),</span> <span class="n">correction_table</span><span class="o">=</span><span class="n">get_correction_table</span><span class="p">(</span><span class="s2">"jsoc"</span><span class="p">)),</span> 
+            <span class="n">degradation</span><span class="p">(</span><span class="mi">171</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span> <span class="n">Time</span><span class="p">(</span><span class="n">_first_map</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"T_OBS"</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"isot"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">"utc"</span><span class="p">),</span> <span class="n">correction_table</span><span class="o">=</span><span class="n">get_correction_table</span><span class="p">(</span><span class="s2">"jsoc"</span><span class="p">)),</span> 
+            <span class="n">degradation</span><span class="p">(</span><span class="mi">211</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">angstrom</span><span class="p">,</span> <span class="n">Time</span><span class="p">(</span><span class="n">_first_map</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"T_OBS"</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"isot"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">"utc"</span><span class="p">),</span> <span class="n">correction_table</span><span class="o">=</span><span class="n">get_correction_table</span><span class="p">(</span><span class="s2">"jsoc"</span><span class="p">))]</span>
+    <span class="k">del</span> <span class="n">_first_map</span>
+    
+    <span class="n">d_total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">files_094</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="p">(</span><span class="n">f094</span><span class="p">,</span> <span class="n">f171</span><span class="p">,</span> <span class="n">f211</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">files_094</span><span class="p">,</span> <span class="n">files_171</span><span class="p">,</span> <span class="n">files_211</span><span class="p">)):</span>
+        <span class="n">aia_map_094</span> <span class="o">=</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_094</span><span class="p">,</span> <span class="n">f094</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">needing_prepped</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">TABLE</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">TABLE</span> <span class="o">=</span> <span class="n">get_pointing_table</span><span class="p">(</span><span class="s2">"JSOC"</span><span class="p">,</span> 
+                                <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">aia_map_094</span><span class="o">.</span><span class="n">date</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> 
+                                            <span class="n">aia_map_094</span><span class="o">.</span><span class="n">date</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">day</span><span class="p">])</span>
+            <span class="n">aia_map_094</span> <span class="o">=</span> <span class="n">prep</span><span class="p">(</span><span class="n">aia_map_094</span><span class="p">,</span> <span class="n">TABLE</span><span class="p">)</span>
+
+        <span class="n">data_094</span> <span class="o">=</span> <span class="n">aia_map_094</span><span class="o">.</span><span class="n">data</span> <span class="o">/</span> <span class="n">aia_map_094</span><span class="o">.</span><span class="n">exposure_time</span>
+        <span class="n">data_094</span><span class="p">[</span><span class="n">data_094</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="n">aia_map_171</span> <span class="o">=</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_171</span><span class="p">,</span> <span class="n">f171</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">needing_prepped</span><span class="p">:</span>
+            <span class="n">aia_map_171</span> <span class="o">=</span> <span class="n">prep</span><span class="p">(</span><span class="n">aia_map_171</span><span class="p">,</span> <span class="n">TABLE</span><span class="p">)</span>
+
+        <span class="n">data_171</span> <span class="o">=</span> <span class="n">aia_map_171</span><span class="o">.</span><span class="n">data</span> <span class="o">/</span> <span class="n">aia_map_171</span><span class="o">.</span><span class="n">exposure_time</span>
+        <span class="n">data_171</span><span class="p">[</span><span class="n">data_171</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="n">aia_map_211</span> <span class="o">=</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_211</span><span class="p">,</span> <span class="n">f211</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">needing_prepped</span><span class="p">:</span>
+            <span class="n">aia_map_211</span> <span class="o">=</span> <span class="n">prep</span><span class="p">(</span><span class="n">aia_map_211</span><span class="p">,</span> <span class="n">TABLE</span><span class="p">)</span>
+        
+        <span class="n">data_211</span> <span class="o">=</span> <span class="n">aia_map_211</span><span class="o">.</span><span class="n">data</span> <span class="o">/</span> <span class="n">aia_map_211</span><span class="o">.</span><span class="n">exposure_time</span>
+        <span class="n">data_211</span><span class="p">[</span><span class="n">data_211</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">dim0</span><span class="p">,</span> <span class="n">dim1</span> <span class="o">=</span> <span class="mi">4096</span><span class="p">,</span> <span class="mi">4096</span>
+        <span class="n">shape_094</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data_094</span><span class="p">)</span>
+        <span class="n">dim0delta</span><span class="p">,</span> <span class="n">dim1delta</span> <span class="o">=</span> <span class="n">dim0</span><span class="o">-</span><span class="n">shape_094</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dim1</span><span class="o">-</span><span class="n">shape_094</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">data_094</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data_094</span><span class="p">,</span> <span class="p">[(</span><span class="nb">int</span><span class="p">(</span><span class="n">dim0delta</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim0delta</span><span class="o">/</span><span class="mi">2</span><span class="p">)),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">dim1delta</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim1delta</span><span class="o">/</span><span class="mi">2</span><span class="p">))],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'constant'</span><span class="p">)</span>
+        <span class="n">shape_171</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data_171</span><span class="p">)</span>
+        <span class="n">dim0delta</span><span class="p">,</span> <span class="n">dim1delta</span> <span class="o">=</span> <span class="n">dim0</span><span class="o">-</span><span class="n">shape_171</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dim1</span><span class="o">-</span><span class="n">shape_171</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">data_171</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data_171</span><span class="p">,</span> <span class="p">[(</span><span class="nb">int</span><span class="p">(</span><span class="n">dim0delta</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim0delta</span><span class="o">/</span><span class="mi">2</span><span class="p">)),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">dim1delta</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim1delta</span><span class="o">/</span><span class="mi">2</span><span class="p">))],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'constant'</span><span class="p">)</span>
+        <span class="n">shape_211</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">data_211</span><span class="p">)</span>
+        <span class="n">dim0delta</span><span class="p">,</span> <span class="n">dim1delta</span> <span class="o">=</span> <span class="n">dim0</span><span class="o">-</span><span class="n">shape_211</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dim1</span><span class="o">-</span><span class="n">shape_211</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">data_211</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">data_211</span><span class="p">,</span> <span class="p">[(</span><span class="nb">int</span><span class="p">(</span><span class="n">dim0delta</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim0delta</span><span class="o">/</span><span class="mi">2</span><span class="p">)),</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">dim1delta</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">dim1delta</span><span class="o">/</span><span class="mi">2</span><span class="p">))],</span> <span class="n">mode</span><span class="o">=</span><span class="s1">'constant'</span><span class="p">)</span>
+
+        <span class="n">iron_18</span> <span class="o">=</span> <span class="n">data_094</span><span class="o">/</span><span class="n">degs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">data_211</span><span class="o">/</span><span class="p">(</span><span class="mi">120</span><span class="o">*</span><span class="n">degs</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">-</span> <span class="n">data_171</span><span class="o">/</span><span class="p">(</span><span class="mi">450</span><span class="o">*</span><span class="n">degs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">iron_18</span><span class="p">[</span><span class="n">iron_18</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">aia_map_094</span><span class="o">.</span><span class="n">meta</span>
+        <span class="n">header</span><span class="p">[</span><span class="s2">"wavelnth"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"18"</span>
+        <span class="n">aia_map_fe18</span> <span class="o">=</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">iron_18</span><span class="p">,</span> <span class="n">aia_map_094</span><span class="o">.</span><span class="n">meta</span><span class="p">)</span>
+        <span class="n">aia_map_fe18</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">"fe18"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f094</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"94A"</span><span class="p">))))</span>
+        
+        <span class="k">del</span> <span class="n">aia_map_094</span>
+        <span class="k">del</span> <span class="n">aia_map_171</span>
+        <span class="k">del</span> <span class="n">aia_map_211</span>
+        <span class="k">del</span> <span class="n">aia_map_fe18</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="se">\r</span><span class="s1">[function: </span><span class="si">{</span><span class="n">sys</span><span class="o">.</span><span class="n">_getframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_name</span><span class="si">}</span><span class="s1">] Saved </span><span class="si">{</span><span class="n">d</span><span class="si">}</span><span class="s1"> submap(s) of </span><span class="si">{</span><span class="n">d_total</span><span class="si">}</span><span class="s1">.        '</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span> 
+
+    <span class="k">return</span> <span class="n">output</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

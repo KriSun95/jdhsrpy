@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jdhsrpy.sdo_download &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">JDHSRPY examples and scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html#jdhsrpy-analysis">JDHSRPY Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jdhsrpy.sdo_download</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jdhsrpy.sdo_download</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">File to host code that downloads SDO data.</span>
+<span class="sd">"""</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sunpy.net</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fido</span><span class="p">,</span> <span class="n">attrs</span> <span class="k">as</span> <span class="n">a</span>
+
+<div class="viewcode-block" id="sdo_download">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.sdo_download.sdo_download">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sdo_download</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wave_values</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">get_hmi</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Allows the download of SDO/AIA and /HMI data.</span>
+
+<span class="sd">    If the files already exist in the same directory, they will not be</span>
+<span class="sd">    downloaded again.</span>
+
+<span class="sd">    *** Due to downloading stuff, this function might need to be run </span>
+<span class="sd">    several times. ***</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    start_time : `str`, `None` </span>
+<span class="sd">        The start time (UTC) for the data. In the following format; e.g., </span>
+<span class="sd">        "2024-04-17T21:57:00".</span>
+<span class="sd">    </span>
+<span class="sd">    end_time : `str`, `None`</span>
+<span class="sd">        The end time (UTC) for the data. In the following format; e.g., </span>
+<span class="sd">        "2024-04-17T22:30:00".</span>
+<span class="sd">    </span>
+<span class="sd">    directory : `str`</span>
+<span class="sd">        The directory where the SDO files will be saved. Default is the</span>
+<span class="sd">        current directory. Default is `os.getcwd()` if `None`.</span>
+<span class="sd">        Default: None</span>
+<span class="sd">    </span>
+<span class="sd">    wave_values : `list[int]`, `None`</span>
+<span class="sd">        A list of the wavelengths (in angstroms) to be downloaded. For </span>
+<span class="sd">        example, [94, 131, 171, 211, 1600, 1700] which is the value </span>
+<span class="sd">        taken if input is `None`.</span>
+<span class="sd">        Default: None </span>
+<span class="sd">    </span>
+<span class="sd">    get_hmi : `Bool`</span>
+<span class="sd">        A boolean flag where, if True, HMI LOS data will also be </span>
+<span class="sd">        downloaded.</span>
+<span class="sd">        Default: False</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    : `list[str]`</span>
+<span class="sd">        A list object containing the names of the files that failed to</span>
+<span class="sd">        download.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    # Default behaviour for the FOXSI M1 flare time</span>
+<span class="sd">    &gt;&gt;&gt; sdo_download()</span>
+
+<span class="sd">    # Extend the time interval, download a subset of wavelengths, </span>
+<span class="sd">    # define a specific directory, and get the SDO/HMI data as well</span>
+<span class="sd">    &gt;&gt;&gt; sdo_download(start_time="2024-04-17T21:30:00", </span>
+<span class="sd">                     end_time="2024-04-17T22:45:00", </span>
+<span class="sd">                     directory="path/to/save/directory/", </span>
+<span class="sd">                     wave_values=[94,171], </span>
+<span class="sd">                     get_hmi=True)</span>
+
+<span class="sd">    # Only download SDO/HMI LOS data</span>
+<span class="sd">    &gt;&gt;&gt; sdo_download(..., wave_values=[], get_hmi=True)</span>
+<span class="sd">    """</span>
+    <span class="c1"># set-up defaults</span>
+    <span class="n">directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span> <span class="k">if</span> <span class="n">directory</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">directory</span>
+    <span class="n">wave_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">94</span><span class="p">,</span> <span class="mi">131</span><span class="p">,</span> <span class="mi">171</span><span class="p">,</span> <span class="mi">193</span><span class="p">,</span> <span class="mi">211</span><span class="p">,</span> <span class="mi">304</span><span class="p">,</span> <span class="mi">335</span><span class="p">,</span> <span class="mi">1600</span><span class="p">,</span> <span class="mi">1700</span><span class="p">]</span> <span class="k">if</span> <span class="n">wave_values</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">wave_values</span>
+
+    <span class="c1"># get ready for Sunpy</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">)</span>
+    <span class="n">waves</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">Wavelength</span><span class="p">(</span><span class="n">wv</span><span class="p">)</span> <span class="k">for</span> <span class="n">wv</span> <span class="ow">in</span> <span class="n">wave_values</span><span class="o">&lt;&lt;</span><span class="n">u</span><span class="o">.</span><span class="n">angstrom</span><span class="p">]</span> 
+    <span class="n">wave_dirs</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">wv</span><span class="si">}</span><span class="s2">angstrom"</span> <span class="k">for</span> <span class="n">wv</span> <span class="ow">in</span> <span class="n">wave_values</span><span class="p">]</span>
+    <span class="n">instruments</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">Instrument</span><span class="p">(</span><span class="s2">"AIA"</span><span class="p">)]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">waves</span><span class="p">)</span>
+
+    <span class="c1"># check if HMI is wanted</span>
+    <span class="k">if</span> <span class="n">get_hmi</span><span class="p">:</span>
+        <span class="n">waves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">Physobs</span><span class="p">(</span><span class="s2">"LOS_magnetic_field"</span><span class="p">))</span>
+        <span class="n">wave_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"hmi"</span><span class="p">)</span>
+        <span class="n">instruments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">Instrument</span><span class="p">(</span><span class="s2">"hmi"</span><span class="p">))</span>
+
+    <span class="n">needed_files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># for aia (and hmi?)</span>
+    <span class="k">for</span> <span class="n">inst</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">wd</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">instruments</span><span class="p">,</span> <span class="n">waves</span><span class="p">,</span> <span class="n">wave_dirs</span><span class="p">):</span>
+        <span class="n">curr_wdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">wd</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Doing </span><span class="si">{</span><span class="n">curr_wdir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">curr_wdir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># make the directory if it isn't there</span>
+
+        <span class="n">search</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="n">wave</span><span class="p">)</span>
+        <span class="n">fetch</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">curr_wdir</span><span class="p">,</span> <span class="s2">"</span><span class="si">{file}</span><span class="s2">"</span><span class="p">)}</span>
+
+        <span class="n">filepaths</span> <span class="o">=</span> <span class="n">fido_download</span><span class="p">(</span><span class="n">search</span><span class="p">,</span> <span class="n">fetch</span><span class="p">)</span>
+
+        <span class="c1"># well try again with failed files</span>
+        <span class="n">needed_files</span> <span class="o">=</span> <span class="n">handle_retries</span><span class="p">(</span><span class="n">filepaths</span><span class="p">,</span> <span class="n">needed_files</span><span class="o">=</span><span class="n">needed_files</span><span class="p">)</span>
+
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Files Needed are:"</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">needed_files</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">needed_files</span></div>
+
+
+<div class="viewcode-block" id="fido_download">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.sdo_download.fido_download">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fido_download</span><span class="p">(</span><span class="n">search</span><span class="p">,</span> <span class="n">fetch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Handle the common download elements for `sunpy.Fido`.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    search : `tuple`</span>
+<span class="sd">        The inputs given to the `Fido.search` query.</span>
+<span class="sd">    </span>
+<span class="sd">    fetch : `dict`</span>
+<span class="sd">        Kyeword arguments to be passed to the `Fido.fetch` method. If </span>
+<span class="sd">        `None` then an empty `dict` object is passed.</span>
+<span class="sd">        Default: None</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    : `sunpy.UnifiedResponse` object</span>
+<span class="sd">        A list object containing the names of the files that failed to</span>
+<span class="sd">        download.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    ## Download some SDO/AIA data</span>
+<span class="sd">    &gt;&gt;&gt; from sunpy.net import attrs as a</span>
+<span class="sd">    &gt;&gt;&gt; search = (a.Time("2024-04-17T21:30:00", </span>
+<span class="sd">                         "2024-04-17T22:30:00"), </span>
+<span class="sd">                  a.Instrument('AIA'), </span>
+<span class="sd">                  a.Wavelength(wave))</span>
+<span class="sd">    &gt;&gt;&gt; fetch = {"path":"path/to/save/{file}"}</span>
+<span class="sd">    &gt;&gt;&gt; filepaths = fido_download(search, fetch)</span>
+
+<span class="sd">    ## Download some SDO/HMI data</span>
+<span class="sd">    &gt;&gt;&gt; from sunpy.net import attrs as a</span>
+<span class="sd">    &gt;&gt;&gt; search = (a.Time("2024-04-17T21:30:00", </span>
+<span class="sd">                         "2024-04-17T22:30:00"), </span>
+<span class="sd">                  a.Instrument('hmi'), </span>
+<span class="sd">                  a.Physobs('LOS_magnetic_field'))</span>
+<span class="sd">    &gt;&gt;&gt; fetch = {"path":"path/to/save/{file}"}</span>
+<span class="sd">    &gt;&gt;&gt; filepaths = fido_download(search, fetch)</span>
+<span class="sd">    """</span>
+    <span class="n">unifresp</span> <span class="o">=</span> <span class="n">Fido</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="o">*</span><span class="n">search</span><span class="p">)</span>
+
+    <span class="n">fetch</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">fetch</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">fetch</span>
+    <span class="n">filepaths</span> <span class="o">=</span> <span class="n">Fido</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">unifresp</span><span class="p">,</span> <span class="o">**</span><span class="n">fetch</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">filepaths</span></div>
+
+
+<div class="viewcode-block" id="handle_retries">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.sdo_download.handle_retries">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">handle_retries</span><span class="p">(</span><span class="n">filepaths</span><span class="p">,</span> <span class="n">tries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">needed_files</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""If a file(s) isn't downloaded straight away, retry the download.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filepaths : `sunpy.UnifiedResponse` object</span>
+<span class="sd">        An object used to store the failed downloaded files.</span>
+<span class="sd">    </span>
+<span class="sd">    tries : `int`</span>
+<span class="sd">        The number of times to retry downlading the given files.</span>
+<span class="sd">        Default: 5</span>
+<span class="sd">    </span>
+<span class="sd">    needed_files : `list[str]`</span>
+<span class="sd">        A list of files already needed to be returned if failed after </span>
+<span class="sd">        retrying `tries` times.For example, [] which is the value taken </span>
+<span class="sd">        if input is `None`. If this is a list object then the failed </span>
+<span class="sd">        files will be appended to this list.</span>
+<span class="sd">        Default: None</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    : `list[str]`</span>
+<span class="sd">        A list object containing the file names of the failed downloads</span>
+<span class="sd">        after retrying.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    ## Retry failed downloads and return a list still un-downloaded</span>
+<span class="sd">    &gt;&gt;&gt; needed_files = handle_retries(filepaths)</span>
+
+<span class="sd">    ## If a list of un-downloaded alreadt exists then pass to append</span>
+<span class="sd">    &gt;&gt;&gt; needed_files = handle_retries(filepaths, </span>
+<span class="sd">                                      needed_files=needed_files)</span>
+<span class="sd">    """</span>
+
+    <span class="n">needed_files</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">needed_files</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">needed_files</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tries</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Trying again for </span><span class="si">{</span><span class="n">filepaths</span><span class="o">.</span><span class="n">errors</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">filepaths</span> <span class="o">=</span> <span class="n">Fido</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">filepaths</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">filepaths</span><span class="o">.</span><span class="n">errors</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">filepaths</span><span class="o">.</span><span class="n">errors</span> <span class="o">!=</span> <span class="p">[]:</span>
+        <span class="n">needed_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filepaths</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">needed_files</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
