@@ -28,7 +28,9 @@ if not os.path.isfile(filename_evt):
     urllib.request.urlretrieve(url, filename_evt)
 
 url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_sdo_data/aia.lev1.94A_2021_11_20T02_25_35.12Z.image_lev1.fits"
-filename_aia = os.path.join(os.getcwd(), "94angstrom", ntpath.split(url)[1])
+directory_aia = os.path.join(os.getcwd(), "94angstrom")
+filename_aia = os.path.join(directory_aia, ntpath.split(url)[1])
+os.makedirs(os.path.join(directory_aia), exist_ok=True)
 if not os.path.isfile(filename_aia):
     urllib.request.urlretrieve(url, filename_aia)
 
