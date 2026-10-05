@@ -88,8 +88,8 @@ print(fitter.params)
 # For the fitting to start off, we need to provide initial guesses and 
 # provide bounds for the fitting parameters.
 
-fitter.params["T1_spectrum1"] = {"Value":3, "Bounds":(1.1, 15)}
-fitter.params["EM1_spectrum1"] = {"Value":5.5e-2, "Bounds":(1e-1, 5e0)}
+fitter.params["T1_spectrum1"] = {"Value":3, "Bounds":(1.1, 4)}
+fitter.params["EM1_spectrum1"] = {"Value":5.5e-2, "Bounds":(5e-1, 5e0)}
 
 # %% 
 # Fitting the data and plotting
