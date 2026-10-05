@@ -221,7 +221,6 @@ class NustarEvt():
     def _native_map(self, event_data=None):
         """Return a Sunpy map of the NuSTAR data."""
         event_data = self.cleaned_evt_data if event_data is None else event_data
-        # TODO: update header time form event list
         header = self.evt_header
         return make_sunpy_map(event_data, 
                               header, 
@@ -397,7 +396,7 @@ def utc_from_nustar_time(nustar_time:u.Quantity):
     : `~astropy.time.Time`
         The Astropy time object in UTC.
     """
-    return NUSTAR_EPOCH + nustar_time
+    return NUSTAR_EPOCH + (nustar_time << u.s)
 
 def make_sunpy_map(evtdata, hdr, norm_map=False):
     """ Make a sunpy map based on the NuSTAR data.
@@ -523,9 +522,3 @@ def draw_grid(sunpy_map_obj, axes):
     """Draw a grid representing the Sun."""
     sunpy_map_obj.draw_limb(axes=axes, color='black',linewidth=1,linestyle='dashed', zorder=0)
     sunpy_map_obj.draw_grid(axes=axes, color='grey', alpha=0.5,linewidth=1,linestyle='dashed', zorder=0, annotate=False)
-
-def gaussian_smooth_map():
-    pass
-
-def deconvolve_map():
-    pass

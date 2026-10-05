@@ -51,8 +51,9 @@ lvt_files = [os.path.join(file_dir_hk, f"nu{obs_id}A_fpm.hk"),
 for f, lvtf in zip(orig_files, lvt_files):
     nu_obj = nustar_evt.NustarEvt(evt_filename=f)
     fig = plt.figure()
+    m = nu_obj.field_of_view_map()
     # m = image_filters.gaussian_filter(nu_obj.field_of_view_map())
-    m = image_filters.deconvolve_with_file(nu_obj.field_of_view_map(), "/usr/local/caldb/data/nustar/fpm/bcf/psf/nuA2dpsfen1_20100101v001.fits")
+    # m = image_filters.deconvolve_with_file(nu_obj.field_of_view_map(), "/usr/local/caldb/data/nustar/fpm/bcf/psf/nuA2dpsfen1_20100101v001.fits")
     # m = nu_obj.full_disk_map()
     # ax = plt.subplot(projection=m, frame_on=False)
     ax = fig.add_subplot(projection=m)

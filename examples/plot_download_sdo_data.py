@@ -10,7 +10,11 @@ Following this, the example then goes on to create the Fe18 proxy
 described in Del Zanna 2013
 """
 
+import logging
+import ntpath
 import os
+import traceback
+import urllib.request
 
 import astropy.units as u
 import matplotlib.pyplot as plt
@@ -24,15 +28,30 @@ from jdhsrpy.sdo_download import sdo_download
 TIME_FORMAT = config.get("general", "time_format")
 
 # %%
-# Download 1 minute's worth of data for the 94 A SDO/AIA channel
+# Download 30 second's worth of data for the 94 A SDO/AIA channel
 
+wave_values = [94, 171, 211]
 file_directory = os.getcwd()
-sdo_download(start_time="2018-09-09T10:25:00", 
-                end_time="2018-09-09T10:26:00",
-                directory=file_directory,
-                wave_values=[94, 171, 211],
-                get_hmi=False,
-                )
+try:
+    sdo_download(start_time="2021-11-20T02:25:30", 
+                    end_time="2021-11-20T02:26:00",
+                    directory=file_directory,
+                    wave_values=wave_values,
+                    get_hmi=False,
+                    )
+except Exception as e:
+    # JSOC can go down and be tricky sometimes, rely on this back-up to get some files at least
+    logging.exception(traceback.format_exc())
+    aia_files = ["http://foxsi.space.umn.edu/data/tmp/jdhsr/test_sdo_data/aia.lev1.94A_2021_11_20T02_25_35.12Z.image_lev1.fits",
+                 "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_sdo_data/aia.lev1.171A_2021_11_20T02_25_45.35Z.image_lev1.fits",
+                 "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_sdo_data/aia.lev1.211A_2021_11_20T02_25_45.63Z.image_lev1.fits",
+                 ]
+    for (wv, af) in zip(wave_values, aia_files):
+        new_folder = f"{wv}angstrom"
+        os.makedirs(os.path.join(file_directory, new_folder), exist_ok=True)
+        filename = os.path.join(file_directory, new_folder, ntpath.split(af)[1])
+        if not os.path.isfile(filename):
+            urllib.request.urlretrieve(af, filename)
 
 # %%
 # Can plot one of the files contents using Sunpy

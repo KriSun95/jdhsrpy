@@ -32,3 +32,6 @@ docs/sg_execution_times.rst
 *.fits
 *.hk
 *.evt
+*.arf
+*.pha
+*.rmf
