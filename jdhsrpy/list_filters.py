@@ -3,9 +3,9 @@ import numpy as np
 
 from jdhsrpy import NUSTAR_EPOCH
 
-__all__ = ["bad_pix", "by_energy", "gradezero", "in_time_range_inds", "event_filter", "by_detector"]
+__all__ = ["by_good_pix", "by_energy", "by_gradezero", "by_time", "event_filter", "by_detector"]
 
-def bad_pix(evtdata, fpm):
+def by_good_pix(evtdata, fpm):
     """Do some basic filtering on known bad pixels.
     
     Parameters
@@ -46,9 +46,9 @@ def bad_pix(evtdata, fpm):
     inds = (pix_filter).nonzero()
     goodinds=inds[0]
     
-    return goodinds
+    return evtdata[goodinds]
     
-def by_energy(evtdata, energy_low=2.5, energy_high=10.):
+def by_energy(evtdata, energy_low=2.5, energy_high=10):
     """ Apply energy filtering to the data.
     
     Parameters
@@ -70,9 +70,9 @@ def by_energy(evtdata, energy_low=2.5, energy_high=10.):
     inds = (pi_filter).nonzero()
     goodinds=inds[0]
     
-    return goodinds
+    return evtdata[goodinds]
     
-def gradezero(evtdata):
+def by_gradezero(evtdata):
     """ Only accept counts with GRADE==0.
         
     Parameters
@@ -88,7 +88,7 @@ def gradezero(evtdata):
     # Grade filter
     return by_grade(evtdata, 0)
 
-def by_grade(event_list, grade:int):
+def by_grade(evtdata, grade:int):
     """ Only accept counts with GRADE==`grade`.
         
     Parameters
@@ -106,13 +106,13 @@ def by_grade(event_list, grade:int):
     """
 
     # Grade filter
-    grade_filter = (event_list['GRADE'] == grade)
+    grade_filter = (evtdata['GRADE'] == grade)
     inds = (grade_filter).nonzero()
     goodinds = inds[0]
     
-    return goodinds
+    return evtdata[goodinds]
 
-def in_time_range_inds(evtdata, tmrng):    
+def by_time(evtdata, tmrng):    
     """ Only include counts within a given time range.
 
     Parameters
@@ -143,7 +143,7 @@ def in_time_range_inds(evtdata, tmrng):
     inds = (time_filter).nonzero()  
     goodinds=inds[0]       
  
-    return goodinds 
+    return evtdata[goodinds] 
 
 def event_filter(evtdata, fpm='FPMA',
     energy_low=2.5, energy_high=10, tmrng = None):
@@ -182,19 +182,15 @@ def event_filter(evtdata, fpm='FPMA',
         This is the subset of evtdata that pass the data selection cuts.
     """
     
-    goodinds = in_time_range_inds(evtdata, tmrng)          
-    evt_timefilter = evtdata[goodinds]     
-    goodinds = bad_pix(evt_timefilter, fpm=fpm) 
-    evt_badfilter = evt_timefilter[goodinds] 
-    goodinds = by_energy(evt_badfilter,
-                        energy_low=energy_low, energy_high = energy_high)
-    evt_energy = evt_badfilter[goodinds]
-    goodinds = gradezero(evt_energy)
-    cleanevt = evt_energy[goodinds]
-    return cleanevt
+    evt_timefilter = by_time(evtdata, tmrng)        
+    evt_badfilter = by_good_pix(evt_timefilter, fpm=fpm) 
+    evt_energy = by_energy(evt_badfilter,
+                        energy_low=energy_low, 
+                        energy_high=energy_high)
+    return by_gradezero(evt_energy)
 
-def by_detector(event_list, detector):
+def by_detector(evtdata, detector):
     """Filter and return event list filtered for the desired detector."""
     if detector not in range(4):
         raise ValueError("the `detector` input much be an int in [0,1,2,3].")
-    return event_list[event_list["DET_ID"]==detector]
+    return evtdata[evtdata["DET_ID"]==detector]

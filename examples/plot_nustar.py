@@ -6,36 +6,36 @@ Using ``NuSTAREvt``
 This example shows the useulness of the ``~jdhsrpy.nustar_evt.NustarEvt`` class.
 """
 
+import ntpath
+import os
+
 import astropy.units as u
 from astropy.visualization import time_support
-import matplotlib
 import matplotlib.pyplot as plt
-from parfive import Downloader
+import urllib.request
 
 from jdhsrpy.nustar_evt import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
 
-matplotlib.use('Agg') 
-
 # %%
 # Download an example "sunpos" NuSTAR EVT file.
 
-url = [
-    "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_nustar_data/nu20619003001A06_cl_sunpos.evt",
-]
-file = Downloader.simple_download(url)
+url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
+filename = os.path.join(os.getcwd(), ntpath.split(url)[1])
+if not os.path.isfile(filename):
+    urllib.request.urlretrieve(url, filename)
 
 # %%
 # Use the class to load in and work with the file.
 
-nustar_object = NustarEvt(evt_filename=file[0])
+nustar_object = NustarEvt(evt_filename=filename)
 
 # %%
 # The first interesting thing might be to plot the counts time profile.
 #
 # Notice that the values here are unit aware.
 
-counts, times = nustar_object.count_time_profile_array() 
+times, counts = nustar_object.count_time_profile_array() 
 
 time_support(format='unix_tai')
 plt.figure()
@@ -50,9 +50,9 @@ plt.show()
 # The class also makes it easy to produce images from the EVT file.
 #
 # There are three user methods that can be used, two to save time and 
-# the final more general one.
+# the final more general one called ``nustar_map``.
 #
-# The general one allows a user to specific the bounds for the map.
+# The general one allows a user to specify the bounds for the map.
 
 # obtain a Sunpy map object of the NuSTAR observation
 bottom_left = [-1000, -700] << u.arcsec
@@ -66,6 +66,6 @@ draw_grid(m, ax)
 plt.show()
 
 # %%
-# The other two save time with ``field_of_view_map`` and ``full_disk_map``
+# The other two save time with ``field_of_view_map`` and ``full_disk_map``,
 # each returning a map bounded by the field of view and the full solar 
 # disk, respectively.

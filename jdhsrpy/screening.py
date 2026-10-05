@@ -4,7 +4,7 @@ import ntpath
 import os
 
 from jdhsrpy import NUSTAR_EPOCH
-from jdhsrpy.filters import in_time_range_inds
+from jdhsrpy.list_filters import by_time
 
 __all__ = ["time_filtered_evt_file", "make_gti_file"]
 
@@ -45,8 +45,7 @@ def time_filtered_evt_file(evt_file, time_range=None, save_dir=None, **kwargs):
     with fits.open(evt_file) as hdulist:
         evtdata = hdulist[1].data # data to be filtered
 
-        timeinds = in_time_range_inds(evtdata, time_range) # picks events inside time range
-        evt_in_time = evtdata[timeinds]
+        evt_in_time = by_time(evtdata, time_range) # picks events inside time range
 
         hdulist[1].data = evt_in_time # replaces this hdu with the filtered events list
         hdulist.writeto(new_file_name, **kwargs) # saves the edited file, original stays as is

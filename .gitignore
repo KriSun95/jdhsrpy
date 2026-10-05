@@ -27,3 +27,8 @@ docs/sg_execution_times.rst
 # environment
 .ropeproject/
 .zed/
+
+# files
+*.fits
+*.hk
+*.evt

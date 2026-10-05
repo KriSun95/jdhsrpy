@@ -5,7 +5,7 @@ from astropy.time import Time
 import matplotlib.dates as mdates
 import ntpath
 sys.path.insert(0, '/Users/kris/Documents/umnPostdoc/projects/analysis/jessie-hsr/jdhsrpy/')
-from jdhsrpy import nustar_evt, visualize, screening, utils, filters
+from jdhsrpy import nustar_evt, visualize, screening, utils, list_filters, image_filters
 import matplotlib.pyplot as plt
 
 DIRECTORY, FILENAME = ntpath.split(__file__)
@@ -20,23 +20,23 @@ time_1 = "2021-11-20T02:22:10"
 time0 = "2021-11-20T02:25:30"
 time1 = "2021-11-20T02:28:50"
 
-plt.figure()
-cf = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/hk/nu20619003001_chu123.fits"
-chu_times, chus, labels = nustar_evt.chu_state_array(cf)
-axes = visualize.chu_plot(chu_times, chus, labels)
-plt.title(f'CHU States of NuSTAR on ' + chu_times[0].strftime('%Y/%m/%d')) #get the date in the title
-plt.xlabel('Start Time - ' + chu_times[0].strftime('%H:%M:%S'))
-plt.ylabel('NuSTAR CHUs')
-visualize.vertical_line_of_time(time_1, c="r", axes=axes)
-visualize.vertical_line_of_time(time0, c="r", axes=axes)
-visualize.vertical_line_of_time(time0, c="g", axes=axes, ls=":")
-visualize.vertical_line_of_time(time1, c="g", axes=axes, ls=":")
-fmt = mdates.DateFormatter('%H:%M')
-axes.xaxis.set_major_formatter(fmt)
-plt.xticks(rotation=30)
-plt.tight_layout()
-plt.savefig(os.path.join(DIRECTORY, f"intermediate_work/chu-time-profile.png"), bbox_inches="tight")
-plt.show()
+# plt.figure()
+# cf = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/hk/nu20619003001_chu123.fits"
+# chu_times, chus, labels = nustar_evt.chu_state_array(cf)
+# axes = visualize.chu_plot(chu_times, chus, labels)
+# plt.title(f'CHU States of NuSTAR on ' + chu_times[0].strftime('%Y/%m/%d')) #get the date in the title
+# plt.xlabel('Start Time - ' + chu_times[0].strftime('%H:%M:%S'))
+# plt.ylabel('NuSTAR CHUs')
+# visualize.vertical_line_of_time(time_1, c="r", axes=axes)
+# visualize.vertical_line_of_time(time0, c="r", axes=axes)
+# visualize.vertical_line_of_time(time0, c="g", axes=axes, ls=":")
+# visualize.vertical_line_of_time(time1, c="g", axes=axes, ls=":")
+# fmt = mdates.DateFormatter('%H:%M')
+# axes.xaxis.set_major_formatter(fmt)
+# plt.xticks(rotation=30)
+# plt.tight_layout()
+# plt.savefig(os.path.join(DIRECTORY, f"intermediate_work/chu-time-profile.png"), bbox_inches="tight")
+# plt.show()
 
 file_dir = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/event_cl/"
 file_dir_hk = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/hk/"
@@ -51,7 +51,8 @@ lvt_files = [os.path.join(file_dir_hk, f"nu{obs_id}A_fpm.hk"),
 for f, lvtf in zip(orig_files, lvt_files):
     nu_obj = nustar_evt.NustarEvt(evt_filename=f)
     fig = plt.figure()
-    m = nu_obj.field_of_view_map()
+    # m = image_filters.gaussian_filter(nu_obj.field_of_view_map())
+    m = image_filters.deconvolve_with_file(nu_obj.field_of_view_map(), "/usr/local/caldb/data/nustar/fpm/bcf/psf/nuA2dpsfen1_20100101v001.fits")
     # m = nu_obj.full_disk_map()
     # ax = plt.subplot(projection=m, frame_on=False)
     ax = fig.add_subplot(projection=m)
@@ -59,7 +60,7 @@ for f, lvtf in zip(orig_files, lvt_files):
     nustar_evt.draw_grid(m, ax)
     plt.show()
     break
-    ct, times = nu_obj.rate_time_profile_array(lvtf) 
+    times, ct= nu_obj.rate_time_profile_array(lvtf) 
 
     time_support(format='unix_tai')
     plt.figure()
@@ -78,7 +79,7 @@ for f, lvtf in zip(orig_files, lvt_files):
     time_support(format='unix_tai')
     plt.figure()
     for det in range(4):
-        ctd, timesd = nu_obj.count_time_profile_array(filters.by_detector(nu_obj.cleaned_evt_data, det)) 
+        timesd, ctd = nu_obj.count_time_profile_array(filters.by_detector(nu_obj.cleaned_evt_data, det)) 
         axes = visualize.time_profile_plot(timesd, ctd, label=f"Det{det}")
     visualize.vertical_line_of_time(time_1, c="r", axes=axes)
     visualize.vertical_line_of_time(time0, c="r", axes=axes)

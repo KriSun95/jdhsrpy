@@ -22,6 +22,7 @@ dependencies = [
             "zeep>=4.3.3",
             "drms>=0.9.1",
             "aiapy>=0.12.1",
+            "scikit-image>=0.26.0",
 ]
 
 [tool.uv.sources]

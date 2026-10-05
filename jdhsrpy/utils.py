@@ -3,7 +3,9 @@ import re
 import astropy.units as u
 import numpy as np
 
-__all__ = ["only_numbers", "regroup_any_array"]
+from jdhsrpy import IMAGE_COLORMAP, IMAGE_SCALE
+
+__all__ = ["only_numbers", "regroup_any_array", "assign_plot_settings"]
 
 def only_numbers(string):
     """Remove all non-numeric characters from a string.
@@ -74,3 +76,9 @@ def _convert_old_value_to_new_unit_values(old_value:np.ndarray|float|int, old_un
     if (old_unit is not None) and (new_unit is not None):
         return ((old_value<<old_unit)<<new_unit).value
     return old_value
+
+def assign_plot_settings(nustar_map):
+    """Function to set plot settings that are multiple lines."""
+    nustar_map.plot_settings['norm'] = IMAGE_SCALE
+    nustar_map.plot_settings['cmap'] = IMAGE_COLORMAP
+    return nustar_map
