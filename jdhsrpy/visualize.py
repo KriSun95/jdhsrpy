@@ -111,3 +111,37 @@ def livetime_plot(times, ydata, axes=None, **kwargs):
     _plot_settings = _defaults | kwargs
     plt.semilogy(to_plotting_datetimes(times), ydata, **_plot_settings)
     return axes
+
+def spectrum_plot(energy_bins, ydata, ydata_err, axes=None, **kwargs):
+    """Plot a time profile (on a given axes if given).
+    
+    Parameters
+    ----------
+    energy_bins : `~astropy.unit.Quantity`
+        The energy bin edges. Should be one more than the `ydata` legnth.
+
+    ydata :  `~astropy.unit.Quantity`
+        The spectrum.
+
+    Returns
+    -------
+    Axes input.
+    """
+    axes = plt.gca() if axes is None else axes
+    _defaults = {"color":"k",
+                 "fmt":".",
+                 "markersize":0.01,
+                 }
+    _plot_settings = _defaults | kwargs
+
+    energy_mids = (energy_bins[:-1] + energy_bins[1:])/2
+    energy_half_width = (energy_bins[1:] - energy_bins[:-1])/2
+
+    ## plot spectrum created from Python
+    axes.errorbar(energy_mids, ydata, xerr=energy_half_width, yerr=ydata_err, **_plot_settings)
+
+    axes.set_ylabel(f"{ydata.unit:latex}")
+    axes.tick_params(axis='both', which='both', direction='in')
+    axes.set_yscale('log')
+    axes.set_xlabel(f"Energy [{energy_bins.unit:latex}]")
+    return axes

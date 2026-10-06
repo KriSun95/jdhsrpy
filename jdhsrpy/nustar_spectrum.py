@@ -3,7 +3,7 @@ import astropy
 import astropy.units as u
 import numpy as np
 
-from jdhsr.io import read_nustar_pha 
+from jdhsrpy.io import read_nustar_pha 
 
 __all__ = ["get_observable_info",
            "get_effective_area_info", 

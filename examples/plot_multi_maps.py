@@ -11,23 +11,23 @@ import os
 
 from astropy.coordinates import SkyCoord
 import astropy.units as u
-from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 import sunpy.map
 import urllib.request
 
+from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.image_filters import gaussian_filter
 from jdhsrpy.nustar_evt import NustarEvt, draw_grid
 
 # %%
 # Download an example "sunpos" NuSTAR EVT and SDO/AIA file.
 
-url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
 filename_evt = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename_evt):
     urllib.request.urlretrieve(url, filename_evt)
 
-url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_sdo_data/aia.lev1.94A_2021_11_20T02_25_35.12Z.image_lev1.fits"
+url = f"{TEST_DATA_LOCATION}/test_sdo_data/aia.lev1.94A_2021_11_20T02_25_35.12Z.image_lev1.fits"
 directory_aia = os.path.join(os.getcwd(), "94angstrom")
 filename_aia = os.path.join(directory_aia, ntpath.split(url)[1])
 os.makedirs(os.path.join(directory_aia), exist_ok=True)

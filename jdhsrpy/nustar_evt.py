@@ -222,9 +222,9 @@ class NustarEvt():
         """Return a Sunpy map of the NuSTAR data."""
         event_data = self.cleaned_evt_data if event_data is None else event_data
         header = self.evt_header
-        return make_sunpy_map(event_data, 
-                              header, 
-                              norm_map=False)
+        start_t = str(utc_from_nustar_time(event_data["TIME"][0]<<u.second))
+        end_t = str(utc_from_nustar_time(event_data["TIME"][-1]<<u.second))
+        return make_sunpy_map(event_data, header, start_t=start_t, end_t=end_t)
 
     def full_disk_bounds(self):
         """Obtain the on-disk bounds of the NuSTAR event list."""
@@ -398,7 +398,7 @@ def utc_from_nustar_time(nustar_time:u.Quantity):
     """
     return NUSTAR_EPOCH + (nustar_time << u.s)
 
-def make_sunpy_map(evtdata, hdr, norm_map=False):
+def make_sunpy_map(evtdata, hdr, **kwargs):
     """ Make a sunpy map based on the NuSTAR data.
     
     Parameters
@@ -408,32 +408,29 @@ def make_sunpy_map(evtdata, hdr, norm_map=False):
 
     hdr: FITS header containing the astrometric information
 
-    norm_map : `bool`
-        Normalise the map data by the exposure (live) time, so units 
-        of count/s. Defaults to "False" and count
+    **kwargs :
+        Added to the header.
     """
 
     # Parse Header keywords
     for field in hdr.keys():
         if field.find('TYPE') != -1:
             if hdr[field] == 'X':
-                #print(hdr[field][5:8])
                 xval = field[5:8]
             if hdr[field] == 'Y':
-                #print(hdr[field][5:8])
                 yval = field[5:8]
         
-    min_x= hdr['TLMIN'+xval]
-    min_y= hdr['TLMIN'+yval]
-    max_x= hdr['TLMAX'+xval]
-    max_y= hdr['TLMAX'+yval]
+    min_x = hdr['TLMIN'+xval]
+    min_y = hdr['TLMIN'+yval]
+    max_x = hdr['TLMAX'+xval]
+    max_y = hdr['TLMAX'+yval]
 
     delx = abs(hdr['TCDLT'+xval])
 
     x = evtdata['X'][:]
     y = evtdata['Y'][:]
     met = evtdata['TIME'][:]*u.s
-    mjdref=hdr['MJDREFI']
+    mjdref = hdr['MJDREFI']
 
     mid_obs_time = Time(mjdref*u.d+met.mean(), format = 'mjd')
     sta_obs_time = Time(mjdref*u.d+met.min(), format = 'mjd')
@@ -449,11 +446,7 @@ def make_sunpy_map(evtdata, hdr, norm_map=False):
     H, _, _ = np.histogram2d(y, x, bins=bins, range = [[min_y,max_y], [min_x, max_x]])
 
     #Normalise the data with the exposure (or live) time?
-    if norm_map is True:
-        H=H/exp_time
-        pixluname='count/s'
-    else:
-        pixluname='count'
+    pixluname='count'
 
     dict_header = {
         "DATE-OBS": sta_obs_time.iso, 
@@ -478,6 +471,7 @@ def make_sunpy_map(evtdata, hdr, norm_map=False):
         # Assumes dsun_obs in m if don't specify the units, so give units
         "DSUN_OBS": sunpy.coordinates.sun.earth_distance(mid_obs_time).value*u.astrophys.au, #get_sunearth_distance(mid_obs_time).value*u.astrophys.au
     }
+    dict_header |= kwargs
     # For some reason the DSUN_OBS crashed the save...
     
     header = sunpy.util.MetaDict(dict_header)
@@ -509,14 +503,35 @@ def get_submap(sunpy_map_obj, bottom_left:u.Quantity, top_right:u.Quantity):
     _submap = sunpy_map_obj.submap(bl,top_right=tr) # submaps act differently to normal maps
     return assign_plot_settings(sunpy.map.Map(_submap.data, _submap.meta))
 
-def normalize_map(sunpy_map_obj):
+def normalize_map(sunpy_map_obj, hk_filename):
     """Normalize the given map data with its EXPOSURE header keyword.
     
     Updates the PIXLUNIT keyword value too.
     """
-    new_data = sunpy_map_obj.data/sunpy_map_obj.meta["EXPOSURE"]
-    sunpy_map_obj.header["PIXLUNIT"] = f"{sunpy_map_obj.header["PIXLUNIT"]}/s"
-    return assign_plot_settings(sunpy.map.Map(new_data, sunpy_map_obj.header))
+    if sunpy_map_obj.meta["PIXLUNIT"].endswith("/s"):
+        warnings.warn("PIXLUNIT in map object already ends in `/s`. Returning original map.")
+        return sunpy_map_obj
+    
+    lvt_exp = get_livetime_exposure(Time(sunpy_map_obj.meta["start_t"], format='isot',scale='utc'), 
+                                    Time(sunpy_map_obj.meta["end_t"], format='isot',scale='utc'), 
+                                    hk_filename)
+
+    new_data = sunpy_map_obj.data/lvt_exp.value
+    sunpy_map_obj.meta["PIXLUNIT"] = f"{sunpy_map_obj.meta["PIXLUNIT"]}/s"
+    return assign_plot_settings(sunpy.map.Map(new_data, sunpy_map_obj.meta))
+
+def get_livetime_exposure(start, end, hk_filename):
+    """Use the HK file and time span to get the livetime corrected exposure."""
+    lvt_times, hk_livetimes = livetime_array(hk_filename)
+    new_time_bins = [[start, end]]
+
+    format_lvt_times = np.hstack((lvt_times[:-1][:,None], lvt_times[1:][:,None]))
+    new_livetimes = regroup_any_array(data=hk_livetimes, 
+                                        old_bins=format_lvt_times, 
+                                        new_bins=new_time_bins, 
+                                        combine_by="mean")
+    time_diff = (end - start).sec << u.s
+    return (new_livetimes.value*time_diff)
 
 def draw_grid(sunpy_map_obj, axes):
     """Draw a grid representing the Sun."""

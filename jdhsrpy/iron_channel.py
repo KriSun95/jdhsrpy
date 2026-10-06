@@ -24,7 +24,7 @@ def prep(smap, table):
 def get_unprepped_file_time(filename_time):
     return Time.strptime(filename_time, "%Y_%m_%dT%H_%M_%S.%fZ")
 
-def create_iron18(dir_094, dir_171, dir_211, outdir, needing_prepped=False, TABLE=None):
+def create_iron18(dir_094, dir_171, dir_211, outdir, needing_prepped=False, table=None):
     """Takes the 94, 171, 211 channels from SDO/AIA to create an iron18 emission proxy (Del Zanna 2013).
     
     Parameters
@@ -103,11 +103,11 @@ def create_iron18(dir_094, dir_171, dir_211, outdir, needing_prepped=False, TABL
         aia_map_094 = sunpy.map.Map(os.path.join(dir_094, f094))
 
         if needing_prepped:
-            if TABLE is None:
-                TABLE = get_pointing_table("JSOC", 
+            if table is None:
+                table = get_pointing_table("JSOC", 
                                 time_range=[aia_map_094.date - 1 * u.day, 
                                             aia_map_094.date + 1 * u.day])
-            aia_map_094 = prep(aia_map_094, TABLE)
+            aia_map_094 = prep(aia_map_094, table)
 
         data_094 = aia_map_094.data / aia_map_094.exposure_time
         data_094[data_094 < 0] = 0
@@ -115,7 +115,7 @@ def create_iron18(dir_094, dir_171, dir_211, outdir, needing_prepped=False, TABL
         aia_map_171 = sunpy.map.Map(os.path.join(dir_171, f171))
 
         if needing_prepped:
-            aia_map_171 = prep(aia_map_171, TABLE)
+            aia_map_171 = prep(aia_map_171, table)
 
         data_171 = aia_map_171.data / aia_map_171.exposure_time
         data_171[data_171 < 0] = 0
@@ -123,7 +123,7 @@ def create_iron18(dir_094, dir_171, dir_211, outdir, needing_prepped=False, TABL
         aia_map_211 = sunpy.map.Map(os.path.join(dir_211, f211))
 
         if needing_prepped:
-            aia_map_211 = prep(aia_map_211, TABLE)
+            aia_map_211 = prep(aia_map_211, table)
         
         data_211 = aia_map_211.data / aia_map_211.exposure_time
         data_211[data_211 < 0] = 0

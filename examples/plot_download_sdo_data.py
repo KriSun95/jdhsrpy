@@ -22,6 +22,7 @@ from sunpy import config
 import sunpy.map
 from sunpy.time import parse_time
 
+from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.iron_channel import create_iron18
 from jdhsrpy.sdo_download import sdo_download
 
@@ -42,9 +43,9 @@ try:
 except Exception as e:
     # JSOC can go down and be tricky sometimes, rely on this back-up to get some files at least
     logging.exception(traceback.format_exc())
-    aia_files = ["http://foxsi.space.umn.edu/data/tmp/jdhsr/test_sdo_data/aia.lev1.94A_2021_11_20T02_25_35.12Z.image_lev1.fits",
-                 "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_sdo_data/aia.lev1.171A_2021_11_20T02_25_45.35Z.image_lev1.fits",
-                 "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_sdo_data/aia.lev1.211A_2021_11_20T02_25_45.63Z.image_lev1.fits",
+    aia_files = [f"{TEST_DATA_LOCATION}/test_sdo_data/aia.lev1.94A_2021_11_20T02_25_35.12Z.image_lev1.fits",
+                 f"{TEST_DATA_LOCATION}/test_sdo_data/aia.lev1.171A_2021_11_20T02_25_45.35Z.image_lev1.fits",
+                 f"{TEST_DATA_LOCATION}/test_sdo_data/aia.lev1.211A_2021_11_20T02_25_45.63Z.image_lev1.fits",
                  ]
     for (wv, af) in zip(wave_values, aia_files):
         new_folder = f"{wv}angstrom"

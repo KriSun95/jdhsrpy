@@ -13,6 +13,7 @@ from astropy.visualization import time_support
 import matplotlib.pyplot as plt
 import urllib.request
 
+from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.nustar_evt import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
 from jdhsrpy.list_filters import by_detector, by_energy
@@ -20,7 +21,7 @@ from jdhsrpy.list_filters import by_detector, by_energy
 # %%
 # Download an example "sunpos" NuSTAR EVT file.
 
-url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
 filename = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename):
     urllib.request.urlretrieve(url, filename)

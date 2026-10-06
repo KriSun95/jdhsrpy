@@ -13,22 +13,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 import urllib.request
 
-from jdhsrpy import spectral_fitting
+from jdhsrpy import TEST_DATA_LOCATION, spectral_fitting
+from jdhsrpy.nustar_spectrum import nustar_pha_spectrum
+from jdhsrpy.visualize import spectrum_plot
+
 
 # %%
 # Download the spectral files.
 
-url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_nustar_data/nu20619003001A06_cl_grade0_sr.pha"
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_grade0_sr.pha"
 filename_pha = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename_pha):
     urllib.request.urlretrieve(url, filename_pha)
 
-url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_nustar_data/nu20619003001A06_cl_grade0_sr.arf"
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_grade0_sr.arf"
 filename_arf = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename_arf):
     urllib.request.urlretrieve(url, filename_arf)
 
-url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_nustar_data/nu20619003001A06_cl_grade0_sr.rmf"
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_grade0_sr.rmf"
 filename_rmf = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename_rmf):
     urllib.request.urlretrieve(url, filename_rmf)
@@ -39,8 +42,27 @@ if not os.path.isfile(filename_rmf):
 # `documentation <https://krisun95.github.io/jdhsrpy/setting_up_nustar_data.html>`__ 
 # for more details.
 #
-# At any point below, a user can swap to only using ``sunkit-spex`` if
-# the helper functions are too cryptic or annoying.
+# At any point below, a user can swap to only using `Sunkit-spex <https://sunkit-spex.readthedocs.io/en/latest/>`__ 
+# if the helper functions are too cryptic or annoying.
+
+# %% 
+# Inspecting the spectrum
+# -----------------------
+# 
+# It is possible to inspect the spectrum before continuing with the
+# fitting. 
+# 
+# This allows a user to get an idea of things like fitting energy ranges 
+# and which models to use.
+
+energy_bins, flux, flux_err = nustar_pha_spectrum(filename_pha)
+
+plt.figure(figsize=(8,7))
+spectrum_plot(energy_bins, flux, flux_err)
+plt.xlim([2, 7])
+plt.title("NuSTAR PHA Spectrum")
+plt.tight_layout()
+plt.show()
 
 # %% 
 # Setting up the fitting
@@ -54,6 +76,13 @@ if not os.path.isfile(filename_rmf):
 # following (e.g. ``spectral_fitting.get_fitter_object(file1, file2, ...)``).
 
 fitter = spectral_fitting.get_fitter_object(filename_pha)
+
+# %%
+# The above is the equivalent of the following when using Sunkit-spex
+# directly.
+
+from sunkit_spex.legacy.fitting.fitter import Fitter
+equivalent_fitter = Fitter(pha_file=[filename_pha, ])
 
 # %% 
 # Choosing the fitting range
@@ -115,7 +144,7 @@ plt.show()
 # TWe can also easily run MCMC analysis.
 
 mcmc_result = fitter.run_mcmc(steps_per_walker=1_000)
-fitter.burn_mcmc = 100
+fitter.burn_mcmc = 200
 
 # %% 
 # We can see the log-probability chain of the walkers.

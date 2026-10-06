@@ -14,23 +14,24 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import urllib.request
 
+from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.nustar_evt import NustarEvt, livetime_array, chu_state_array
 from jdhsrpy.visualize import time_profile_plot, livetime_plot, chu_plot, vertical_line_of_time
 
 # %%
 # Download an example "sunpos" NuSTAR EVT and livetime file.
 
-url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
 filename_evt = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename_evt):
     urllib.request.urlretrieve(url, filename_evt)
 
-url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_nustar_data/nu20619003001A_fpm.hk"
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A_fpm.hk"
 filename_lvt = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename_lvt):
     urllib.request.urlretrieve(url, filename_lvt)
 
-url = "http://foxsi.space.umn.edu/data/tmp/jdhsr/test_nustar_data/nu20619003001_chu123.fits"
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001_chu123.fits"
 filename_chu = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename_chu):
     urllib.request.urlretrieve(url, filename_chu)
