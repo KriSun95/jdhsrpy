@@ -4,10 +4,10 @@ Module containing functions that load HEASARC compliant files.
 
 from astropy.io import fits
 
-__all__ = ["read_nustar_pha", "read_heasarc_arf", "read_heasarc_rmf"]
+__all__ = ["read_heasarc_arf", "read_heasarc_rmf", "read_nustar_pha"]
 
 
-def read_nustar_pha(file:str):
+def read_nustar_pha(file: str):
     """
     Read a `.pha` file and extract data ande header information.
 
@@ -28,7 +28,7 @@ def read_nustar_pha(file:str):
     return data, header
 
 
-def read_heasarc_arf(file:str):
+def read_heasarc_arf(file: str):
     """
     Read a HEASARC compliant `.arf` file and extract useful information.
 
@@ -47,13 +47,13 @@ def read_heasarc_arf(file:str):
     with fits.open(file) as hdul:
         for hdu in hdul:
             hdu_contents = hdu.header.get("HDUCLAS2", None)
-            if hdu_contents=="SPECRESP":
+            if hdu_contents == "SPECRESP":
                 data = hdu.data
 
     return data
 
 
-def read_heasarc_rmf(file:str):
+def read_heasarc_rmf(file: str):
     """
     Read a HEASARC compliant `.rmf` file and extract useful information.
 
@@ -74,9 +74,9 @@ def read_heasarc_rmf(file:str):
     with fits.open(file) as hdul:
         for hdu in hdul:
             hdu_contents = hdu.header.get("HDUCLAS2", None)
-            if hdu_contents=="EBOUNDS":
+            if hdu_contents == "EBOUNDS":
                 channel_data = hdu.data
-            elif hdu_contents=="RSP_MATRIX":
+            elif hdu_contents == "RSP_MATRIX":
                 rmf_and_photon_data = hdu.data
 
     return channel_data, rmf_and_photon_data

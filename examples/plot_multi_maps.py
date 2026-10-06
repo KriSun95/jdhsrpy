@@ -8,12 +8,12 @@ This example shows making NuSTAR images and plotting them with AIA.
 
 import ntpath
 import os
+import urllib.request
 
-from astropy.coordinates import SkyCoord
 import astropy.units as u
 import matplotlib.pyplot as plt
 import sunpy.map
-import urllib.request
+from astropy.coordinates import SkyCoord
 
 from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.image_filters import gaussian_filter
@@ -54,14 +54,14 @@ fig = plt.figure()
 ax = fig.add_subplot(projection=nustar_map)
 nustar_map.plot(axes=ax, vmin=1e0)
 draw_grid(nustar_map, ax)
-plt.colorbar(fraction=0.035, pad=0.03,label=nustar_map.meta["PIXLUNIT"])
+plt.colorbar(fraction=0.035, pad=0.03, label=nustar_map.meta["PIXLUNIT"])
 plt.show()
 
 # %%
 # SDO/AIA image
 # -------------
 #
-# Let's look at an SDO/AIA image now, which may already be downloaded 
+# Let's look at an SDO/AIA image now, which may already be downloaded
 # from another example.
 #
 # Their own example is`here <https://krisun95.github.io/jdhsrpy/auto_examples/plot_download_sdo_data.html>`__.
@@ -69,7 +69,7 @@ plt.show()
 map_094 = sunpy.map.Map(filename_aia)
 
 plt.figure()
-map_094.plot(clip_interval=(1, 99.99)*u.percent)
+map_094.plot(clip_interval=(1, 99.99) * u.percent)
 plt.show()
 
 # %%
@@ -78,8 +78,10 @@ plt.show()
 #
 # Crop the AIA map to the same region as the NuSTAR
 
-aia_smap = map_094.submap(SkyCoord(*bottom_left, frame=map_094.coordinate_frame),
-                          top_right=SkyCoord(*top_right, frame=map_094.coordinate_frame))
+aia_smap = map_094.submap(
+    SkyCoord(*bottom_left, frame=map_094.coordinate_frame),
+    top_right=SkyCoord(*top_right, frame=map_094.coordinate_frame),
+)
 
 # %%
 # Combining maps
