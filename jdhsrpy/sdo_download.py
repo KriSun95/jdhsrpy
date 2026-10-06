@@ -55,11 +55,7 @@ def sdo_download(start_time, end_time, directory=None, wave_values=None, get_hmi
 
     # Extend the time interval, download a subset of wavelengths, 
     # define a specific directory, and get the SDO/HMI data as well
-    >>> sdo_download(start_time="2024-04-17T21:30:00", 
-                     end_time="2024-04-17T22:45:00", 
-                     directory="path/to/save/directory/", 
-                     wave_values=[94,171], 
-                     get_hmi=True)
+    >>> sdo_download(start_time="2024-04-17T21:30:00", end_time="2024-04-17T22:45:00", directory="path/to/save/directory/", wave_values=[94,171], get_hmi=True)
 
     # Only download SDO/HMI LOS data
     >>> sdo_download(..., wave_values=[], get_hmi=True)
@@ -177,8 +173,7 @@ def handle_retries(filepaths, tries=5, needed_files=None):
     >>> needed_files = handle_retries(filepaths)
 
     ## If a list of un-downloaded alreadt exists then pass to append
-    >>> needed_files = handle_retries(filepaths, 
-                                      needed_files=needed_files)
+    >>> needed_files = handle_retries(filepaths, needed_files=needed_files)
     """
 
     needed_files = [] if needed_files is None else needed_files

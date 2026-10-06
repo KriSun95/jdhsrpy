@@ -23,6 +23,7 @@ dependencies = [
             "drms>=0.9.1",
             "aiapy>=0.12.1",
             "scikit-image>=0.26.0",
+            "pre-commit>=4.6.2",
 ]
 
 [tool.uv.sources]

@@ -26,29 +26,29 @@ def get_fitter_object(*args, arf_files=None, rmf_files=None):
 def multi_or_single_fit_model(base_model, fitter):
     """Adds a constant to the model if multiple data-sets exist.
     
-    So return `C*base_model` if `len(fitter.data.loaded_spec_data)>1` 
-    else `base_model`.
+    So return ``C*base_model`` if ``len(fitter.data.loaded_spec_data)>1`` 
+    else ``base_model``.
     """
     if len(fitter.data.loaded_spec_data)>1:
         return f"C*({base_model})"
     return f"{base_model}"
 
 def set_single_thermal_model(fitter):
-    """Set `fitter.model` with the `f_vth`model."""
+    """Set ``fitter.model`` with the ``f_vth`` model."""
     fitter.model = multi_or_single_fit_model("f_vth", fitter)
 
 def set_double_thermal_model(fitter):
-    """Set `fitter.model` with the `f_vth+f_vth`model."""
+    """Set ``fitter.model`` with the ``f_vth+f_vth`` model."""
     fitter.model = multi_or_single_fit_model("f_vth+f_vth", fitter)
 
 def set_triple_thermal_model(fitter):
-    """Set `fitter.model` with the `f_vth+f_vth+f_vth`model."""
+    """Set ``fitter.model`` with the ``f_vth+f_vth+f_vth`` model."""
     fitter.model = multi_or_single_fit_model("f_vth+f_vth+f_vth", fitter)
 
 def set_single_thermal_single_nonthermal_model(fitter):
-    """Set `fitter.model` with the `f_vth+thick_fn`model."""
+    """Set ``fitter.model`` with the ``f_vth+thick_fn`` model."""
     fitter.model = multi_or_single_fit_model("f_vth+thick_fn", fitter)
 
 def set_double_thermal_single_nonthermal_model(fitter):
-    """Set `fitter.model` with the `f_vth+f_vth+thick_fn`model."""
+    """Set ``fitter.model`` with the ``f_vth+f_vth+thick_fn`` model."""
     fitter.model = multi_or_single_fit_model("f_vth+f_vth+thick_fn", fitter)
