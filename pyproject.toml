@@ -28,3 +28,6 @@ dependencies = [
 
 [tool.uv.sources]
 nustar-pysolar = { git = "https://github.com/NuSTAR/nustar_pysolar.git" }
+
+[tool.setuptools.packages.find]
+where = ["jdhsrpy"]
