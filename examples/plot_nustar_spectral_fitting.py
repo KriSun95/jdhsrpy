@@ -145,7 +145,7 @@ plt.show()
 # MCMC analysis
 # -------------
 #
-# TWe can also easily run MCMC analysis.
+# We can also easily run MCMC analysis.
 
 mcmc_result = fitter.run_mcmc(steps_per_walker=1_000)
 fitter.burn_mcmc = 200

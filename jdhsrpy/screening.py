@@ -10,7 +10,7 @@ from jdhsrpy.list_filters import by_time
 __all__ = ["make_gti_file", "time_filtered_evt_file"]
 
 
-def time_filtered_evt_file(evt_file, time_range=None, save_dir=None, **kwargs):
+def time_filtered_evt_file(evt_file, save_name, time_range, **kwargs):
     """Takes a .evt file and filters the events list to a given time range.
     Only for region selection, do not use directly with spectral fitting
     software.
@@ -19,30 +19,19 @@ def time_filtered_evt_file(evt_file, time_range=None, save_dir=None, **kwargs):
     ----------
     file : Str
             File (or directory/file) of the .evt file to be filtered by time.
+    
+    save_name : str
+            The name of your new time filtered file. E.g., save_name = "./new.evt"
 
     time_range : list
             A list of length 2 with the start and end date and time. Must
             be given in a specific format, e.g. time_range=['2018/09/10, 16:22:30', '2018/09/10, 16:24:30'].
-            Default: None
-
-    save_dir : Str
-            String of the directory for the filtered file to be saved.
-            Default: None
 
     Returns
     -------
     Creates a new file file with '_time_filtered' before the file extension
     and returns the name of the new file.
     """
-
-    if time_range is None:
-        print("No time_range given. Nothing will be done.")
-        return
-
-    directory, filename = ntpath.split(evt_file)
-    tf_name = f"{filename[:-4]}_time_filtered.evt"
-    save_dir = directory if save_dir is None else save_dir
-    new_file_name = os.path.join(save_dir, tf_name)
 
     with fits.open(evt_file) as hdulist:
         evtdata = hdulist[1].data  # data to be filtered
@@ -51,10 +40,8 @@ def time_filtered_evt_file(evt_file, time_range=None, save_dir=None, **kwargs):
 
         hdulist[1].data = evt_in_time  # replaces this hdu with the filtered events list
         hdulist.writeto(
-            new_file_name, **kwargs
+            save_name, **kwargs
         )  # saves the edited file, original stays as is
-
-    return new_file_name
 
 
 def make_gti_file(gti_file, save_name, good_time_interval, **kwargs):

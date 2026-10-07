@@ -35,3 +35,4 @@ docs/sg_execution_times.rst
 *.arf
 *.pha
 *.rmf
+*.reg
