@@ -5,12 +5,12 @@ Full Analysis Pipeline
 
 This example shows The full analysis pipeline.
 
-The assumption is that the user already has the NuSTAR data analysis 
-software downloaded; however, these lines will not be run here. 
+The assumption is that the user already has the NuSTAR data analysis
+software downloaded; however, these lines will not be run here.
 
-Instead, the lines of code will be shown then an example expected file 
-will be downloaded from the example gallary. This way, I don't have to 
-get HEASoft working on a remote Github server (thank you) and the user 
+Instead, the lines of code will be shown then an example expected file
+will be downloaded from the example gallery. This way, I don't have to
+get HEASoft working on a remote Github server (thank you) and the user
 will be able to see what type of files they should expect at each step.
 
 Download the data
@@ -24,7 +24,7 @@ Let's use the observataion ID 20619003001 for this example.
 Unzipping
 ---------
 
-Then we can run the following on the downloaded folder to have access to 
+Then we can run the following on the downloaded folder to have access to
 the files.
 
 .. code-block:: bash
@@ -33,8 +33,8 @@ the files.
 Science files
 -------------
 
-Once the files are unzipped, ``nupipeline`` can be envoked to process 
-the files. This creates an ``event_cl`` folder mainly with the event 
+Once the files are unzipped, ``nupipeline`` can be evoked to process
+the files. This creates an ``event_cl`` folder mainly with the event
 list files.
 
 .. code-block:: bash
@@ -79,9 +79,9 @@ if not os.path.isfile(filename_base_gti):
     urllib.request.urlretrieve(url, filename_base_gti)
 
 # %%
-# Grade 0 
+# Grade 0
 # -------
-# 
+#
 # The next step is to filter the EVT file to only leave behind grade 0
 # events.
 #
@@ -98,14 +98,14 @@ if not os.path.isfile(filename_g0_evt):
     urllib.request.urlretrieve(url, filename_g0_evt)
 
 # %%
-# To produce the FPMB files, the ``nuscreen`` function would need to be 
+# To produce the FPMB files, the ``nuscreen`` function would need to be
 # run again with ``20619003001A`` changed to ``20619003001B``.
 
 # %%
 # EVT solar positions
 # -------------------
-# 
-# For convenience, we can convert any of the EVT files so we acn easily 
+#
+# For convenience, we can convert any of the EVT files so we can easily
 # work in solar coordinates.
 #
 # .. code-block:: python
@@ -122,9 +122,9 @@ if not os.path.isfile(filename_sunpos_evt):
 
 import astropy.units as u
 import matplotlib.dates as mdates
-import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 from astropy.visualization import time_support
+from matplotlib import gridspec
 
 from jdhsrpy.nustar_evt import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
@@ -132,7 +132,7 @@ from jdhsrpy.visualize import time_profile_plot
 nustar_object = NustarEvt(evt_filename=filename_sunpos_evt)
 # time profile numbers
 times, counts = nustar_object.count_time_profile_array()
-# iamge stuff
+# image stuff
 bottom_left = [-1000, -700] << u.arcsec
 top_right = [300, 600] << u.arcsec
 m = nustar_object.nustar_map(bottom_left, top_right)
@@ -160,15 +160,15 @@ plt.tight_layout()
 plt.show()
 
 # %%
-# GTI file 
+# GTI file
 # --------
-# 
-# To obtain a good time interval (GTI) file, a user will likely want to 
+#
+# To obtain a good time interval (GTI) file, a user will likely want to
 # inspect the NuSTAR time profile to select times.
 #
 # We could use any EVT file  together with ``~jdhsrpy.nustar_evt.NustarEvt``
-# for this. If none of them have been processed to convert their 
-# X-Y coordinates to solar coordinated yet, we would just get a warning 
+# for this. If none of them have been processed to convert their
+# X-Y coordinates to solar coordinated yet, we would just get a warning
 # from the class saying imaging methods probably will not work.
 #
 # A user can then choose some times using the time profile plot.
@@ -181,10 +181,11 @@ times, cts = nustar_object.rate_time_profile_array(filename_lvt)
 time0 = "2021-11-20T02:22:10"
 time1 = "2021-11-20T02:25:30"
 
-m_tf = nustar_object.nustar_map(bottom_left, 
-                                top_right, 
-                                event_data=by_time(nustar_object.cleaned_evt_data,
-                                                   [time0, time1]))
+m_tf = nustar_object.nustar_map(
+    bottom_left,
+    top_right,
+    event_data=by_time(nustar_object.cleaned_evt_data, [time0, time1]),
+)
 
 time_support(format="unix_tai")
 fig = plt.figure(figsize=(11, 6))
@@ -210,23 +211,23 @@ plt.tight_layout()
 plt.show()
 
 # %%
-# A user should also inspect the livetime and CHU information. See the 
+# A user should also inspect the livetime and CHU information. See the
 # `Plotting NuSTAR Time Profiles <https://krisun95.github.io/jdhsrpy/auto_examples/plot_nustar_time_profiles.html>`__
 # example.
 #
-# From the time selection, two files should be produced. The first file 
-# is the GTI file ``2210_to_2530_gti.fits`` that can be used to further 
+# From the time selection, two files should be produced. The first file
+# is the GTI file ``2210_to_2530_gti.fits`` that can be used to further
 # process the NuSTAR data pipeline.
 #
-# The second file is a time filtered EVT file so we can use that to 
-# select a good region in the next section. 
-# 
+# The second file is a time filtered EVT file so we can use that to
+# select a good region in the next section.
+#
 # - Make sure this is the grade 0 EVT file
 #
 # .. code-block:: python
 #     from jdhsrpy.screening import make_gti_file, time_filtered_evt_file
 #     from jdhsrpy.utils import only_numbers
-#     
+#
 #     common_file_name = f"{only_numbers(time0)[-4:]}_to_{only_numbers(time1)[-4:]}"
 #     make_gti_file(
 #         filename_base_gti,
@@ -254,20 +255,20 @@ if not os.path.isfile(filename_tf_evt):
     urllib.request.urlretrieve(url, filename_tf_evt)
 
 # %%
-# Region file 
+# Region file
 # -----------
-# 
-# To obtain a region file, take the new time filtered grade 0 file and 
+#
+# To obtain a region file, take the new time filtered grade 0 file and
 # use FITS viewing software like `SAOImageDS9 <https://sites.google.com/cfa.harvard.edu/saoimageds9?pli=1&authuser=0>`__.
 #
-# In SAOImageDS9, a user can select ``edit`` in the GUI window, then 
+# In SAOImageDS9, a user can select ``edit`` in the GUI window, then
 # ``region``, then draw a region with their mouse.
 #
-# Once the user is happy with their region, they can go to ``region`` 
-# and click on ``save``. They can choose where to save the region file. 
-# 
-# Note, there might be another window that pops up after you click save, 
-# just make sure to click ``OK`` on this window too otherwise the file 
+# Once the user is happy with their region, they can go to ``region``
+# and click on ``save``. They can choose where to save the region file.
+#
+# Note, there might be another window that pops up after you click save,
+# just make sure to click ``OK`` on this window too otherwise the file
 # will not save.
 
 url = f"{TEST_DATA_LOCATION}/test_nustar_data/fpma.reg"
@@ -276,9 +277,9 @@ if not os.path.isfile(filename_reg):
     urllib.request.urlretrieve(url, filename_reg)
 
 # %%
-# Spectral files 
+# Spectral files
 # --------------
-# 
+#
 # Once the good time interval file and region file are obtain, we can
 # produce the spectral files: PHA, ARF, and RMF.
 #
@@ -303,9 +304,9 @@ if not os.path.isfile(filename_rmf):
     urllib.request.urlretrieve(url, filename_rmf)
 
 # %%
-# To produce the FPMB files, the ``nuscreen`` function would need to be 
-# run again with ``FPMA`` changed to ``FPMB``, ``20619003001A`` 
+# To produce the FPMB files, the ``nuscreen`` function would need to be
+# run again with ``FPMA`` changed to ``FPMB``, ``20619003001A``
 # changed to ``20619003001B``.
 #
-# This will likely mean a different region file for FPMB, and 
+# This will likely mean a different region file for FPMB, and
 # potentially a different GTI file also.

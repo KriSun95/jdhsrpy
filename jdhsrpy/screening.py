@@ -1,6 +1,3 @@
-import ntpath
-import os
-
 from astropy.io import fits
 from astropy.time import Time
 
@@ -19,7 +16,7 @@ def time_filtered_evt_file(evt_file, save_name, time_range, **kwargs):
     ----------
     file : Str
             File (or directory/file) of the .evt file to be filtered by time.
-    
+
     save_name : str
             The name of your new time filtered file. E.g., save_name = "./new.evt"
 
