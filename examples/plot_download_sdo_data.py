@@ -24,23 +24,30 @@ from sunpy.time import parse_time
 
 from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.iron_channel import create_iron18
-from jdhsrpy.sdo_download import sdo_download
 
 TIME_FORMAT = config.get("general", "time_format")
 
 # %%
-# Download 30 second's worth of data for the 94 A SDO/AIA channel
+# Download 30 second's worth of data for the 94 A SDO/AIA channel.
 
 wave_values = [94, 171, 211]
 file_directory = os.getcwd()
 
-sdo_download(
-    start_time="2021-11-20T02:25:30",
-    end_time="2021-11-20T02:26:00",
-    directory=file_directory,
-    wave_values=wave_values,
-    get_hmi=False,
-)
+# %%
+# The following can be used to download 30 seconds worth of data for the 
+# three SDO/AIA channels. However, let's avoid the documentation doing
+# the download and instead rely on the test data.
+#
+# .. code-block:: python3
+#
+#    from jdhsrpy.sdo_download import sdo_download
+#    sdo_download(
+#        start_time="2021-11-20T02:25:30",
+#        end_time="2021-11-20T02:26:00",
+#        directory=file_directory,
+#        wave_values=wave_values,
+#        get_hmi=False,
+#    )
 
 # %%
 # JSOC can go down and be tricky sometimes, rely on this back-up to get
