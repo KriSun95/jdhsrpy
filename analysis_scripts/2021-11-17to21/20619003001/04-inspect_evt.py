@@ -9,7 +9,7 @@ sys.path.insert(
 )
 import matplotlib.pyplot as plt
 
-from jdhsrpy import nustar_evt, screening, utils, visualize
+from jdhsrpy import list_filters, nustar_evt, screening, utils, visualize
 
 DIRECTORY, FILENAME = ntpath.split(__file__)
 
@@ -93,7 +93,7 @@ for f, lvtf in zip(orig_files, lvt_files):
     plt.figure()
     for det in range(4):
         timesd, ctd = nu_obj.count_time_profile_array(
-            filters.by_detector(nu_obj.cleaned_evt_data, det)
+            list_filters.by_detector(nu_obj.cleaned_evt_data, det)
         )
         axes = visualize.time_profile_plot(timesd, ctd, label=f"Det{det}")
     visualize.vertical_line_of_time(time_1, c="r", axes=axes)

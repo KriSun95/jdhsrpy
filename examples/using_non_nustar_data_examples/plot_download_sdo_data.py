@@ -10,10 +10,8 @@ Following this, the example then goes on to create the Fe18 proxy
 described in Del Zanna 2013
 """
 
-import logging
 import ntpath
 import os
-import traceback
 import urllib.request
 
 import astropy.units as u
@@ -34,14 +32,14 @@ wave_values = [94, 171, 211]
 file_directory = os.getcwd()
 
 # %%
-# The following can be used to download 30 seconds worth of data for the 
+# The following can be used to download 30 seconds worth of data for the
 # three SDO/AIA channels. However, let's avoid the documentation doing
 # the download and instead rely on the test data.
 #
 # .. code-block:: python3
-#    :caption: jdhsrpy.sdo_download.sdo_download
+#    :caption: jdhsrpy.download.sdo_download
 #
-#    from jdhsrpy.sdo_download import sdo_download
+#    from jdhsrpy.download import sdo_download
 #    sdo_download(
 #        start_time="2021-11-20T02:25:30",
 #        end_time="2021-11-20T02:26:00",
@@ -51,7 +49,7 @@ file_directory = os.getcwd()
 #    )
 #
 # The above code will be skipped here. Let's rely on the back-up to get
-# some files. 
+# some files.
 
 aia_files = [
     f"{TEST_DATA_LOCATION}/test_sdo_data/aia.lev1.94A_2021_11_20T02_25_35.12Z.image_lev1.fits",

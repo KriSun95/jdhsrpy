@@ -122,8 +122,8 @@ if not os.path.isfile(filename_g0_evt):
 #    from jdhsrpy.nustar_evt import sunpos_evt
 #    sunpos_evt(filename_base_evt)
 #
-# The ``jdhsrpy.nustar_evt.sunpos_evt`` Python code has been skipped in 
-# this example, and we will rely on the test, back-up data stored 
+# The ``jdhsrpy.nustar_evt.sunpos_evt`` Python code has been skipped in
+# this example, and we will rely on the test, back-up data stored
 # elsewhere that would be produced by the above code.
 
 url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
@@ -258,8 +258,8 @@ plt.show()
 #        overwrite=True,
 #    )
 #
-# The ``time-filtering`` Python code has been skipped in this example, 
-# and we will rely on the test, back-up data stored elsewhere that would 
+# The ``time-filtering`` Python code has been skipped in this example,
+# and we will rely on the test, back-up data stored elsewhere that would
 # be produced by the above code.
 
 url = f"{TEST_DATA_LOCATION}/test_nustar_data/2210_to_2530_gti.fits"

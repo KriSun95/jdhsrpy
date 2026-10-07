@@ -36,7 +36,7 @@ def to_plotting_datetimes(times):
     elif isinstance(times, datetime):
         return times
     else:
-        raise ValueError("The `times` variable is not supported.")
+        raise TypeError("The `times` variable is not supported.")
 
 
 def vertical_line_of_time(time: str | Time | datetime, axes=None, **kwargs):
@@ -85,15 +85,6 @@ def chu_plot(times, ydata, label_map, axes=None, **kwargs):
     return axes
 
 
-def spectrum_plot(x, y, xerr=None, yerr=None, axes=None, **kwargs):
-    """Functoin to plot a spectrum."""
-    axes = plt.gca() if axes is None else axes
-    _defaults = {"color": "k", "fmt": ".", "markersize": 0.01}
-    _plot_settings = _defaults | kwargs
-    axes.errorbar(x, y, xerr=xerr, yerr=yerr, **_plot_settings)
-    return axes
-
-
 def livetime_plot(times, ydata, axes=None, **kwargs):
     """Plot a time profile (on a given axes if given).
 
@@ -120,7 +111,7 @@ def livetime_plot(times, ydata, axes=None, **kwargs):
 
 
 def spectrum_plot(energy_bins, ydata, ydata_err, axes=None, **kwargs):
-    """Plot a time profile (on a given axes if given).
+    """Plot a spectrum profile (on a given axes if given).
 
     Parameters
     ----------

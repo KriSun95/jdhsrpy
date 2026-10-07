@@ -478,7 +478,7 @@ def make_sunpy_map(evtdata, hdr, **kwargs):
     """
 
     # Parse Header keywords
-    for field in hdr.keys():
+    for field in hdr.keys():  # noqa
         if field.find("TYPE") != -1:
             if hdr[field] == "X":
                 xval = field[5:8]

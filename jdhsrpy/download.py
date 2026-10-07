@@ -1,7 +1,3 @@
-"""
-File to host code that downloads SDO data.
-"""
-
 import logging
 import os
 
@@ -87,7 +83,7 @@ def sdo_download(start_time, end_time, directory=None, wave_values=None, get_hmi
     # for aia (and hmi?)
     for inst, wave, wd in zip(instruments, waves, wave_dirs):
         curr_wdir = os.path.join(directory, wd)
-        logging.info(f"Doing {curr_wdir}")
+        logging.info(f"Doing {curr_wdir}")  # noqa
         os.makedirs(curr_wdir, exist_ok=True)  # make the directory if it isn't there
 
         search = (time, inst, wave)
@@ -98,8 +94,8 @@ def sdo_download(start_time, end_time, directory=None, wave_values=None, get_hmi
         # well try again with failed files
         needed_files = handle_retries(filepaths, needed_files=needed_files)
 
-    logging.info("Files Needed are:")
-    logging.info(needed_files)
+    logging.info("Files Needed are:")  # noqa
+    logging.info(needed_files)  # noqa
 
     return needed_files
 
@@ -188,7 +184,7 @@ def handle_retries(filepaths, tries=5, needed_files=None):
     needed_files = [] if needed_files is None else needed_files
 
     for _ in range(tries):
-        logging.info(f"Trying again for {filepaths.errors}")
+        logging.info(f"Trying again for {filepaths.errors}")  # noqa
         filepaths = Fido.fetch(filepaths)
         if filepaths.errors == []:
             break
