@@ -18,8 +18,9 @@ Download the data
 
 Let's use the observataion ID 20619003001 for this example.
 
-.. code-block:: bash
-    wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20619003001/
+```bash
+wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20619003001/
+```
 
 Unzipping
 ---------
@@ -27,8 +28,9 @@ Unzipping
 Then we can run the following on the downloaded folder to have access to
 the files.
 
-.. code-block:: bash
-    gunzip -r 20619003001
+```bash
+gunzip -r 20619003001
+```
 
 Science files
 -------------
@@ -37,8 +39,9 @@ Once the files are unzipped, ``nupipeline`` can be evoked to process
 the files. This creates an ``event_cl`` folder mainly with the event
 list files.
 
-.. code-block:: bash
+```bash
     nupipeline obsmode=SCIENCE_SC indir=./20619003001 steminputs=nu20619003001 outdir=event_cl entrystage=1 exitstage=2 pntra=OBJECT pntdec=OBJECT statusexpr=STATUS==b0000xx00xx0xx000 cleanflick=no hkevtexpr=NONE clobber=yes runsplitsc=yes splitmode=STRICT
+```
 
 The main file this gives us access to here is the full observation EVT
 file, for FPMA: ``nu20619003001A06_cl.evt``.
@@ -87,8 +90,9 @@ if not os.path.isfile(filename_base_gti):
 #
 # Making sure to be in the same directory of ``nu20619003001A06_cl.evt``.
 #
-# .. code-block:: bash
-#     nuscreen infile=nu20619003001A06_cl.evt gtiscreen=no evtscreen=yes gtiexpr=NONE gradeexpr=0 statusexpr=NONE outdir=./ hkfile=./nu20619003001A_fpm.hk outfile=nu20619003001A06_cl_grade0.evt
+# ```bash
+# nuscreen infile=nu20619003001A06_cl.evt gtiscreen=no evtscreen=yes gtiexpr=NONE gradeexpr=0 statusexpr=NONE outdir=./ hkfile=./nu20619003001A_fpm.hk outfile=nu20619003001A06_cl_grade0.evt
+# ```
 #
 # This would produce a file called ``nu20619003001A06_cl_grade0.evt``.
 
@@ -108,9 +112,10 @@ if not os.path.isfile(filename_g0_evt):
 # For convenience, we can convert any of the EVT files so we can easily
 # work in solar coordinates.
 #
-# .. code-block:: python
-#     from jdhsrpy.nustar_evt import sunpos_evt
-#     sunpos_evt(filename_base_evt)
+# ```python
+# from jdhsrpy.nustar_evt import sunpos_evt
+# sunpos_evt(filename_base_evt)
+# ```
 
 url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
 filename_sunpos_evt = os.path.join(os.getcwd(), ntpath.split(url)[1])
@@ -224,23 +229,24 @@ plt.show()
 #
 # - Make sure this is the grade 0 EVT file
 #
-# .. code-block:: python
-#     from jdhsrpy.screening import make_gti_file, time_filtered_evt_file
-#     from jdhsrpy.utils import only_numbers
-#
-#     common_file_name = f"{only_numbers(time0)[-4:]}_to_{only_numbers(time1)[-4:]}"
-#     make_gti_file(
-#         filename_base_gti,
-#         save_name=f"{common_file_name}_gti.fits",
-#         good_time_interval=[time0, time1],
-#         overwrite=True,
-#     )
-#     time_filtered_evt_file(
-#         evt_file=filename_g0_evt,
-#         save_name=f"{common_file_name}_20619003001A_tf.evt",
-#         time_range=[time0, time1],
-#         overwrite=True,
-#     )
+# ```python
+# from jdhsrpy.screening import make_gti_file, time_filtered_evt_file
+# from jdhsrpy.utils import only_numbers
+# 
+# common_file_name = f"{only_numbers(time0)[-4:]}_to_{only_numbers(time1)[-4:]}"
+# make_gti_file(
+#     filename_base_gti,
+#     save_name=f"{common_file_name}_gti.fits",
+#     good_time_interval=[time0, time1],
+#     overwrite=True,
+# )
+# time_filtered_evt_file(
+#     evt_file=filename_g0_evt,
+#     save_name=f"{common_file_name}_20619003001A_tf.evt",
+#     time_range=[time0, time1],
+#     overwrite=True,
+# )
+# ```
 #
 # The above should produce the following files.
 
@@ -285,8 +291,9 @@ if not os.path.isfile(filename_reg):
 #
 # Making sure to be in the same directory of ``nu20619003001A06_cl_grade0.evt``.
 #
-# .. code-block:: bash
-#     nuproducts indir=./ instrument=FPMA steminputs=nu20619003001 outdir=./ extended=no runmkarf=yes runmkrmf=yes infile=nu20619003001A06_cl_grade0.evt bkgextract=no srcregionfile=fpma.reg attfile=./nu20619003001_att.fits hkfile=./nu20619003001A_fpm.hk usrgtifile=2210_to_2530_gti.fits
+# ```bash
+# nuproducts indir=./ instrument=FPMA steminputs=nu20619003001 outdir=./ extended=no runmkarf=yes runmkrmf=yes infile=nu20619003001A06_cl_grade0.evt bkgextract=no srcregionfile=fpma.reg attfile=./nu20619003001_att.fits hkfile=./nu20619003001A_fpm.hk usrgtifile=2210_to_2530_gti.fits
+# ```
 
 url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_grade0_sr.pha"
 filename_pha = os.path.join(os.getcwd(), ntpath.split(url)[1])
