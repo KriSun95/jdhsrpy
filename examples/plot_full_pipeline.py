@@ -232,7 +232,7 @@ plt.show()
 # ```python
 # from jdhsrpy.screening import make_gti_file, time_filtered_evt_file
 # from jdhsrpy.utils import only_numbers
-# 
+#
 # common_file_name = f"{only_numbers(time0)[-4:]}_to_{only_numbers(time1)[-4:]}"
 # make_gti_file(
 #     filename_base_gti,
