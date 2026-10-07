@@ -39,6 +39,7 @@ file_directory = os.getcwd()
 # the download and instead rely on the test data.
 #
 # .. code-block:: python3
+#    :caption: jdhsrpy.sdo_download.sdo_download
 #
 #    from jdhsrpy.sdo_download import sdo_download
 #    sdo_download(
@@ -48,13 +49,10 @@ file_directory = os.getcwd()
 #        wave_values=wave_values,
 #        get_hmi=False,
 #    )
+#
+# The above code will be skipped here. Let's rely on the back-up to get
+# some files. 
 
-# %%
-# JSOC can go down and be tricky sometimes, rely on this back-up to get
-# some files at least. This will not do anything if the above passed
-# normally.
-
-logging.exception(traceback.format_exc())
 aia_files = [
     f"{TEST_DATA_LOCATION}/test_sdo_data/aia.lev1.94A_2021_11_20T02_25_35.12Z.image_lev1.fits",
     f"{TEST_DATA_LOCATION}/test_sdo_data/aia.lev1.171A_2021_11_20T02_25_45.35Z.image_lev1.fits",

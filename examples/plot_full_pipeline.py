@@ -19,6 +19,7 @@ Download the data
 Let's use the observataion ID 20619003001 for this example.
 
 .. code-block:: bash
+   :caption: wget
 
    wget -q -nH --no-check-certificate --cut-dirs=6 -r -l0 -c -N -np -R 'index*' -erobots=off --retr-symlinks https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20619003001/
 
@@ -29,6 +30,7 @@ Then we can run the following on the downloaded folder to have access to
 the files.
 
 .. code-block:: bash
+   :caption: gunzip
 
    gunzip -r 20619003001
 
@@ -40,6 +42,7 @@ the files. This creates an ``event_cl`` folder mainly with the event
 list files.
 
 .. code-block:: bash
+   :caption: nupipeline
 
    nupipeline obsmode=SCIENCE_SC indir=./20619003001 steminputs=nu20619003001 outdir=event_cl entrystage=1 exitstage=2 pntra=OBJECT pntdec=OBJECT statusexpr=STATUS==b0000xx00xx0xx000 cleanflick=no hkevtexpr=NONE clobber=yes runsplitsc=yes splitmode=STRICT
 
@@ -91,6 +94,7 @@ if not os.path.isfile(filename_base_gti):
 # Making sure to be in the same directory of ``nu20619003001A06_cl.evt``.
 #
 # .. code-block:: bash
+#    :caption: nuscreen
 #
 #    nuscreen infile=nu20619003001A06_cl.evt gtiscreen=no evtscreen=yes gtiexpr=NONE gradeexpr=0 statusexpr=NONE outdir=./ hkfile=./nu20619003001A_fpm.hk outfile=nu20619003001A06_cl_grade0.evt
 #
@@ -113,9 +117,14 @@ if not os.path.isfile(filename_g0_evt):
 # work in solar coordinates.
 #
 # .. code-block:: python3
+#    :caption: jdhsrpy.nustar_evt.sunpos_evt
 #
 #    from jdhsrpy.nustar_evt import sunpos_evt
 #    sunpos_evt(filename_base_evt)
+#
+# The ``jdhsrpy.nustar_evt.sunpos_evt`` Python code has been skipped in 
+# this example, and we will rely on the test, back-up data stored 
+# elsewhere that would be produced by the above code.
 
 url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
 filename_sunpos_evt = os.path.join(os.getcwd(), ntpath.split(url)[1])
@@ -230,6 +239,7 @@ plt.show()
 # - Make sure this is the grade 0 EVT file
 #
 # .. code-block:: python3
+#    :caption: time-filtering
 #
 #    from jdhsrpy.screening import make_gti_file, time_filtered_evt_file
 #    from jdhsrpy.utils import only_numbers
@@ -248,7 +258,9 @@ plt.show()
 #        overwrite=True,
 #    )
 #
-# The above should produce the following files.
+# The ``time-filtering`` Python code has been skipped in this example, 
+# and we will rely on the test, back-up data stored elsewhere that would 
+# be produced by the above code.
 
 url = f"{TEST_DATA_LOCATION}/test_nustar_data/2210_to_2530_gti.fits"
 filename_gti = os.path.join(os.getcwd(), ntpath.split(url)[1])
@@ -292,6 +304,7 @@ if not os.path.isfile(filename_reg):
 # Making sure to be in the same directory of ``nu20619003001A06_cl_grade0.evt``.
 #
 # .. code-block:: bash
+#    :caption: nuproducts
 #
 #    nuproducts indir=./ instrument=FPMA steminputs=nu20619003001 outdir=./ extended=no runmkarf=yes runmkrmf=yes infile=nu20619003001A06_cl_grade0.evt bkgextract=no srcregionfile=fpma.reg attfile=./nu20619003001_att.fits hkfile=./nu20619003001A_fpm.hk usrgtifile=2210_to_2530_gti.fits
 
