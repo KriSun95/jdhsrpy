@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jdhsrpy.visualize &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">JDHSRPY Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jdhsrpy.visualize</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jdhsrpy.visualize</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">time_support</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"time_profile_plot"</span><span class="p">,</span> <span class="s2">"vertical_line_of_time"</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="time_profile_plot">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">time_profile_plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Plot a time profile (on a given axes if given).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    times : `~astropy.time.Time`|`~datetime.datetime`</span>
+<span class="sd">        The time edges.</span>
+
+<span class="sd">    ydata : `list`|`~numpy.ndarray`</span>
+<span class="sd">        The data varying with time. Length will be one less the `times`.</span>
+<span class="sd">        length.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Axes input.</span>
+<span class="sd">    """</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">axes</span>
+    <span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">"unix_tai"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">stairs</span><span class="p">(</span><span class="n">ydata</span><span class="p">,</span> <span class="n">to_plotting_datetimes</span><span class="p">(</span><span class="n">times</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">axes</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">to_plotting_datetimes</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert times to ones that plot well."""</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">Time</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Time</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"unix_tai"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">"utc"</span><span class="p">)</span><span class="o">.</span><span class="n">datetime</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">times</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"The `times` variable is not supported."</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="vertical_line_of_time">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">vertical_line_of_time</span><span class="p">(</span><span class="n">time</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Time</span> <span class="o">|</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Use `axvline` to plot `time` input.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    time : `str`|`astropy.time.core.Time`|`datetime`</span>
+<span class="sd">        If `str` then need ISOT format. E.g., 2021-11-20T02:25:30.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Axes input.</span>
+<span class="sd">    """</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span> <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">axes</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">converted_time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"isot"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">"utc"</span><span class="p">)</span><span class="o">.</span><span class="n">datetime</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">converted_time</span> <span class="o">=</span> <span class="n">to_plotting_datetimes</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+
+    <span class="n">axes</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">converted_time</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">axes</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">chu_plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">label_map</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Plot a time profile (on a given axes if given).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    times : `~astropy.time.Time`|`~datetime.datetime`</span>
+<span class="sd">        The time centers.</span>
+
+<span class="sd">    ydata : `list`|`~numpy.ndarray`</span>
+<span class="sd">        The data varying with time. Length will be the same as `times`.</span>
+<span class="sd">        length.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Axes input.</span>
+<span class="sd">    """</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">axes</span>
+    <span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">"unix_tai"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">to_plotting_datetimes</span><span class="p">(</span><span class="n">times</span><span class="p">),</span> <span class="n">ydata</span><span class="p">,</span> <span class="s2">"x"</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">label_map</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">label_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="n">axes</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">livetime_plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Plot a time profile (on a given axes if given).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    times : `~astropy.time.Time`|`~datetime.datetime`</span>
+<span class="sd">        The time centers.</span>
+
+<span class="sd">    ydata : `list`|`~numpy.ndarray`</span>
+<span class="sd">        The data varying with time. Length will be the same as `times`.</span>
+<span class="sd">        length.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Axes input.</span>
+<span class="sd">    """</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">axes</span>
+    <span class="n">_defaults</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"drawstyle"</span><span class="p">:</span> <span class="s2">"steps-mid"</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">_plot_settings</span> <span class="o">=</span> <span class="n">_defaults</span> <span class="o">|</span> <span class="n">kwargs</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">semilogy</span><span class="p">(</span><span class="n">to_plotting_datetimes</span><span class="p">(</span><span class="n">times</span><span class="p">),</span> <span class="n">ydata</span><span class="p">,</span> <span class="o">**</span><span class="n">_plot_settings</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">axes</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">spectrum_plot</span><span class="p">(</span><span class="n">energy_bins</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">ydata_err</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Plot a spectrum profile (on a given axes if given).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    energy_bins : `~astropy.unit.Quantity`</span>
+<span class="sd">        The energy bin edges. Should be one more than the `ydata` length.</span>
+
+<span class="sd">    ydata :  `~astropy.unit.Quantity`</span>
+<span class="sd">        The spectrum.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Axes input.</span>
+<span class="sd">    """</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span> <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">axes</span>
+    <span class="n">_defaults</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"k"</span><span class="p">,</span>
+        <span class="s2">"fmt"</span><span class="p">:</span> <span class="s2">"."</span><span class="p">,</span>
+        <span class="s2">"markersize"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">_plot_settings</span> <span class="o">=</span> <span class="n">_defaults</span> <span class="o">|</span> <span class="n">kwargs</span>
+
+    <span class="n">energy_mids</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">energy_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">energy_half_width</span> <span class="o">=</span> <span class="p">(</span><span class="n">energy_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">energy_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="c1">## plot spectrum created from Python</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span>
+        <span class="n">energy_mids</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="n">xerr</span><span class="o">=</span><span class="n">energy_half_width</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">ydata_err</span><span class="p">,</span> <span class="o">**</span><span class="n">_plot_settings</span>
+    <span class="p">)</span>
+
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">ydata</span><span class="o">.</span><span class="n">unit</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">"both"</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">"both"</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">"in"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">"log"</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Energy [</span><span class="si">{</span><span class="n">energy_bins</span><span class="o">.</span><span class="n">unit</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="s2">]"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">axes</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

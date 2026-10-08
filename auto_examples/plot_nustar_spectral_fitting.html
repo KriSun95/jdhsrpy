@@ -1,0 +1,690 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NuSTAR Spectral Fitting &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Plotting NuSTAR Time Profiles" href="plot_nustar_time_profiles.html" />
+    <link rel="prev" title="Plotting NuSTAR Images" href="plot_nustar_images.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">JDHSRPY Example Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar.html">Using <code class="docutils literal notranslate"><span class="pre">NuSTAREvt</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_download_sdo_data.html">Downloading SDO Data and Creating Fe18 Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_multi_maps.html">Plotting NuSTAR and AIA Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_images.html">Plotting NuSTAR Images</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">NuSTAR Spectral Fitting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#inspecting-the-spectrum">Inspecting the spectrum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-fitting">Setting up the fitting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-the-fitting-range">Choosing the fitting range</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-the-model">Choosing the model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-parameters">Setting up the parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fitting-the-data-and-plotting">Fitting the data and plotting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mcmc-analysis">MCMC analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_time_profiles.html">Plotting NuSTAR Time Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_filters.html">Using Event Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_full_pipeline.html">Full Analysis Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">JDHSRPY Example Gallery</a></li>
+      <li class="breadcrumb-item active">NuSTAR Spectral Fitting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/auto_examples/plot_nustar_spectral_fitting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-plot-nustar-spectral-fitting-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="nustar-spectral-fitting">
+<span id="sphx-glr-auto-examples-plot-nustar-spectral-fitting-py"></span><h1>NuSTAR Spectral Fitting<a class="headerlink" href="#nustar-spectral-fitting" title="Link to this heading"></a></h1>
+<p>This example shows the spectral fitting of NuSTAR data.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">ntpath</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">urllib</span><span class="nn">.</span><span class="nn">request</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">TEST_DATA_LOCATION</span><span class="p">,</span> <span class="n">spectral_fitting</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">nustar_spectrum</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_spectrum sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_spectrum.nustar_pha_spectrum" title="jdhsrpy.nustar_spectrum.nustar_pha_spectrum"><span class="n">nustar_pha_spectrum</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">visualize</span><span class="w"> </span><span class="kn">import</span> <span class="n">spectrum_plot</span><span class="w">
+</span></pre></div></div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/home/runner/work/jdhsrpy/jdhsrpy/jdhsrpy/spectral_fitting.py:3: SunpyDeprecationWarning: The legacy module has been deprecated since version 0.4 and will be removed in a future version.
+  from sunkit_spex.legacy.fitting.fitter import Fitter
+
+Files Downloaded:   0%|          | 0/1 [00:00&lt;?, ?file/s]
+
+sunkit_spex.chianti_cont_1_250_v71.sav:   0%|          | 0.00/9.88M [00:00&lt;?, ?B/s]
+
+sunkit_spex.chianti_cont_1_250_v71.sav:   2%|▏         | 197k/9.88M [00:00&lt;00:04, 1.94MB/s]
+
+sunkit_spex.chianti_cont_1_250_v71.sav:  25%|██▌       | 2.51M/9.88M [00:00&lt;00:00, 14.4MB/s]
+
+sunkit_spex.chianti_cont_1_250_v71.sav:  78%|███████▊  | 7.66M/9.88M [00:00&lt;00:00, 31.2MB/s]
+
+
+Files Downloaded: 100%|██████████| 1/1 [00:00&lt;00:00,  1.68file/s]
+Files Downloaded: 100%|██████████| 1/1 [00:00&lt;00:00,  1.67file/s]
+
+Files Downloaded:   0%|          | 0/1 [00:00&lt;?, ?file/s]
+
+sunkit_spex.chianti_lines_1_10_v71.sav:   0%|          | 0.00/23.6M [00:00&lt;?, ?B/s]
+
+sunkit_spex.chianti_lines_1_10_v71.sav:   1%|          | 213k/23.6M [00:00&lt;00:11, 2.08MB/s]
+
+sunkit_spex.chianti_lines_1_10_v71.sav:   9%|▉         | 2.17M/23.6M [00:00&lt;00:01, 12.3MB/s]
+
+sunkit_spex.chianti_lines_1_10_v71.sav:  38%|███▊      | 9.03M/23.6M [00:00&lt;00:00, 37.7MB/s]
+
+sunkit_spex.chianti_lines_1_10_v71.sav:  69%|██████▉   | 16.4M/23.6M [00:00&lt;00:00, 51.8MB/s]
+
+
+Files Downloaded: 100%|██████████| 1/1 [00:00&lt;00:00,  1.79file/s]
+Files Downloaded: 100%|██████████| 1/1 [00:00&lt;00:00,  1.78file/s]
+
+Files Downloaded:   0%|          | 0/1 [00:00&lt;?, ?file/s]
+
+sunkit_spex.xray_abun_file.genx:   0%|          | 0.00/2.03k [00:00&lt;?, ?B/s]
+
+
+Files Downloaded: 100%|██████████| 1/1 [00:00&lt;00:00,  6.07file/s]
+Files Downloaded: 100%|██████████| 1/1 [00:00&lt;00:00,  6.03file/s]
+</pre></div>
+</div>
+<p>Download the spectral files.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_grade0_sr.pha</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_pha</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_pha</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_pha</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_grade0_sr.arf</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_arf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_arf</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_arf</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_grade0_sr.rmf</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_rmf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_rmf</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_rmf</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>This example assumes the user has already obtained the PHA, ARF, and
+RMF files from the NuSTAR data analysis software. See the
+<a class="reference external" href="https://krisun95.github.io/jdhsrpy/setting_up_nustar_data.html">documentation</a>
+for more details.</p>
+<p>At any point below, a user can swap to only using <a class="reference external" href="https://sunkit-spex.readthedocs.io/en/latest/">Sunkit-spex</a>
+if the helper functions are too cryptic or annoying.</p>
+<section id="inspecting-the-spectrum">
+<h2>Inspecting the spectrum<a class="headerlink" href="#inspecting-the-spectrum" title="Link to this heading"></a></h2>
+<p>It is possible to inspect the spectrum before continuing with the
+fitting.</p>
+<p>This allows a user to get an idea of things like fitting energy ranges
+and which models to use.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">energy_bins</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">flux_err</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_spectrum sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_spectrum.nustar_pha_spectrum" title="jdhsrpy.nustar_spectrum.nustar_pha_spectrum"><span class="n">nustar_pha_spectrum</span></a><span class="p">(</span><span class="n">filename_pha</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">spectrum_plot</span><span class="p">(</span><span class="n">energy_bins</span><span class="p">,</span> <span class="n">flux</span><span class="p">,</span> <span class="n">flux_err</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">NuSTAR PHA Spectrum</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_spectral_fitting_001.png" srcset="../_images/sphx_glr_plot_nustar_spectral_fitting_001.png" alt="NuSTAR PHA Spectrum" class = "sphx-glr-single-img"/><p>Let’s make sure the same random processing occur each time this is run
+so we’ll set the random seed for Numpy</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</section>
+<section id="setting-up-the-fitting">
+<h2>Setting up the fitting<a class="headerlink" href="#setting-up-the-fitting" title="Link to this heading"></a></h2>
+<p>We start by loading in the spectral files using <code class="docutils literal notranslate"><span class="pre">sunkit-spex</span></code> and
+the helper functions in <code class="docutils literal notranslate"><span class="pre">jdhsrpy</span></code>.</p>
+<p>This example only shows using one NuSTAR observation and only from
+FPMA. To include more, it’s just as simple as passing more files in the
+following (e.g. <code class="docutils literal notranslate"><span class="pre">spectral_fitting.get_fitter_object(file1,</span> <span class="pre">file2,</span> <span class="pre">...)</span></code>).</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">fitter</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-spectral_fitting sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.spectral_fitting.get_fitter_object" title="jdhsrpy.spectral_fitting.get_fitter_object"><span class="n">spectral_fitting</span><span class="o">.</span><span class="n">get_fitter_object</span></a><span class="p">(</span><span class="n">filename_pha</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>The above is the equivalent of the following when using Sunkit-spex
+directly.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">sunkit_spex</span><span class="nn">.</span><span class="nn">legacy</span><span class="nn">.</span><span class="nn">fitting</span><span class="nn">.</span><span class="nn">fitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">Fitter</span><span class="w">
+</span><span class="w">
+</span><span class="n">equivalent_fitter</span> <span class="o">=</span> <span class="n">Fitter</span><span class="p">(</span><span class="w">
+</span>    <span class="n">pha_file</span><span class="o">=</span><span class="p">[</span><span class="w">
+</span>        <span class="n">filename_pha</span><span class="p">,</span><span class="w">
+</span>    <span class="p">]</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</section>
+<section id="choosing-the-fitting-range">
+<h2>Choosing the fitting range<a class="headerlink" href="#choosing-the-fitting-range" title="Link to this heading"></a></h2>
+<p>Choose a fitting range in keV.</p>
+<p>The fitting range can be changed at any point. E.g., parameters can be
+freed or frozen, the fitting range can be changed, then the fit can be
+run again starting off from where it left off from the previous fit.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">fitter</span><span class="o">.</span><span class="n">energy_fitting_range</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">]</span><span class="w">
+</span></pre></div></div>
+</section>
+<section id="choosing-the-model">
+<h2>Choosing the model<a class="headerlink" href="#choosing-the-model" title="Link to this heading"></a></h2>
+<p>There are a lot of models to choose from but let’s try a single
+thermal model.</p>
+<p>These helper functions are useful as it will check if there are
+multiple spectra being fitted and then will include a constant factor
+automatically in the model if that’s the case.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><a class="sphx-glr-backref-module-jdhsrpy-spectral_fitting sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.spectral_fitting.set_single_thermal_model" title="jdhsrpy.spectral_fitting.set_single_thermal_model"><span class="n">spectral_fitting</span><span class="o">.</span><span class="n">set_single_thermal_model</span></a><span class="p">(</span><span class="n">fitter</span><span class="p">)</span><span class="w">
+</span><span class="nb">print</span><span class="p">(</span><span class="n">fitter</span><span class="o">.</span><span class="n">params</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>              Status  Value       Bounds       Error
+T1_spectrum1    free    1.0  (0.0, None)  (0.0, 0.0)
+EM1_spectrum1   free    1.0  (0.0, None)  (0.0, 0.0)
+</pre></div>
+</div>
+</section>
+<section id="setting-up-the-parameters">
+<h2>Setting up the parameters<a class="headerlink" href="#setting-up-the-parameters" title="Link to this heading"></a></h2>
+<p>For the fitting to start off, we need to provide initial guesses and
+provide bounds for the fitting parameters.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">fitter</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">T1_spectrum1</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;</span><span class="s2">Value</span><span class="s2">&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">Bounds</span><span class="s2">&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="p">}</span><span class="w">
+</span><span class="n">fitter</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">EM1_spectrum1</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;</span><span class="s2">Value</span><span class="s2">&quot;</span><span class="p">:</span> <span class="mf">9e-1</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">Bounds</span><span class="s2">&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">5e-1</span><span class="p">,</span> <span class="mf">5e0</span><span class="p">)</span><span class="p">}</span><span class="w">
+</span></pre></div></div>
+</section>
+<section id="fitting-the-data-and-plotting">
+<h2>Fitting the data and plotting<a class="headerlink" href="#fitting-the-data-and-plotting" title="Link to this heading"></a></h2>
+<p>The data can now be fitted and plotted.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">fitter</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># plot the result</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span><span class="p">,</span> <span class="n">res_axes</span> <span class="o">=</span> <span class="n">fitter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">y_max_lim</span> <span class="o">=</span> <span class="mf">1.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">fitter</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">loaded_spec_data</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">spectrum1</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">count_rate</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="p">[</span><span class="mf">1e-1</span><span class="p">,</span> <span class="n">y_max_lim</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_spectral_fitting_002.png" srcset="../_images/sphx_glr_plot_nustar_spectral_fitting_002.png" alt="Spectrum 1" class = "sphx-glr-single-img"/></section>
+<section id="mcmc-analysis">
+<h2>MCMC analysis<a class="headerlink" href="#mcmc-analysis" title="Link to this heading"></a></h2>
+<p>We can also easily run MCMC analysis.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">mcmc_result</span> <span class="o">=</span> <span class="n">fitter</span><span class="o">.</span><span class="n">run_mcmc</span><span class="p">(</span><span class="n">steps_per_walker</span><span class="o">=</span><span class="mi">1_000</span><span class="p">)</span><span class="w">
+</span><span class="n">fitter</span><span class="o">.</span><span class="n">burn_mcmc</span> <span class="o">=</span> <span class="mi">100</span><span class="w">
+</span></pre></div></div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>  0%|          | 0/1000 [00:00&lt;?, ?it/s]
+  0%|          | 3/1000 [00:00&lt;00:46, 21.35it/s]
+  1%|          | 6/1000 [00:00&lt;00:46, 21.43it/s]
+  1%|          | 9/1000 [00:00&lt;00:46, 21.13it/s]
+  1%|          | 12/1000 [00:00&lt;00:46, 21.07it/s]
+  2%|▏         | 15/1000 [00:00&lt;00:46, 21.09it/s]
+  2%|▏         | 18/1000 [00:00&lt;00:46, 21.18it/s]
+  2%|▏         | 21/1000 [00:00&lt;00:46, 21.26it/s]
+  2%|▏         | 24/1000 [00:01&lt;00:45, 21.31it/s]
+  3%|▎         | 27/1000 [00:01&lt;00:45, 21.20it/s]
+  3%|▎         | 30/1000 [00:01&lt;00:45, 21.29it/s]
+  3%|▎         | 33/1000 [00:01&lt;00:45, 21.28it/s]
+  4%|▎         | 36/1000 [00:01&lt;00:45, 21.24it/s]
+  4%|▍         | 39/1000 [00:01&lt;00:45, 21.21it/s]
+  4%|▍         | 42/1000 [00:01&lt;00:45, 21.25it/s]
+  4%|▍         | 45/1000 [00:02&lt;00:45, 21.22it/s]
+  5%|▍         | 48/1000 [00:02&lt;00:44, 21.19it/s]
+  5%|▌         | 51/1000 [00:02&lt;00:44, 21.10it/s]
+  5%|▌         | 54/1000 [00:02&lt;00:44, 21.10it/s]
+  6%|▌         | 57/1000 [00:02&lt;00:44, 21.07it/s]
+  6%|▌         | 60/1000 [00:02&lt;00:44, 21.05it/s]
+  6%|▋         | 63/1000 [00:02&lt;00:44, 21.07it/s]
+  7%|▋         | 66/1000 [00:03&lt;00:44, 21.05it/s]
+  7%|▋         | 69/1000 [00:03&lt;00:44, 20.94it/s]
+  7%|▋         | 72/1000 [00:03&lt;00:44, 20.98it/s]
+  8%|▊         | 75/1000 [00:03&lt;00:43, 21.12it/s]
+  8%|▊         | 78/1000 [00:03&lt;00:43, 21.17it/s]
+  8%|▊         | 81/1000 [00:03&lt;00:43, 21.09it/s]
+  8%|▊         | 84/1000 [00:03&lt;00:43, 21.03it/s]
+  9%|▊         | 87/1000 [00:04&lt;00:43, 21.11it/s]
+  9%|▉         | 90/1000 [00:04&lt;00:42, 21.22it/s]
+  9%|▉         | 93/1000 [00:04&lt;00:42, 21.15it/s]
+ 10%|▉         | 96/1000 [00:04&lt;00:42, 21.12it/s]
+ 10%|▉         | 99/1000 [00:04&lt;00:42, 21.18it/s]
+ 10%|█         | 102/1000 [00:04&lt;00:42, 21.24it/s]
+ 10%|█         | 105/1000 [00:04&lt;00:42, 21.28it/s]
+ 11%|█         | 108/1000 [00:05&lt;00:41, 21.25it/s]
+ 11%|█         | 111/1000 [00:05&lt;00:41, 21.19it/s]
+ 11%|█▏        | 114/1000 [00:05&lt;00:41, 21.23it/s]
+ 12%|█▏        | 117/1000 [00:05&lt;00:41, 21.24it/s]
+ 12%|█▏        | 120/1000 [00:05&lt;00:41, 21.31it/s]
+ 12%|█▏        | 123/1000 [00:05&lt;00:41, 21.35it/s]
+ 13%|█▎        | 126/1000 [00:05&lt;00:40, 21.36it/s]
+ 13%|█▎        | 129/1000 [00:06&lt;00:40, 21.34it/s]
+ 13%|█▎        | 132/1000 [00:06&lt;00:40, 21.39it/s]
+ 14%|█▎        | 135/1000 [00:06&lt;00:40, 21.39it/s]
+ 14%|█▍        | 138/1000 [00:06&lt;00:40, 21.43it/s]
+ 14%|█▍        | 141/1000 [00:06&lt;00:40, 21.46it/s]
+ 14%|█▍        | 144/1000 [00:06&lt;00:39, 21.52it/s]
+ 15%|█▍        | 147/1000 [00:06&lt;00:39, 21.52it/s]
+ 15%|█▌        | 150/1000 [00:07&lt;00:39, 21.49it/s]
+ 15%|█▌        | 153/1000 [00:07&lt;00:39, 21.48it/s]
+ 16%|█▌        | 156/1000 [00:07&lt;00:39, 21.54it/s]
+ 16%|█▌        | 159/1000 [00:07&lt;00:39, 21.51it/s]
+ 16%|█▌        | 162/1000 [00:07&lt;00:39, 21.46it/s]
+ 16%|█▋        | 165/1000 [00:07&lt;00:38, 21.41it/s]
+ 17%|█▋        | 168/1000 [00:07&lt;00:39, 21.31it/s]
+ 17%|█▋        | 171/1000 [00:08&lt;00:38, 21.26it/s]
+ 17%|█▋        | 174/1000 [00:08&lt;00:38, 21.33it/s]
+ 18%|█▊        | 177/1000 [00:08&lt;00:38, 21.34it/s]
+ 18%|█▊        | 180/1000 [00:08&lt;00:38, 21.43it/s]
+ 18%|█▊        | 183/1000 [00:08&lt;00:38, 21.42it/s]
+ 19%|█▊        | 186/1000 [00:08&lt;00:38, 21.41it/s]
+ 19%|█▉        | 189/1000 [00:08&lt;00:37, 21.43it/s]
+ 19%|█▉        | 192/1000 [00:09&lt;00:37, 21.40it/s]
+ 20%|█▉        | 195/1000 [00:09&lt;00:37, 21.43it/s]
+ 20%|█▉        | 198/1000 [00:09&lt;00:37, 21.44it/s]
+ 20%|██        | 201/1000 [00:09&lt;00:37, 21.34it/s]
+ 20%|██        | 204/1000 [00:09&lt;00:37, 21.34it/s]
+ 21%|██        | 207/1000 [00:09&lt;00:36, 21.44it/s]
+ 21%|██        | 210/1000 [00:09&lt;00:36, 21.42it/s]
+ 21%|██▏       | 213/1000 [00:10&lt;00:36, 21.43it/s]
+ 22%|██▏       | 216/1000 [00:10&lt;00:36, 21.45it/s]
+ 22%|██▏       | 219/1000 [00:10&lt;00:36, 21.41it/s]
+ 22%|██▏       | 222/1000 [00:10&lt;00:36, 21.41it/s]
+ 22%|██▎       | 225/1000 [00:10&lt;00:36, 21.43it/s]
+ 23%|██▎       | 228/1000 [00:10&lt;00:35, 21.47it/s]
+ 23%|██▎       | 231/1000 [00:10&lt;00:35, 21.48it/s]
+ 23%|██▎       | 234/1000 [00:10&lt;00:35, 21.45it/s]
+ 24%|██▎       | 237/1000 [00:11&lt;00:35, 21.37it/s]
+ 24%|██▍       | 240/1000 [00:11&lt;00:35, 21.28it/s]
+ 24%|██▍       | 243/1000 [00:11&lt;00:35, 21.27it/s]
+ 25%|██▍       | 246/1000 [00:11&lt;00:35, 21.27it/s]
+ 25%|██▍       | 249/1000 [00:11&lt;00:35, 21.19it/s]
+ 25%|██▌       | 252/1000 [00:11&lt;00:35, 21.18it/s]
+ 26%|██▌       | 255/1000 [00:11&lt;00:35, 21.09it/s]
+ 26%|██▌       | 258/1000 [00:12&lt;00:35, 21.07it/s]
+ 26%|██▌       | 261/1000 [00:12&lt;00:35, 21.10it/s]
+ 26%|██▋       | 264/1000 [00:12&lt;00:34, 21.08it/s]
+ 27%|██▋       | 267/1000 [00:12&lt;00:34, 21.08it/s]
+ 27%|██▋       | 270/1000 [00:12&lt;00:34, 21.02it/s]
+ 27%|██▋       | 273/1000 [00:12&lt;00:34, 21.02it/s]
+ 28%|██▊       | 276/1000 [00:12&lt;00:34, 21.03it/s]
+ 28%|██▊       | 279/1000 [00:13&lt;00:34, 21.03it/s]
+ 28%|██▊       | 282/1000 [00:13&lt;00:34, 20.95it/s]
+ 28%|██▊       | 285/1000 [00:13&lt;00:34, 20.90it/s]
+ 29%|██▉       | 288/1000 [00:13&lt;00:34, 20.89it/s]
+ 29%|██▉       | 291/1000 [00:13&lt;00:33, 20.87it/s]
+ 29%|██▉       | 294/1000 [00:13&lt;00:33, 21.04it/s]
+ 30%|██▉       | 297/1000 [00:13&lt;00:33, 21.06it/s]
+ 30%|███       | 300/1000 [00:14&lt;00:33, 21.04it/s]
+ 30%|███       | 303/1000 [00:14&lt;00:32, 21.12it/s]
+ 31%|███       | 306/1000 [00:14&lt;00:32, 21.05it/s]
+ 31%|███       | 309/1000 [00:14&lt;00:32, 21.05it/s]
+ 31%|███       | 312/1000 [00:14&lt;00:32, 21.05it/s]
+ 32%|███▏      | 315/1000 [00:14&lt;00:32, 21.04it/s]
+ 32%|███▏      | 318/1000 [00:14&lt;00:32, 21.01it/s]
+ 32%|███▏      | 321/1000 [00:15&lt;00:32, 21.05it/s]
+ 32%|███▏      | 324/1000 [00:15&lt;00:32, 21.10it/s]
+ 33%|███▎      | 327/1000 [00:15&lt;00:31, 21.12it/s]
+ 33%|███▎      | 330/1000 [00:15&lt;00:31, 21.12it/s]
+ 33%|███▎      | 333/1000 [00:15&lt;00:31, 21.02it/s]
+ 34%|███▎      | 336/1000 [00:15&lt;00:31, 21.06it/s]
+ 34%|███▍      | 339/1000 [00:15&lt;00:31, 21.15it/s]
+ 34%|███▍      | 342/1000 [00:16&lt;00:31, 21.18it/s]
+ 34%|███▍      | 345/1000 [00:16&lt;00:30, 21.24it/s]
+ 35%|███▍      | 348/1000 [00:16&lt;00:30, 21.29it/s]
+ 35%|███▌      | 351/1000 [00:16&lt;00:30, 21.33it/s]
+ 35%|███▌      | 354/1000 [00:16&lt;00:30, 21.29it/s]
+ 36%|███▌      | 357/1000 [00:16&lt;00:30, 21.31it/s]
+ 36%|███▌      | 360/1000 [00:16&lt;00:30, 21.31it/s]
+ 36%|███▋      | 363/1000 [00:17&lt;00:29, 21.32it/s]
+ 37%|███▋      | 366/1000 [00:17&lt;00:29, 21.31it/s]
+ 37%|███▋      | 369/1000 [00:17&lt;00:29, 21.32it/s]
+ 37%|███▋      | 372/1000 [00:17&lt;00:29, 21.31it/s]
+ 38%|███▊      | 375/1000 [00:17&lt;00:29, 21.23it/s]
+ 38%|███▊      | 378/1000 [00:17&lt;00:29, 21.24it/s]
+ 38%|███▊      | 381/1000 [00:17&lt;00:29, 21.25it/s]
+ 38%|███▊      | 384/1000 [00:18&lt;00:28, 21.28it/s]
+ 39%|███▊      | 387/1000 [00:18&lt;00:29, 20.98it/s]
+ 39%|███▉      | 390/1000 [00:18&lt;00:29, 20.93it/s]
+ 39%|███▉      | 393/1000 [00:18&lt;00:28, 20.98it/s]
+ 40%|███▉      | 396/1000 [00:18&lt;00:28, 21.13it/s]
+ 40%|███▉      | 399/1000 [00:18&lt;00:28, 21.20it/s]
+ 40%|████      | 402/1000 [00:18&lt;00:28, 21.25it/s]
+ 40%|████      | 405/1000 [00:19&lt;00:28, 21.09it/s]
+ 41%|████      | 408/1000 [00:19&lt;00:28, 21.14it/s]
+ 41%|████      | 411/1000 [00:19&lt;00:27, 21.11it/s]
+ 41%|████▏     | 414/1000 [00:19&lt;00:27, 21.16it/s]
+ 42%|████▏     | 417/1000 [00:19&lt;00:27, 21.12it/s]
+ 42%|████▏     | 420/1000 [00:19&lt;00:27, 21.04it/s]
+ 42%|████▏     | 423/1000 [00:19&lt;00:27, 21.06it/s]
+ 43%|████▎     | 426/1000 [00:20&lt;00:27, 21.09it/s]
+ 43%|████▎     | 429/1000 [00:20&lt;00:26, 21.20it/s]
+ 43%|████▎     | 432/1000 [00:20&lt;00:26, 21.28it/s]
+ 44%|████▎     | 435/1000 [00:20&lt;00:26, 21.28it/s]
+ 44%|████▍     | 438/1000 [00:20&lt;00:26, 21.22it/s]
+ 44%|████▍     | 441/1000 [00:20&lt;00:26, 21.27it/s]
+ 44%|████▍     | 444/1000 [00:20&lt;00:26, 21.22it/s]
+ 45%|████▍     | 447/1000 [00:21&lt;00:26, 21.21it/s]
+ 45%|████▌     | 450/1000 [00:21&lt;00:25, 21.20it/s]
+ 45%|████▌     | 453/1000 [00:21&lt;00:25, 21.18it/s]
+ 46%|████▌     | 456/1000 [00:21&lt;00:25, 21.27it/s]
+ 46%|████▌     | 459/1000 [00:21&lt;00:25, 21.29it/s]
+ 46%|████▌     | 462/1000 [00:21&lt;00:25, 21.27it/s]
+ 46%|████▋     | 465/1000 [00:21&lt;00:24, 21.76it/s]
+ 47%|████▋     | 468/1000 [00:22&lt;00:24, 21.66it/s]
+ 47%|████▋     | 471/1000 [00:22&lt;00:24, 21.52it/s]
+ 47%|████▋     | 474/1000 [00:22&lt;00:24, 21.27it/s]
+ 48%|████▊     | 477/1000 [00:22&lt;00:24, 21.12it/s]
+ 48%|████▊     | 480/1000 [00:22&lt;00:24, 21.11it/s]
+ 48%|████▊     | 483/1000 [00:22&lt;00:24, 21.17it/s]
+ 49%|████▊     | 486/1000 [00:22&lt;00:24, 21.21it/s]
+ 49%|████▉     | 489/1000 [00:23&lt;00:24, 21.23it/s]
+ 49%|████▉     | 492/1000 [00:23&lt;00:23, 21.27it/s]
+ 50%|████▉     | 495/1000 [00:23&lt;00:23, 21.30it/s]
+ 50%|████▉     | 498/1000 [00:23&lt;00:23, 21.33it/s]
+ 50%|█████     | 501/1000 [00:23&lt;00:23, 21.25it/s]
+ 50%|█████     | 504/1000 [00:23&lt;00:23, 21.26it/s]
+ 51%|█████     | 507/1000 [00:23&lt;00:23, 21.13it/s]
+ 51%|█████     | 510/1000 [00:24&lt;00:23, 21.06it/s]
+ 51%|█████▏    | 513/1000 [00:24&lt;00:23, 21.05it/s]
+ 52%|█████▏    | 516/1000 [00:24&lt;00:22, 21.07it/s]
+ 52%|█████▏    | 519/1000 [00:24&lt;00:22, 21.07it/s]
+ 52%|█████▏    | 522/1000 [00:24&lt;00:22, 21.03it/s]
+ 52%|█████▎    | 525/1000 [00:24&lt;00:22, 20.96it/s]
+ 53%|█████▎    | 528/1000 [00:24&lt;00:22, 20.76it/s]
+ 53%|█████▎    | 531/1000 [00:25&lt;00:22, 20.64it/s]
+ 53%|█████▎    | 534/1000 [00:25&lt;00:22, 20.54it/s]
+ 54%|█████▎    | 537/1000 [00:25&lt;00:22, 20.50it/s]
+ 54%|█████▍    | 540/1000 [00:25&lt;00:22, 20.47it/s]
+ 54%|█████▍    | 543/1000 [00:25&lt;00:22, 20.56it/s]
+ 55%|█████▍    | 546/1000 [00:25&lt;00:22, 20.60it/s]
+ 55%|█████▍    | 549/1000 [00:25&lt;00:22, 20.29it/s]
+ 55%|█████▌    | 552/1000 [00:26&lt;00:22, 20.11it/s]
+ 56%|█████▌    | 555/1000 [00:26&lt;00:21, 20.29it/s]
+ 56%|█████▌    | 558/1000 [00:26&lt;00:21, 20.48it/s]
+ 56%|█████▌    | 561/1000 [00:26&lt;00:21, 20.66it/s]
+ 56%|█████▋    | 564/1000 [00:26&lt;00:20, 20.84it/s]
+ 57%|█████▋    | 567/1000 [00:26&lt;00:20, 21.03it/s]
+ 57%|█████▋    | 570/1000 [00:26&lt;00:20, 21.11it/s]
+ 57%|█████▋    | 573/1000 [00:27&lt;00:20, 21.13it/s]
+ 58%|█████▊    | 576/1000 [00:27&lt;00:20, 21.17it/s]
+ 58%|█████▊    | 579/1000 [00:27&lt;00:19, 21.24it/s]
+ 58%|█████▊    | 582/1000 [00:27&lt;00:19, 21.22it/s]
+ 58%|█████▊    | 585/1000 [00:27&lt;00:19, 21.26it/s]
+ 59%|█████▉    | 588/1000 [00:27&lt;00:19, 21.18it/s]
+ 59%|█████▉    | 591/1000 [00:27&lt;00:19, 21.13it/s]
+ 59%|█████▉    | 594/1000 [00:28&lt;00:19, 21.18it/s]
+ 60%|█████▉    | 597/1000 [00:28&lt;00:19, 21.16it/s]
+ 60%|██████    | 600/1000 [00:28&lt;00:18, 21.13it/s]
+ 60%|██████    | 603/1000 [00:28&lt;00:18, 21.18it/s]
+ 61%|██████    | 606/1000 [00:28&lt;00:18, 21.19it/s]
+ 61%|██████    | 609/1000 [00:28&lt;00:18, 21.18it/s]
+ 61%|██████    | 612/1000 [00:28&lt;00:18, 21.18it/s]
+ 62%|██████▏   | 615/1000 [00:29&lt;00:18, 21.22it/s]
+ 62%|██████▏   | 618/1000 [00:29&lt;00:18, 21.22it/s]
+ 62%|██████▏   | 621/1000 [00:29&lt;00:17, 21.22it/s]
+ 62%|██████▏   | 624/1000 [00:29&lt;00:17, 21.26it/s]
+ 63%|██████▎   | 627/1000 [00:29&lt;00:17, 21.27it/s]
+ 63%|██████▎   | 630/1000 [00:29&lt;00:17, 21.31it/s]
+ 63%|██████▎   | 633/1000 [00:29&lt;00:17, 21.31it/s]
+ 64%|██████▎   | 636/1000 [00:30&lt;00:17, 21.27it/s]
+ 64%|██████▍   | 639/1000 [00:30&lt;00:16, 21.28it/s]
+ 64%|██████▍   | 642/1000 [00:30&lt;00:16, 21.32it/s]
+ 64%|██████▍   | 645/1000 [00:30&lt;00:16, 21.30it/s]
+ 65%|██████▍   | 648/1000 [00:30&lt;00:16, 21.35it/s]
+ 65%|██████▌   | 651/1000 [00:30&lt;00:16, 21.25it/s]
+ 65%|██████▌   | 654/1000 [00:30&lt;00:16, 21.19it/s]
+ 66%|██████▌   | 657/1000 [00:31&lt;00:16, 21.21it/s]
+ 66%|██████▌   | 660/1000 [00:31&lt;00:16, 21.20it/s]
+ 66%|██████▋   | 663/1000 [00:31&lt;00:15, 21.08it/s]
+ 67%|██████▋   | 666/1000 [00:31&lt;00:15, 21.13it/s]
+ 67%|██████▋   | 669/1000 [00:31&lt;00:15, 21.14it/s]
+ 67%|██████▋   | 672/1000 [00:31&lt;00:15, 21.16it/s]
+ 68%|██████▊   | 675/1000 [00:31&lt;00:15, 21.16it/s]
+ 68%|██████▊   | 678/1000 [00:32&lt;00:15, 21.17it/s]
+ 68%|██████▊   | 681/1000 [00:32&lt;00:15, 21.17it/s]
+ 68%|██████▊   | 684/1000 [00:32&lt;00:14, 21.16it/s]
+ 69%|██████▊   | 687/1000 [00:32&lt;00:14, 21.16it/s]
+ 69%|██████▉   | 690/1000 [00:32&lt;00:14, 21.11it/s]
+ 69%|██████▉   | 693/1000 [00:32&lt;00:14, 21.13it/s]
+ 70%|██████▉   | 696/1000 [00:32&lt;00:14, 21.09it/s]
+ 70%|██████▉   | 699/1000 [00:33&lt;00:14, 21.11it/s]
+ 70%|███████   | 702/1000 [00:33&lt;00:14, 21.12it/s]
+ 70%|███████   | 705/1000 [00:33&lt;00:13, 21.15it/s]
+ 71%|███████   | 708/1000 [00:33&lt;00:13, 21.10it/s]
+ 71%|███████   | 711/1000 [00:33&lt;00:13, 21.07it/s]
+ 71%|███████▏  | 714/1000 [00:33&lt;00:13, 21.12it/s]
+ 72%|███████▏  | 717/1000 [00:33&lt;00:13, 21.15it/s]
+ 72%|███████▏  | 720/1000 [00:34&lt;00:13, 21.05it/s]
+ 72%|███████▏  | 723/1000 [00:34&lt;00:13, 21.05it/s]
+ 73%|███████▎  | 726/1000 [00:34&lt;00:12, 21.14it/s]
+ 73%|███████▎  | 729/1000 [00:34&lt;00:12, 21.07it/s]
+ 73%|███████▎  | 732/1000 [00:34&lt;00:12, 21.11it/s]
+ 74%|███████▎  | 735/1000 [00:34&lt;00:12, 21.20it/s]
+ 74%|███████▍  | 738/1000 [00:34&lt;00:12, 21.24it/s]
+ 74%|███████▍  | 741/1000 [00:35&lt;00:12, 21.17it/s]
+ 74%|███████▍  | 744/1000 [00:35&lt;00:12, 21.19it/s]
+ 75%|███████▍  | 747/1000 [00:35&lt;00:11, 21.21it/s]
+ 75%|███████▌  | 750/1000 [00:35&lt;00:11, 21.11it/s]
+ 75%|███████▌  | 753/1000 [00:35&lt;00:11, 21.08it/s]
+ 76%|███████▌  | 756/1000 [00:35&lt;00:11, 21.05it/s]
+ 76%|███████▌  | 759/1000 [00:35&lt;00:11, 21.14it/s]
+ 76%|███████▌  | 762/1000 [00:35&lt;00:11, 21.14it/s]
+ 76%|███████▋  | 765/1000 [00:36&lt;00:11, 21.17it/s]
+ 77%|███████▋  | 768/1000 [00:36&lt;00:10, 21.21it/s]
+ 77%|███████▋  | 771/1000 [00:36&lt;00:10, 21.19it/s]
+ 77%|███████▋  | 774/1000 [00:36&lt;00:10, 21.11it/s]
+ 78%|███████▊  | 777/1000 [00:36&lt;00:10, 21.16it/s]
+ 78%|███████▊  | 780/1000 [00:36&lt;00:10, 21.21it/s]
+ 78%|███████▊  | 783/1000 [00:36&lt;00:10, 21.20it/s]
+ 79%|███████▊  | 786/1000 [00:37&lt;00:10, 21.19it/s]
+ 79%|███████▉  | 789/1000 [00:37&lt;00:09, 21.26it/s]
+ 79%|███████▉  | 792/1000 [00:37&lt;00:09, 21.30it/s]
+ 80%|███████▉  | 795/1000 [00:37&lt;00:09, 21.23it/s]
+ 80%|███████▉  | 798/1000 [00:37&lt;00:09, 21.22it/s]
+ 80%|████████  | 801/1000 [00:37&lt;00:09, 21.19it/s]
+ 80%|████████  | 804/1000 [00:37&lt;00:09, 21.10it/s]
+ 81%|████████  | 807/1000 [00:38&lt;00:09, 21.03it/s]
+ 81%|████████  | 810/1000 [00:38&lt;00:09, 21.08it/s]
+ 81%|████████▏ | 813/1000 [00:38&lt;00:08, 20.97it/s]
+ 82%|████████▏ | 816/1000 [00:38&lt;00:08, 20.95it/s]
+ 82%|████████▏ | 819/1000 [00:38&lt;00:08, 20.97it/s]
+ 82%|████████▏ | 822/1000 [00:38&lt;00:08, 21.03it/s]
+ 82%|████████▎ | 825/1000 [00:38&lt;00:08, 20.96it/s]
+ 83%|████████▎ | 828/1000 [00:39&lt;00:08, 20.96it/s]
+ 83%|████████▎ | 831/1000 [00:39&lt;00:08, 20.99it/s]
+ 83%|████████▎ | 834/1000 [00:39&lt;00:07, 21.12it/s]
+ 84%|████████▎ | 837/1000 [00:39&lt;00:07, 21.20it/s]
+ 84%|████████▍ | 840/1000 [00:39&lt;00:07, 21.23it/s]
+ 84%|████████▍ | 843/1000 [00:39&lt;00:07, 21.26it/s]
+ 85%|████████▍ | 846/1000 [00:39&lt;00:07, 21.23it/s]
+ 85%|████████▍ | 849/1000 [00:40&lt;00:07, 21.26it/s]
+ 85%|████████▌ | 852/1000 [00:40&lt;00:06, 21.29it/s]
+ 86%|████████▌ | 855/1000 [00:40&lt;00:06, 21.32it/s]
+ 86%|████████▌ | 858/1000 [00:40&lt;00:06, 21.34it/s]
+ 86%|████████▌ | 861/1000 [00:40&lt;00:06, 21.39it/s]
+ 86%|████████▋ | 864/1000 [00:40&lt;00:06, 21.36it/s]
+ 87%|████████▋ | 867/1000 [00:40&lt;00:06, 21.39it/s]
+ 87%|████████▋ | 870/1000 [00:41&lt;00:06, 21.40it/s]
+ 87%|████████▋ | 873/1000 [00:41&lt;00:05, 21.42it/s]
+ 88%|████████▊ | 876/1000 [00:41&lt;00:05, 21.36it/s]
+ 88%|████████▊ | 879/1000 [00:41&lt;00:05, 21.26it/s]
+ 88%|████████▊ | 882/1000 [00:41&lt;00:05, 21.24it/s]
+ 88%|████████▊ | 885/1000 [00:41&lt;00:05, 21.24it/s]
+ 89%|████████▉ | 888/1000 [00:41&lt;00:05, 21.10it/s]
+ 89%|████████▉ | 891/1000 [00:42&lt;00:05, 21.11it/s]
+ 89%|████████▉ | 894/1000 [00:42&lt;00:05, 21.13it/s]
+ 90%|████████▉ | 897/1000 [00:42&lt;00:04, 21.08it/s]
+ 90%|█████████ | 900/1000 [00:42&lt;00:04, 21.14it/s]
+ 90%|█████████ | 903/1000 [00:42&lt;00:04, 21.16it/s]
+ 91%|█████████ | 906/1000 [00:42&lt;00:04, 21.12it/s]
+ 91%|█████████ | 909/1000 [00:42&lt;00:04, 21.13it/s]
+ 91%|█████████ | 912/1000 [00:43&lt;00:04, 21.04it/s]
+ 92%|█████████▏| 915/1000 [00:43&lt;00:04, 21.08it/s]
+ 92%|█████████▏| 918/1000 [00:43&lt;00:03, 21.13it/s]
+ 92%|█████████▏| 921/1000 [00:43&lt;00:03, 21.16it/s]
+ 92%|█████████▏| 924/1000 [00:43&lt;00:03, 21.13it/s]
+ 93%|█████████▎| 927/1000 [00:43&lt;00:03, 20.97it/s]
+ 93%|█████████▎| 930/1000 [00:43&lt;00:03, 20.93it/s]
+ 93%|█████████▎| 933/1000 [00:44&lt;00:03, 20.91it/s]
+ 94%|█████████▎| 936/1000 [00:44&lt;00:03, 20.91it/s]
+ 94%|█████████▍| 939/1000 [00:44&lt;00:02, 20.93it/s]
+ 94%|█████████▍| 942/1000 [00:44&lt;00:02, 20.96it/s]
+ 94%|█████████▍| 945/1000 [00:44&lt;00:02, 20.98it/s]
+ 95%|█████████▍| 948/1000 [00:44&lt;00:02, 21.03it/s]
+ 95%|█████████▌| 951/1000 [00:44&lt;00:02, 21.10it/s]
+ 95%|█████████▌| 954/1000 [00:45&lt;00:02, 21.09it/s]
+ 96%|█████████▌| 957/1000 [00:45&lt;00:02, 21.17it/s]
+ 96%|█████████▌| 960/1000 [00:45&lt;00:01, 21.18it/s]
+ 96%|█████████▋| 963/1000 [00:45&lt;00:01, 21.23it/s]
+ 97%|█████████▋| 966/1000 [00:45&lt;00:01, 21.23it/s]
+ 97%|█████████▋| 969/1000 [00:45&lt;00:01, 21.33it/s]
+ 97%|█████████▋| 972/1000 [00:45&lt;00:01, 21.45it/s]
+ 98%|█████████▊| 975/1000 [00:46&lt;00:01, 21.46it/s]
+ 98%|█████████▊| 978/1000 [00:46&lt;00:01, 21.46it/s]
+ 98%|█████████▊| 981/1000 [00:46&lt;00:00, 21.33it/s]
+ 98%|█████████▊| 984/1000 [00:46&lt;00:00, 21.29it/s]
+ 99%|█████████▊| 987/1000 [00:46&lt;00:00, 21.26it/s]
+ 99%|█████████▉| 990/1000 [00:46&lt;00:00, 21.24it/s]
+ 99%|█████████▉| 993/1000 [00:46&lt;00:00, 21.22it/s]
+100%|█████████▉| 996/1000 [00:47&lt;00:00, 21.19it/s]
+100%|█████████▉| 999/1000 [00:47&lt;00:00, 21.16it/s]
+100%|██████████| 1000/1000 [00:47&lt;00:00, 21.17it/s]
+</pre></div>
+</div>
+<p>We can see the log-probability chain of the walkers.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">fitter</span><span class="o">.</span><span class="n">plot_log_prob_chain</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="p">[</span><span class="o">-</span><span class="mi">80</span><span class="p">,</span> <span class="o">-</span><span class="mi">55</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_spectral_fitting_003.png" srcset="../_images/sphx_glr_plot_nustar_spectral_fitting_003.png" alt="plot nustar spectral fitting" class = "sphx-glr-single-img"/><p>The corner plot of the walkers.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">corner_plot</span> <span class="o">=</span> <span class="n">fitter</span><span class="o">.</span><span class="n">corner_mcmc</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_spectral_fitting_004.png" srcset="../_images/sphx_glr_plot_nustar_spectral_fitting_004.png" alt="T1_spectrum1 = 3.2e+00$^{+4.4e-02}_{-5.2e-02}$, EM1_spectrum1 = 1.1e+00$^{+1.6e-01}_{-1.2e-01}$, logProb = -6.7e+01$^{+6.4e-01}_{-1.3e+00}$" class = "sphx-glr-single-img"/><p>And, of course, the final fitted result.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># plot the result</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span><span class="p">,</span> <span class="n">res_axes</span> <span class="o">=</span> <span class="n">fitter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">y_max_lim</span> <span class="o">=</span> <span class="mf">1.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">fitter</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">loaded_spec_data</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">spectrum1</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">count_rate</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="p">[</span><span class="mf">1e-1</span><span class="p">,</span> <span class="n">y_max_lim</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_spectral_fitting_005.png" srcset="../_images/sphx_glr_plot_nustar_spectral_fitting_005.png" alt="Spectrum 1" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (1 minutes 2.717 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-nustar-spectral-fitting-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/2ce594d63f02c88217d673215014ac91/plot_nustar_spectral_fitting.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_nustar_spectral_fitting.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/1ecfcfdb1cc40cbdce729089972f5f0e/plot_nustar_spectral_fitting.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_nustar_spectral_fitting.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/b01714a06273645b7ab5745ff97f8422/plot_nustar_spectral_fitting.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_nustar_spectral_fitting.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plot_nustar_images.html" class="btn btn-neutral float-left" title="Plotting NuSTAR Images" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plot_nustar_time_profiles.html" class="btn btn-neutral float-right" title="Plotting NuSTAR Time Profiles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

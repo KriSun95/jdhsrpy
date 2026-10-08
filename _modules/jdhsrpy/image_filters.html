@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jdhsrpy.image_filters &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">JDHSRPY Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jdhsrpy.image_filters</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jdhsrpy.image_filters</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sunpy.map</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">ndimage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">restoration</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">FWHM_ARCSEC</span><span class="p">,</span> <span class="n">IMAGE_RES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">assign_plot_settings</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"deconvolve_with_array"</span><span class="p">,</span> <span class="s2">"deconvolve_with_file"</span><span class="p">,</span> <span class="s2">"gaussian_filter"</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="gaussian_filter">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.image_filters.gaussian_filter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">gaussian_filter</span><span class="p">(</span><span class="n">sunpy_map_obj</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Takes a Sunpy map and applies a Gaussian filter.</span>
+
+<span class="sd">    See ``~scipy.ndimage.gaussian_filter`` for the method.</span>
+
+<span class="sd">    [1] https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.gaussian_filter.html</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sunpy_map_obj : ``~sunpy.map.Map``</span>
+<span class="sd">        The map for the filter to be applied to.</span>
+
+<span class="sd">    sigma : scalar or sequence of scalars or None</span>
+<span class="sd">        Standard deviation for Gaussian kernel. The standard deviations</span>
+<span class="sd">        of the Gaussian filter are given for each axis as a sequence, or</span>
+<span class="sd">        as a single number, in which case it is equal for all axes. If</span>
+<span class="sd">        None, then NuSTAR's FWHM of 18" and the default 2.45810736 arc/pix</span>
+<span class="sd">        will be used.</span>
+
+<span class="sd">    **kwargs : Passed to ``~scipy.ndimage.gaussian_filter``. The mode</span>
+<span class="sd">        default is "nearest" if none is given.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    : ``~sunpy.map.Map``</span>
+<span class="sd">        The altered Sunpy map object</span>
+<span class="sd">    """</span>
+    <span class="n">gaussian_filter</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"mode"</span><span class="p">:</span> <span class="s2">"nearest"</span><span class="p">}</span> <span class="o">|</span> <span class="n">kwargs</span>
+    <span class="n">gaussian_width_arcsec</span> <span class="o">=</span> <span class="n">FWHM_ARCSEC</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+    <span class="n">sigma</span> <span class="o">=</span> <span class="p">(</span><span class="n">gaussian_width_arcsec</span> <span class="o">/</span> <span class="n">IMAGE_RES</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">sigma</span>
+    <span class="n">dd</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span>
+        <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">gaussian_filter</span><span class="p">[</span><span class="s2">"mode"</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">assign_plot_settings</span><span class="p">(</span><span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">dd</span><span class="p">,</span> <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">meta</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="deconvolve_with_array">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.image_filters.deconvolve_with_array">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">deconvolve_with_array</span><span class="p">(</span><span class="n">sunpy_map_obj</span><span class="p">,</span> <span class="n">psf_array</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Take a map and a point spread function and deconvolve using the</span>
+<span class="sd">    Richardson-Lucy method with a number of iterations.</span>
+
+<span class="sd">    [1] https://scikit-image.org/docs/stable/api/skimage.restoration.html#skimage.restoration.richardson_lucy</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sunpy_map_obj : ``~sunpy.map.Map``</span>
+<span class="sd">        The map for the filter to be applied to.</span>
+
+<span class="sd">    psf_array : ``~numpy.ndarray``</span>
+<span class="sd">        The PSF you want to use.</span>
+
+<span class="sd">    **kwargs : Passed to ``~skimage.restoration.richardson_lucy``. The</span>
+<span class="sd">        Default for the clip input will be False and the number of</span>
+<span class="sd">        iterations (num_iter) will be 100.</span>
+<span class="sd">    """</span>
+    <span class="n">deconvolve_filter</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"num_iter"</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">"clip"</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span> <span class="o">|</span> <span class="n">kwargs</span>
+    <span class="n">deconvolved</span> <span class="o">=</span> <span class="n">restoration</span><span class="o">.</span><span class="n">richardson_lucy</span><span class="p">(</span>
+        <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">psf_array</span><span class="p">,</span> <span class="o">**</span><span class="n">deconvolve_filter</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">assign_plot_settings</span><span class="p">(</span><span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">deconvolved</span><span class="p">,</span> <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">meta</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="deconvolve_with_file">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.image_filters.deconvolve_with_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">deconvolve_with_file</span><span class="p">(</span>
+    <span class="n">sunpy_map_obj</span><span class="p">,</span> <span class="n">psf_file</span><span class="p">,</span> <span class="n">oa_to_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hor_to_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Take a map and a point spread function and deconvolve using the</span>
+<span class="sd">    Richardson-Lucy method with a number of iterations.</span>
+
+<span class="sd">    [1] https://scikit-image.org/docs/stable/api/skimage.restoration.html#skimage.restoration.richardson_lucy</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sunpy_map_obj : ``~sunpy.map.Map``</span>
+<span class="sd">        The map for the filter to be applied to.</span>
+
+<span class="sd">    psf_file : `str`</span>
+<span class="sd">        The file containing the NuSTAR PSF. This should be in the user's</span>
+<span class="sd">        CALDB install, in the location \".../caldb/data/nustar/fpm/bcf/psf/\"</span>
+<span class="sd">        with the name format \"nu&lt;FPM&gt;2dpsfen1_20100101v001.fits\", where</span>
+<span class="sd">        &lt;FPM&gt; will be A or B.</span>
+
+<span class="sd">    oa_to_source : float</span>
+<span class="sd">        Angle subtended between the optical axis (OA), observer, and the</span>
+<span class="sd">        X-ray source in arcminutes (0&lt;=oa_to_source&lt;8.5 arcminutes),</span>
+<span class="sd">        i.e. radial distance to the source from the OA. Chooses the</span>
+<span class="sd">        correct PSF data to use. If None, then assumes source is on-axis</span>
+<span class="sd">        with an `oa_to_source` of 0.</span>
+<span class="sd">        Default: None</span>
+
+<span class="sd">    hor_to_source : float</span>
+<span class="sd">        Angle subtended between horizontal through the optical axis (OA),</span>
+<span class="sd">        and the line through the X-ray source and OA in degrees.</span>
+<span class="sd">        Clockwise is positive and anticlockwise is negative. Symmetric</span>
+<span class="sd">        reflected in the origin so -90&lt;=hor_to_source&lt;=90. If None,</span>
+<span class="sd">        assumes no rotation is needed with an `hor_to_source` of 0.</span>
+<span class="sd">        Default: None</span>
+
+<span class="sd">    **kwargs : Passed to ``~skimage.restoration.richardson_lucy``. The</span>
+<span class="sd">        Default for the clip input will be False and the number of</span>
+<span class="sd">        iterations will be 10.</span>
+<span class="sd">    """</span>
+    <span class="n">oa_to_source</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">oa_to_source</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">oa_to_source</span>
+    <span class="n">hor_to_source</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">hor_to_source</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">hor_to_source</span>
+
+    <span class="n">hdr_unit</span> <span class="o">=</span> <span class="n">_choose_os_angle_header_unit</span><span class="p">(</span><span class="n">oa_to_source</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">psf_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">psf_hdulist</span><span class="p">:</span>
+        <span class="n">psf_res</span> <span class="o">=</span> <span class="n">psf_hdulist</span><span class="p">[</span><span class="n">hdr_unit</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s2">"CDELT1"</span><span class="p">]</span>  <span class="c1"># increment in degrees/pix</span>
+        <span class="n">psf_array</span> <span class="o">=</span> <span class="n">psf_hdulist</span><span class="p">[</span><span class="n">hdr_unit</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="c1"># check same res, at least in 1-D</span>
+    <span class="k">assert</span> <span class="n">psf_res</span> <span class="o">*</span> <span class="mi">3600</span> <span class="o">==</span> <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"CDELT1"</span><span class="p">],</span> <span class="p">(</span>
+        <span class="s2">"The resolution in the PSF and the current map are different."</span>
+    <span class="p">)</span>
+
+    <span class="n">psf_array</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">psf_array</span><span class="p">,</span> <span class="n">hor_to_source</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">deconvolve_with_array</span><span class="p">(</span><span class="n">sunpy_map_obj</span><span class="p">,</span> <span class="n">psf_array</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_choose_os_angle_header_unit</span><span class="p">(</span><span class="n">oa_to_source</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Use the OA-to-source angle to select the correct PSF."""</span>
+    <span class="c1"># angles of 0 to 8.5 arcmin in 0.5 arcmin increments</span>
+    <span class="n">psf_oa_angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="c1"># find the closest arcmin array</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span>
+        <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">psfoaangles</span> <span class="o">-</span> <span class="n">oa_to_source</span><span class="p">)</span> <span class="k">for</span> <span class="n">psfoaangles</span> <span class="ow">in</span> <span class="n">psf_oa_angles</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

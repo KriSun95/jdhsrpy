@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Full Analysis Pipeline &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="jdhsrpy" href="../modules.html" />
+    <link rel="prev" title="Using Event Filters" href="plot_nustar_filters.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">JDHSRPY Example Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar.html">Using <code class="docutils literal notranslate"><span class="pre">NuSTAREvt</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_download_sdo_data.html">Downloading SDO Data and Creating Fe18 Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_multi_maps.html">Plotting NuSTAR and AIA Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_images.html">Plotting NuSTAR Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_spectral_fitting.html">NuSTAR Spectral Fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_time_profiles.html">Plotting NuSTAR Time Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_filters.html">Using Event Filters</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Full Analysis Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#download-the-data">Download the data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unzipping">Unzipping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#science-files">Science files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#grade-0">Grade 0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#evt-solar-positions">EVT solar positions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gti-file">GTI file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#region-file">Region file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spectral-files">Spectral files</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">JDHSRPY Example Gallery</a></li>
+      <li class="breadcrumb-item active">Full Analysis Pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/auto_examples/plot_full_pipeline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-plot-full-pipeline-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="full-analysis-pipeline">
+<span id="sphx-glr-auto-examples-plot-full-pipeline-py"></span><h1>Full Analysis Pipeline<a class="headerlink" href="#full-analysis-pipeline" title="Link to this heading"></a></h1>
+<p>This example shows The full analysis pipeline.</p>
+<p>The assumption is that the user already has the NuSTAR data analysis
+software downloaded; however, these lines will not be run here.</p>
+<p>Instead, the lines of code will be shown then an example expected file
+will be downloaded from the example gallery. This way, I don’t have to
+get HEASoft working on a remote Github server (thank you) and the user
+will be able to see what type of files they should expect at each step.</p>
+<section id="download-the-data">
+<h2>Download the data<a class="headerlink" href="#download-the-data" title="Link to this heading"></a></h2>
+<p>Let’s use the observataion ID 20619003001 for this example.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">wget</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>-q<span class="w"> </span>-nH<span class="w"> </span>--no-check-certificate<span class="w"> </span>--cut-dirs<span class="o">=</span><span class="m">6</span><span class="w"> </span>-r<span class="w"> </span>-l0<span class="w"> </span>-c<span class="w"> </span>-N<span class="w"> </span>-np<span class="w"> </span>-R<span class="w"> </span><span class="s1">'index*'</span><span class="w"> </span>-erobots<span class="o">=</span>off<span class="w"> </span>--retr-symlinks<span class="w"> </span>https://heasarc.gsfc.nasa.gov/FTP/nustar/data/obs/06/2//20619003001/
+</pre></div>
+</div>
+</div>
+</section>
+<section id="unzipping">
+<h2>Unzipping<a class="headerlink" href="#unzipping" title="Link to this heading"></a></h2>
+<p>Then we can run the following on the downloaded folder to have access to
+the files.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">gunzip</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gunzip<span class="w"> </span>-r<span class="w"> </span><span class="m">20619003001</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="science-files">
+<h2>Science files<a class="headerlink" href="#science-files" title="Link to this heading"></a></h2>
+<p>Once the files are unzipped, <code class="docutils literal notranslate"><span class="pre">nupipeline</span></code> can be evoked to process
+the files. This creates an <code class="docutils literal notranslate"><span class="pre">event_cl</span></code> folder mainly with the event
+list files.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">nupipeline</span><a class="headerlink" href="#id3" title="Link to this code"></a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nupipeline<span class="w"> </span><span class="nv">obsmode</span><span class="o">=</span>SCIENCE_SC<span class="w"> </span><span class="nv">indir</span><span class="o">=</span>./20619003001<span class="w"> </span><span class="nv">steminputs</span><span class="o">=</span>nu20619003001<span class="w"> </span><span class="nv">outdir</span><span class="o">=</span>event_cl<span class="w"> </span><span class="nv">entrystage</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="nv">exitstage</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="nv">pntra</span><span class="o">=</span>OBJECT<span class="w"> </span><span class="nv">pntdec</span><span class="o">=</span>OBJECT<span class="w"> </span><span class="nv">statusexpr</span><span class="o">=</span><span class="nv">STATUS</span><span class="o">==</span>b0000xx00xx0xx000<span class="w"> </span><span class="nv">cleanflick</span><span class="o">=</span>no<span class="w"> </span><span class="nv">hkevtexpr</span><span class="o">=</span>NONE<span class="w"> </span><span class="nv">clobber</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">runsplitsc</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">splitmode</span><span class="o">=</span>STRICT
+</pre></div>
+</div>
+</div>
+<p>The main file this gives us access to here is the full observation EVT
+file, for FPMA: <code class="docutils literal notranslate"><span class="pre">nu20619003001A06_cl.evt</span></code>.</p>
+<p>We also have access to the housekeeping data such:</p>
+<ul class="simple">
+<li><p>Livetime information in <code class="docutils literal notranslate"><span class="pre">nu20619003001A_fpm.hk</span></code> (for FPMA)</p></li>
+<li><p>CHU information in <code class="docutils literal notranslate"><span class="pre">nu20619003001_chu123.fits</span></code></p></li>
+<li><p>The observation good time interval file in <code class="docutils literal notranslate"><span class="pre">nu20619003001A06_gti.fits</span></code> (for FPMA)</p></li>
+</ul>
+<p>The FPMB files are also produced.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">ntpath</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">urllib</span><span class="nn">.</span><span class="nn">request</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">TEST_DATA_LOCATION</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl.evt</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_base_evt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_base_evt</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_base_evt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A_fpm.hk</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_lvt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_lvt</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_lvt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001_chu123.fits</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_chu</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_chu</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_chu</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_gti.fits</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_base_gti</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_base_gti</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_base_gti</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</section>
+<section id="grade-0">
+<h2>Grade 0<a class="headerlink" href="#grade-0" title="Link to this heading"></a></h2>
+<p>The next step is to filter the EVT file to only leave behind grade 0
+events.</p>
+<p>Making sure to be in the same directory of <code class="docutils literal notranslate"><span class="pre">nu20619003001A06_cl.evt</span></code>.</p>
+<div class="literal-block-wrapper docutils container" id="id4">
+<div class="code-block-caption"><span class="caption-text">nuscreen</span><a class="headerlink" href="#id4" title="Link to this code"></a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nuscreen<span class="w"> </span><span class="nv">infile</span><span class="o">=</span>nu20619003001A06_cl.evt<span class="w"> </span><span class="nv">gtiscreen</span><span class="o">=</span>no<span class="w"> </span><span class="nv">evtscreen</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">gtiexpr</span><span class="o">=</span>NONE<span class="w"> </span><span class="nv">gradeexpr</span><span class="o">=</span><span class="m">0</span><span class="w"> </span><span class="nv">statusexpr</span><span class="o">=</span>NONE<span class="w"> </span><span class="nv">outdir</span><span class="o">=</span>./<span class="w"> </span><span class="nv">hkfile</span><span class="o">=</span>./nu20619003001A_fpm.hk<span class="w"> </span><span class="nv">outfile</span><span class="o">=</span>nu20619003001A06_cl_grade0.evt
+</pre></div>
+</div>
+</div>
+<p>This would produce a file called <code class="docutils literal notranslate"><span class="pre">nu20619003001A06_cl_grade0.evt</span></code>.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_grade0.evt</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_g0_evt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_g0_evt</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_g0_evt</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>To produce the FPMB files, the <code class="docutils literal notranslate"><span class="pre">nuscreen</span></code> function would need to be
+run again with <code class="docutils literal notranslate"><span class="pre">20619003001A</span></code> changed to <code class="docutils literal notranslate"><span class="pre">20619003001B</span></code>.</p>
+</section>
+<section id="evt-solar-positions">
+<h2>EVT solar positions<a class="headerlink" href="#evt-solar-positions" title="Link to this heading"></a></h2>
+<p>For convenience, we can convert any of the EVT files so we can easily
+work in solar coordinates.</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">jdhsrpy.nustar_evt.sunpos_evt</span><a class="headerlink" href="#id5" title="Link to this code"></a></div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">nustar_evt</span><span class="w"> </span><span class="kn">import</span> <span class="n">sunpos_evt</span><span class="w">
+</span><span class="n">sunpos_evt</span><span class="p">(</span><span class="n">filename_base_evt</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">jdhsrpy.nustar_evt.sunpos_evt</span></code> Python code has been skipped in
+this example, and we will rely on the test, back-up data stored
+elsewhere that would be produced by the above code.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_sunpos.evt</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_sunpos_evt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_sunpos_evt</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_sunpos_evt</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>This file can then be easily used with <code class="docutils literal notranslate"><span class="pre">jdhsrpy.nustar_evt.NuSTAREvt</span></code>.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mdates</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">time_support</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">gridspec</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">nustar_evt</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">NustarEvt</span></a><span class="p">,</span> <span class="n">draw_grid</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">visualize</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="w">
+</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">NustarEvt</span></a><span class="p">(</span><span class="n">evt_filename</span><span class="o">=</span><span class="n">filename_sunpos_evt</span><span class="p">)</span><span class="w">
+</span><span class="c1"># time profile numbers</span><span class="w">
+</span><span class="n">times</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array" title="jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array"><span class="n">nustar_object</span><span class="o">.</span><span class="n">count_time_profile_array</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="c1"># image stuff</span><span class="w">
+</span><span class="n">bottom_left</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="o">-</span><span class="mi">700</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="n">top_right</span> <span class="o">=</span> <span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">600</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="n">m</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.nustar_map" title="jdhsrpy.nustar_evt.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># plot</span><span class="w">
+</span><span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">unix_tai</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes0</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">FPM</span><span class="si">{</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">fpm</span><span class="si">}</span><span class="s2"> time profile</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">right</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">counts</span><span class="o">.</span><span class="n">unit</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Time</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">fmt</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">%</span><span class="s2">H:</span><span class="s2">%</span><span class="s2">M</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">m</span><span class="p">)</span><span class="w">
+</span><span class="n">m</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">axes1</span><span class="p">)</span><span class="w">
+</span><span class="n">draw_grid</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">axes1</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_full_pipeline_001.png" srcset="../_images/sphx_glr_plot_full_pipeline_001.png" alt="FPMA time profile,  2021-11-20 01:50:34" class = "sphx-glr-single-img"/></section>
+<section id="gti-file">
+<h2>GTI file<a class="headerlink" href="#gti-file" title="Link to this heading"></a></h2>
+<p>To obtain a good time interval (GTI) file, a user will likely want to
+inspect the NuSTAR time profile to select times.</p>
+<p>We could use any EVT file  together with <code class="docutils literal notranslate"><span class="pre">~jdhsrpy.nustar_evt.NustarEvt</span></code>
+for this. If none of them have been processed to convert their
+X-Y coordinates to solar coordinated yet, we would just get a warning
+from the class saying imaging methods probably will not work.</p>
+<p>A user can then choose some times using the time profile plot.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">list_filters</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_time" title="jdhsrpy.list_filters.by_time"><span class="n">by_time</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">visualize</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="w">
+</span><span class="w">
+</span><span class="n">times</span><span class="p">,</span> <span class="n">cts</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.rate_time_profile_array" title="jdhsrpy.nustar_evt.NustarEvt.rate_time_profile_array"><span class="n">nustar_object</span><span class="o">.</span><span class="n">rate_time_profile_array</span></a><span class="p">(</span><span class="n">filename_lvt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">time0</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:22:10</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">time1</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:25:30</span><span class="s2">&quot;</span><span class="w">
+</span><span class="w">
+</span><span class="n">m_tf</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.nustar_map" title="jdhsrpy.nustar_evt.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">bottom_left</span><span class="p">,</span><span class="w">
+</span>    <span class="n">top_right</span><span class="p">,</span><span class="w">
+</span>    <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_time" title="jdhsrpy.list_filters.by_time"><span class="n">by_time</span></a><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">time1</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">unix_tai</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">cts</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes0</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">g</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">g</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">FPM</span><span class="si">{</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">fpm</span><span class="si">}</span><span class="s2"> time profile</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">right</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cts</span><span class="o">.</span><span class="n">unit</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Time</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">fmt</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">%</span><span class="s2">H:</span><span class="s2">%</span><span class="s2">M</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">m_tf</span><span class="p">)</span><span class="w">
+</span><span class="n">m_tf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">axes1</span><span class="p">)</span><span class="w">
+</span><span class="n">draw_grid</span><span class="p">(</span><span class="n">m_tf</span><span class="p">,</span> <span class="n">axes1</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_full_pipeline_002.png" srcset="../_images/sphx_glr_plot_full_pipeline_002.png" alt="FPMA time profile,  2021-11-20 02:22:13" class = "sphx-glr-single-img"/><p>A user should also inspect the livetime and CHU information. See the
+<a class="reference external" href="https://krisun95.github.io/jdhsrpy/auto_examples/plot_nustar_time_profiles.html">Plotting NuSTAR Time Profiles</a>
+example.</p>
+<p>From the time selection, two files should be produced. The first file
+is the GTI file <code class="docutils literal notranslate"><span class="pre">2210_to_2530_gti.fits</span></code> that can be used to further
+process the NuSTAR data pipeline.</p>
+<p>The second file is a time filtered EVT file so we can use that to
+select a good region in the next section.</p>
+<ul class="simple">
+<li><p>Make sure this is the grade 0 EVT file</p></li>
+</ul>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">time-filtering</span><a class="headerlink" href="#id6" title="Link to this code"></a></div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">screening</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_gti_file</span><span class="p">,</span> <span class="n">time_filtered_evt_file</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">only_numbers</span><span class="w">
+</span><span class="w">
+</span><span class="n">common_file_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">only_numbers</span><span class="p">(</span><span class="n">time0</span><span class="p">)</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="p">]</span><span class="si">}</span><span class="s2">_to_</span><span class="si">{</span><span class="n">only_numbers</span><span class="p">(</span><span class="n">time1</span><span class="p">)</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">make_gti_file</span><span class="p">(</span><span class="w">
+</span>    <span class="n">filename_base_gti</span><span class="p">,</span><span class="w">
+</span>    <span class="n">save_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">common_file_name</span><span class="si">}</span><span class="s2">_gti.fits</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="n">good_time_interval</span><span class="o">=</span><span class="p">[</span><span class="n">time0</span><span class="p">,</span> <span class="n">time1</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">time_filtered_evt_file</span><span class="p">(</span><span class="w">
+</span>    <span class="n">evt_file</span><span class="o">=</span><span class="n">filename_g0_evt</span><span class="p">,</span><span class="w">
+</span>    <span class="n">save_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">common_file_name</span><span class="si">}</span><span class="s2">_20619003001A_tf.evt</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="n">time_range</span><span class="o">=</span><span class="p">[</span><span class="n">time0</span><span class="p">,</span> <span class="n">time1</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">time-filtering</span></code> Python code has been skipped in this example,
+and we will rely on the test, back-up data stored elsewhere that would
+be produced by the above code.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/2210_to_2530_gti.fits</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_gti</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_gti</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_gti</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/2210_to_2530_20619003001A_tf.evt</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_tf_evt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_tf_evt</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_tf_evt</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</section>
+<section id="region-file">
+<h2>Region file<a class="headerlink" href="#region-file" title="Link to this heading"></a></h2>
+<p>To obtain a region file, take the new time filtered grade 0 file and
+use FITS viewing software like <a class="reference external" href="https://sites.google.com/cfa.harvard.edu/saoimageds9?pli=1&amp;authuser=0">SAOImageDS9</a>.</p>
+<p>In SAOImageDS9, a user can select <code class="docutils literal notranslate"><span class="pre">edit</span></code> in the GUI window, then
+<code class="docutils literal notranslate"><span class="pre">region</span></code>, then draw a region with their mouse.</p>
+<p>Once the user is happy with their region, they can go to <code class="docutils literal notranslate"><span class="pre">region</span></code>
+and click on <code class="docutils literal notranslate"><span class="pre">save</span></code>. They can choose where to save the region file.</p>
+<p>Note, there might be another window that pops up after you click save,
+just make sure to click <code class="docutils literal notranslate"><span class="pre">OK</span></code> on this window too otherwise the file
+will not save.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/fpma.reg</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_reg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_reg</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_reg</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</section>
+<section id="spectral-files">
+<h2>Spectral files<a class="headerlink" href="#spectral-files" title="Link to this heading"></a></h2>
+<p>Once the good time interval file and region file are obtain, we can
+produce the spectral files: PHA, ARF, and RMF.</p>
+<p>Making sure to be in the same directory of <code class="docutils literal notranslate"><span class="pre">nu20619003001A06_cl_grade0.evt</span></code>.</p>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">nuproducts</span><a class="headerlink" href="#id7" title="Link to this code"></a></div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nuproducts<span class="w"> </span><span class="nv">indir</span><span class="o">=</span>./<span class="w"> </span><span class="nv">instrument</span><span class="o">=</span>FPMA<span class="w"> </span><span class="nv">steminputs</span><span class="o">=</span>nu20619003001<span class="w"> </span><span class="nv">outdir</span><span class="o">=</span>./<span class="w"> </span><span class="nv">extended</span><span class="o">=</span>no<span class="w"> </span><span class="nv">runmkarf</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">runmkrmf</span><span class="o">=</span>yes<span class="w"> </span><span class="nv">infile</span><span class="o">=</span>nu20619003001A06_cl_grade0.evt<span class="w"> </span><span class="nv">bkgextract</span><span class="o">=</span>no<span class="w"> </span><span class="nv">srcregionfile</span><span class="o">=</span>fpma.reg<span class="w"> </span><span class="nv">attfile</span><span class="o">=</span>./nu20619003001_att.fits<span class="w"> </span><span class="nv">hkfile</span><span class="o">=</span>./nu20619003001A_fpm.hk<span class="w"> </span><span class="nv">usrgtifile</span><span class="o">=</span>2210_to_2530_gti.fits
+</pre></div>
+</div>
+</div>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_grade0_sr.pha</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_pha</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_pha</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_pha</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_grade0_sr.arf</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_arf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_arf</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_arf</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_grade0_sr.rmf</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_rmf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_rmf</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_rmf</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>To produce the FPMB files, the <code class="docutils literal notranslate"><span class="pre">nuscreen</span></code> function would need to be
+run again with <code class="docutils literal notranslate"><span class="pre">FPMA</span></code> changed to <code class="docutils literal notranslate"><span class="pre">FPMB</span></code>, <code class="docutils literal notranslate"><span class="pre">20619003001A</span></code>
+changed to <code class="docutils literal notranslate"><span class="pre">20619003001B</span></code>.</p>
+<p>This will likely mean a different region file for FPMB, and
+potentially a different GTI file also.</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 6.159 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-full-pipeline-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/d28828583b1ce697ba3da6f37a4f49c4/plot_full_pipeline.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_full_pipeline.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/35b5ef26c0d2fb466ce431e631728c27/plot_full_pipeline.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_full_pipeline.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/4067756441efa117d3532e84659452d3/plot_full_pipeline.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_full_pipeline.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plot_nustar_filters.html" class="btn btn-neutral float-left" title="Using Event Filters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../modules.html" class="btn btn-neutral float-right" title="jdhsrpy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

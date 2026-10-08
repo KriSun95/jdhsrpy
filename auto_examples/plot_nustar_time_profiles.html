@@ -1,0 +1,264 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plotting NuSTAR Time Profiles &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Using Event Filters" href="plot_nustar_filters.html" />
+    <link rel="prev" title="NuSTAR Spectral Fitting" href="plot_nustar_spectral_fitting.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">JDHSRPY Example Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar.html">Using <code class="docutils literal notranslate"><span class="pre">NuSTAREvt</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_download_sdo_data.html">Downloading SDO Data and Creating Fe18 Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_multi_maps.html">Plotting NuSTAR and AIA Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_images.html">Plotting NuSTAR Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_spectral_fitting.html">NuSTAR Spectral Fitting</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Plotting NuSTAR Time Profiles</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#livetime">Livetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rate">Rate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chu-state">CHU state</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_filters.html">Using Event Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_full_pipeline.html">Full Analysis Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">JDHSRPY Example Gallery</a></li>
+      <li class="breadcrumb-item active">Plotting NuSTAR Time Profiles</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/auto_examples/plot_nustar_time_profiles.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-plot-nustar-time-profiles-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="plotting-nustar-time-profiles">
+<span id="sphx-glr-auto-examples-plot-nustar-time-profiles-py"></span><h1>Plotting NuSTAR Time Profiles<a class="headerlink" href="#plotting-nustar-time-profiles" title="Link to this heading"></a></h1>
+<p>This example shows plotting different NuSTAR time profiles.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">ntpath</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">urllib</span><span class="nn">.</span><span class="nn">request</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mdates</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">time_support</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">TEST_DATA_LOCATION</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">nustar_evt</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">NustarEvt</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.chu_state_array" title="jdhsrpy.nustar_evt.chu_state_array"><span class="n">chu_state_array</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.livetime_array" title="jdhsrpy.nustar_evt.livetime_array"><span class="n">livetime_array</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">visualize</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="w">
+</span>    <span class="n">chu_plot</span><span class="p">,</span><span class="w">
+</span>    <span class="n">livetime_plot</span><span class="p">,</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">,</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>Download an example “sunpos” NuSTAR EVT and livetime file.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_sunpos.evt</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_evt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_evt</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_evt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A_fpm.hk</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_lvt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_lvt</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_lvt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001_chu123.fits</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_chu</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_chu</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_chu</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>Use the class to load in and work with the file.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">NustarEvt</span></a><span class="p">(</span><span class="n">evt_filename</span><span class="o">=</span><span class="n">filename_evt</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<section id="livetime">
+<h2>Livetime<a class="headerlink" href="#livetime" title="Link to this heading"></a></h2>
+<p>Let’s plot the livetime time profile first</p>
+<p>We can also happily plot some interesting time indicators on the plot
+if we want.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">times</span><span class="p">,</span> <span class="n">livetimes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.livetime_array" title="jdhsrpy.nustar_evt.livetime_array"><span class="n">livetime_array</span></a><span class="p">(</span><span class="n">filename_lvt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># choose some interesting times</span><span class="w">
+</span><span class="n">time_1</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:22:10</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">time0</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:25:30</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">time1</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:28:50</span><span class="s2">&quot;</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># let's plot</span><span class="w">
+</span><span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">unix_tai</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span> <span class="o">=</span> <span class="n">livetime_plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">livetimes</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time_1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">g</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">g</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">FPM</span><span class="si">{</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">fpm</span><span class="si">}</span><span class="s2"> livetime profile</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">right</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Livetime [</span><span class="s2">%</span><span class="s2">]</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Time</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_time_profiles_001.png" srcset="../_images/sphx_glr_plot_nustar_time_profiles_001.png" alt="FPMA livetime profile" class = "sphx-glr-single-img"/></section>
+<section id="rate">
+<h2>Rate<a class="headerlink" href="#rate" title="Link to this heading"></a></h2>
+<p>Since we know where the livetime information is then we can start
+using it more. This allows us to create a livetime corrected count
+rate profile.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">times</span><span class="p">,</span> <span class="n">cts</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.rate_time_profile_array" title="jdhsrpy.nustar_evt.NustarEvt.rate_time_profile_array"><span class="n">nustar_object</span><span class="o">.</span><span class="n">rate_time_profile_array</span></a><span class="p">(</span><span class="n">filename_lvt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">unix_tai</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">cts</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time_1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">g</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">g</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">FPM</span><span class="si">{</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">fpm</span><span class="si">}</span><span class="s2"> time profile</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">right</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cts</span><span class="o">.</span><span class="n">unit</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Time</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_time_profiles_002.png" srcset="../_images/sphx_glr_plot_nustar_time_profiles_002.png" alt="FPMA time profile" class = "sphx-glr-single-img"/></section>
+<section id="chu-state">
+<h2>CHU state<a class="headerlink" href="#chu-state" title="Link to this heading"></a></h2>
+<p>If we know where the CHU state information is, we can plot that too.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">chu_times</span><span class="p">,</span> <span class="n">chus</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.chu_state_array" title="jdhsrpy.nustar_evt.chu_state_array"><span class="n">chu_state_array</span></a><span class="p">(</span><span class="n">filename_chu</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span> <span class="o">=</span> <span class="n">chu_plot</span><span class="p">(</span><span class="n">chu_times</span><span class="p">,</span> <span class="n">chus</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">CHU States of NuSTAR on </span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">chu_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">%</span><span class="s2">Y/</span><span class="s2">%</span><span class="s2">m/</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span>  <span class="c1"># get the date in the title</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Start Time - </span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">chu_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">%</span><span class="s2">H:</span><span class="s2">%</span><span class="s2">M:</span><span class="s2">%</span><span class="s2">S</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">NuSTAR CHUs</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time_1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time0</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">g</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.vertical_line_of_time" title="jdhsrpy.visualize.vertical_line_of_time"><span class="n">vertical_line_of_time</span></a><span class="p">(</span><span class="n">time1</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">g</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">fmt</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">%</span><span class="s2">H:</span><span class="s2">%</span><span class="s2">M</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_time_profiles_003.png" srcset="../_images/sphx_glr_plot_nustar_time_profiles_003.png" alt="CHU States of NuSTAR on 2021/11/20" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 0.868 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-nustar-time-profiles-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/a73c64d14356a3c895c1193aac9f2dd4/plot_nustar_time_profiles.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_nustar_time_profiles.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/839614aa7be6f8effd8bf99568caedda/plot_nustar_time_profiles.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_nustar_time_profiles.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/57719a71cae568d1660ba87d6192f7e9/plot_nustar_time_profiles.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_nustar_time_profiles.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plot_nustar_spectral_fitting.html" class="btn btn-neutral float-left" title="NuSTAR Spectral Fitting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plot_nustar_filters.html" class="btn btn-neutral float-right" title="Using Event Filters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+jdhsrpy package
+===============
+
+Submodules
+----------
+
+jdhsrpy.download module
+-----------------------
+
+.. automodule:: jdhsrpy.download
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.image\_filters module
+-----------------------------
+
+.. automodule:: jdhsrpy.image_filters
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.io module
+-----------------
+
+.. automodule:: jdhsrpy.io
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.iron\_channel module
+----------------------------
+
+.. automodule:: jdhsrpy.iron_channel
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.list\_filters module
+----------------------------
+
+.. automodule:: jdhsrpy.list_filters
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.nustar\_evt module
+--------------------------
+
+.. automodule:: jdhsrpy.nustar_evt
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.nustar\_spectrum module
+-------------------------------
+
+.. automodule:: jdhsrpy.nustar_spectrum
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.photon\_spectrum module
+-------------------------------
+
+.. automodule:: jdhsrpy.photon_spectrum
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.screening module
+------------------------
+
+.. automodule:: jdhsrpy.screening
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.spectral\_fitting module
+--------------------------------
+
+.. automodule:: jdhsrpy.spectral_fitting
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.utils module
+--------------------
+
+.. automodule:: jdhsrpy.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+jdhsrpy.visualize module
+------------------------
+
+.. automodule:: jdhsrpy.visualize
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: jdhsrpy
+   :members:
+   :show-inheritance:
+   :undoc-members:

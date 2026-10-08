@@ -1,0 +1,805 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jdhsrpy.nustar_evt &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">JDHSRPY Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jdhsrpy.nustar_evt</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jdhsrpy.nustar_evt</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ntpath</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sunpy.map</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">IMAGE_RES</span><span class="p">,</span> <span class="n">NUSTAR_EPOCH</span><span class="p">,</span> <span class="n">PIXELUNIT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy.list_filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">by_energy</span><span class="p">,</span> <span class="n">by_good_pix</span><span class="p">,</span> <span class="n">by_gradezero</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">assign_plot_settings</span><span class="p">,</span> <span class="n">regroup_any_array</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"NustarEvt"</span><span class="p">,</span>
+    <span class="s2">"chu_state_array"</span><span class="p">,</span>
+    <span class="s2">"livetime_array"</span><span class="p">,</span>
+    <span class="s2">"make_sunpy_map"</span><span class="p">,</span>
+    <span class="s2">"nustar_time_from_utc"</span><span class="p">,</span>
+    <span class="s2">"sunpos_evt"</span><span class="p">,</span>
+    <span class="s2">"utc_from_nustar_time"</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="NustarEvt">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NustarEvt</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""A class to load in and work with NuSTAR EVT and EVT related files.</span>
+
+<span class="sd">    For full functionality, this class expects an EVT file with</span>
+<span class="sd">    coordinates already converted to solar X/Y. However, this only</span>
+<span class="sd">    affects the image plotting methods.</span>
+
+<span class="sd">    See ``~jdhsrpy.nustar_evt.sunpos_evt`` for more details on obtaining</span>
+<span class="sd">    the necessary file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    evt_filename : `str`</span>
+<span class="sd">        The path and file name to the EVT file.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_sunpos</span><span class="p">(</span><span class="n">evt_filename</span><span class="p">)</span>
+
+        <span class="c1"># extract the data within the provided parameters</span>
+        <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">evt_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdulist</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">evt_data</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">evt_header</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hacky_pixel_scale_fix</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">evt_filename</span><span class="p">)</span>
+        <span class="c1"># search for 2 digits, a non-digit, then 2 digits again</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fpm</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\d</span><span class="si">{2}</span><span class="s2">\D\d</span><span class="si">{2}</span><span class="s2">"</span><span class="p">)</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_evt_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_evt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evt_data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NustarEvt.clean_evt">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.clean_evt">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clean_evt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="p">,</span> <span class="n">fpm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">energy_low</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">energy_high</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Filter the event list.</span>
+
+<span class="sd">        Filter by energy (default 1.6&lt;=E&lt;80), only grade 0,</span>
+<span class="sd">        and remove events from bad pixels from the given FPM."""</span>
+        <span class="n">fpm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fpm</span> <span class="k">if</span> <span class="n">fpm</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">fpm</span>
+        <span class="n">energy_low</span> <span class="o">=</span> <span class="mf">2.5</span> <span class="k">if</span> <span class="n">energy_low</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">energy_low</span>
+        <span class="n">energy_high</span> <span class="o">=</span> <span class="mi">80</span> <span class="k">if</span> <span class="n">energy_high</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">energy_high</span>
+        <span class="n">_zero</span> <span class="o">=</span> <span class="n">by_gradezero</span><span class="p">(</span><span class="n">event_data</span><span class="p">)</span>
+        <span class="n">_eng</span> <span class="o">=</span> <span class="n">by_energy</span><span class="p">(</span><span class="n">_zero</span><span class="p">,</span> <span class="n">energy_low</span><span class="o">=</span><span class="n">energy_low</span><span class="p">,</span> <span class="n">energy_high</span><span class="o">=</span><span class="n">energy_high</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">by_good_pix</span><span class="p">(</span><span class="n">_eng</span><span class="p">,</span> <span class="n">fpm</span><span class="o">=</span><span class="n">fpm</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_sunpos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt_filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Check for \"sunpos\" in the EVT file name."""</span>
+        <span class="c1"># for a sunpy map object to be made then the file has to be positioned on the Sun</span>
+        <span class="k">if</span> <span class="s2">"sunpos"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">evt_filename</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+<span class="w">                </span><span class="sd">"""</span>
+<span class="sd">                The provided file does not look like a sunpos file. Limited</span>
+<span class="sd">                functionality with solar coordinate related functions. See</span>
+<span class="sd">                ``~jdhsrpy.nustar_evt.sunpos_evt`` for help.</span>
+<span class="sd">                """</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_hacky_pixel_scale_fix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Hacky fix for nustar_pysolar not updating the header units with the value."""</span>
+        <span class="c1">############*********** this is a hacky fix but will do for now ***********############</span>
+        <span class="c1"># if Python code is used for the sunpos file creation the re-written header keywords might not save properly, so...</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">evt_header</span><span class="p">[</span><span class="s2">"TCDLT13"</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">evt_header</span><span class="p">[</span><span class="s2">"TCDLT14"</span><span class="p">]],</span>
+            <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span>
+            <span class="n">atol</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">,</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">evt_header</span><span class="p">[</span><span class="s2">"TCDLT13"</span><span class="p">]</span> <span class="o">=</span> <span class="n">IMAGE_RES</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">evt_header</span><span class="p">[</span><span class="s2">"TCDLT14"</span><span class="p">]</span> <span class="o">=</span> <span class="n">IMAGE_RES</span><span class="o">.</span><span class="n">value</span>  <span class="c1"># y</span>
+
+<div class="viewcode-block" id="NustarEvt.count_time_profile_array">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_time_profile_array</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">event_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">time_bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">time_binning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Get counts and time bins for plotting a NuSTAR time profile.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event_data :</span>
+<span class="sd">            The event list. If `None` then `self.cleaned_evt_data` will</span>
+<span class="sd">            be used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        time_bins :</span>
+<span class="sd">            Takes priority over `time_binning`, `start_time`, and</span>
+<span class="sd">            `stop_time`.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        time_binning :</span>
+<span class="sd">            If `None` then a default value is used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        start_time :</span>
+<span class="sd">            If `None` then a default value is used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        end_time :</span>
+<span class="sd">            If `None` then a default value is used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">time_bins</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_time_profile_array_from_start_stop_binning</span><span class="p">(</span>
+                <span class="n">event_data</span><span class="o">=</span><span class="n">event_data</span><span class="p">,</span>
+                <span class="n">time_binning</span><span class="o">=</span><span class="n">time_binning</span><span class="p">,</span>
+                <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
+                <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_time_profile_array_from_binning_array</span><span class="p">(</span>
+            <span class="n">event_data</span><span class="o">=</span><span class="n">event_data</span><span class="p">,</span> <span class="n">time_bins</span><span class="o">=</span><span class="n">time_bins</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NustarEvt.count_time_profile_array_from_start_stop_binning">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array_from_start_stop_binning">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_time_profile_array_from_start_stop_binning</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_binning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Get counts and time bins for plotting a NuSTAR time profile.</span>
+
+<span class="sd">        User given start, stop, and/or time bin size.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event_data :</span>
+<span class="sd">            The event list. If `None` then `self.cleaned_evt_data` will</span>
+<span class="sd">            be used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        time_binning :</span>
+
+<span class="sd">            Default: None</span>
+
+<span class="sd">        start_time :</span>
+
+<span class="sd">            Default: None</span>
+
+<span class="sd">        end_time :</span>
+
+<span class="sd">            Default: None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        """</span>
+        <span class="n">time_binning</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span> <span class="k">if</span> <span class="n">time_binning</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">time_binning</span>
+        <span class="n">event_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_evt_data</span> <span class="k">if</span> <span class="n">event_data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">event_data</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">event_data</span><span class="p">[</span><span class="s2">"TIME"</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span>
+            <span class="k">if</span> <span class="n">start_time</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">nustar_time_from_utc</span><span class="p">(</span><span class="n">start_time</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">event_data</span><span class="p">[</span><span class="s2">"TIME"</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span>
+            <span class="k">if</span> <span class="n">end_time</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">nustar_time_from_utc</span><span class="p">(</span><span class="n">end_time</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">start_time</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span>
+        <span class="n">end_time</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span>
+        <span class="n">time_binning</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span>
+        <span class="n">time_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
+            <span class="n">start_time</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">end_time</span><span class="o">.</span><span class="n">value</span> <span class="o">+</span> <span class="n">time_binning</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">time_binning</span><span class="o">.</span><span class="n">value</span>
+        <span class="p">)</span>
+        <span class="n">counts</span><span class="p">,</span> <span class="n">time_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">event_data</span><span class="p">[</span><span class="s2">"TIME"</span><span class="p">],</span> <span class="n">time_bins</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">utc_from_nustar_time</span><span class="p">(</span><span class="n">time_bins</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span><span class="p">),</span> <span class="n">counts</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">ct</span></div>
+
+
+<div class="viewcode-block" id="NustarEvt.count_time_profile_array_from_binning_array">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array_from_binning_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">count_time_profile_array_from_binning_array</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_bins</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Get counts and time bins for plotting a NuSTAR time profile.</span>
+
+<span class="sd">        User given time bins.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event_data :</span>
+<span class="sd">            The event list. If `None` then `self.cleaned_evt_data` will</span>
+<span class="sd">            be used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        time_bins :</span>
+
+<span class="sd">            Default: None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">time_bins</span><span class="p">,</span> <span class="n">Time</span><span class="p">):</span>
+            <span class="n">time_bins</span> <span class="o">=</span> <span class="n">nustar_time_from_utc</span><span class="p">(</span><span class="n">time_bins</span><span class="p">)</span>
+        <span class="n">counts</span><span class="p">,</span> <span class="n">time_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">event_data</span><span class="p">[</span><span class="s2">"TIME"</span><span class="p">],</span> <span class="n">time_bins</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">utc_from_nustar_time</span><span class="p">(</span><span class="n">time_bins</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span><span class="p">),</span> <span class="n">counts</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">ct</span></div>
+
+
+<div class="viewcode-block" id="NustarEvt.rate_time_profile_array">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.rate_time_profile_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rate_time_profile_array</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">hk_filename</span><span class="p">,</span>
+        <span class="n">event_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">time_bins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">time_binning</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">start_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">end_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Get counts and time bins for plotting a NuSTAR time profile.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        hk_filename : `str`</span>
+<span class="sd">            The FITS file containing the livetime information. Should be of</span>
+<span class="sd">            the form `nu&lt;OBSID&gt;&lt;FPM&gt;_fpm.hk` and may be in the HK folder.</span>
+
+<span class="sd">        event_data :</span>
+<span class="sd">            The event list. If `None` then `self.cleaned_evt_data` will</span>
+<span class="sd">            be used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        time_bins :</span>
+<span class="sd">            Takes priority over `time_binning`, `start_time`, and</span>
+<span class="sd">            `stop_time`.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        time_binning :</span>
+<span class="sd">            If `None` then a default value is used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        start_time :</span>
+<span class="sd">            If `None` then a default value is used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        end_time :</span>
+<span class="sd">            If `None` then a default value is used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        """</span>
+        <span class="n">time_bins</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_time_profile_array</span><span class="p">(</span>
+            <span class="n">event_data</span><span class="o">=</span><span class="n">event_data</span><span class="p">,</span>
+            <span class="n">time_bins</span><span class="o">=</span><span class="n">time_bins</span><span class="p">,</span>
+            <span class="n">time_binning</span><span class="o">=</span><span class="n">time_binning</span><span class="p">,</span>
+            <span class="n">start_time</span><span class="o">=</span><span class="n">start_time</span><span class="p">,</span>
+            <span class="n">end_time</span><span class="o">=</span><span class="n">end_time</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">lvt_times</span><span class="p">,</span> <span class="n">hk_livetimes</span> <span class="o">=</span> <span class="n">livetime_array</span><span class="p">(</span><span class="n">hk_filename</span><span class="p">)</span>
+
+        <span class="n">format_c_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">time_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">time_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:][:,</span> <span class="kc">None</span><span class="p">]))</span>
+        <span class="n">format_lvt_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">lvt_times</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">lvt_times</span><span class="p">[</span><span class="mi">1</span><span class="p">:][:,</span> <span class="kc">None</span><span class="p">]))</span>
+        <span class="n">new_livetimes</span> <span class="o">=</span> <span class="n">regroup_any_array</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">hk_livetimes</span><span class="p">,</span>
+            <span class="n">old_bins</span><span class="o">=</span><span class="n">format_lvt_times</span><span class="p">,</span>
+            <span class="n">new_bins</span><span class="o">=</span><span class="n">format_c_times</span><span class="p">,</span>
+            <span class="n">combine_by</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">time_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">time_bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">time_bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">sec</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span>
+        <span class="k">return</span> <span class="n">time_bins</span><span class="p">,</span> <span class="n">counts</span> <span class="o">/</span> <span class="p">(</span><span class="n">new_livetimes</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">time_diff</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_native_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return a Sunpy map of the NuSTAR data."""</span>
+        <span class="n">event_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleaned_evt_data</span> <span class="k">if</span> <span class="n">event_data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">event_data</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evt_header</span>
+        <span class="n">start_t</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">utc_from_nustar_time</span><span class="p">(</span><span class="n">event_data</span><span class="p">[</span><span class="s2">"TIME"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span><span class="p">))</span>
+        <span class="n">end_t</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">utc_from_nustar_time</span><span class="p">(</span><span class="n">event_data</span><span class="p">[</span><span class="s2">"TIME"</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">second</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">make_sunpy_map</span><span class="p">(</span><span class="n">event_data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">start_t</span><span class="o">=</span><span class="n">start_t</span><span class="p">,</span> <span class="n">end_t</span><span class="o">=</span><span class="n">end_t</span><span class="p">)</span>
+
+<div class="viewcode-block" id="NustarEvt.full_disk_bounds">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.full_disk_bounds">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_disk_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Obtain the on-disk bounds of the NuSTAR event list."""</span>
+        <span class="n">bottom_left</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1200</span><span class="p">,</span> <span class="o">-</span><span class="mi">1200</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">"arcsec"</span><span class="p">)</span>
+        <span class="n">top_right</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1200</span><span class="p">,</span> <span class="mi">1200</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">"arcsec"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span></div>
+
+
+<div class="viewcode-block" id="NustarEvt.full_disk_map">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.full_disk_map">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_disk_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return a Sunpy map of the NuSTAR data."""</span>
+        <span class="n">nustar_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_native_map</span><span class="p">(</span><span class="n">event_data</span><span class="o">=</span><span class="n">event_data</span><span class="p">)</span>
+        <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_disk_bounds</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">get_submap</span><span class="p">(</span><span class="n">nustar_map</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NustarEvt.field_of_view_bounds">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.field_of_view_bounds">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field_of_view_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sunpy_map_obj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Obtain the on-disk bounds of the NuSTAR event list."""</span>
+        <span class="n">pixel_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pixel</span>
+        <span class="n">hpc_max</span> <span class="o">=</span> <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">pixel_to_world</span><span class="p">(</span><span class="n">pixel_pos</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">pixel_pos</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">bottom_left</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">hpc_max</span><span class="o">.</span><span class="n">Tx</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">hpc_max</span><span class="o">.</span><span class="n">Ty</span><span class="o">.</span><span class="n">value</span><span class="p">)]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span>
+            <span class="n">PIXELUNIT</span>
+        <span class="p">)</span>
+        <span class="n">top_right</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hpc_max</span><span class="o">.</span><span class="n">Tx</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">hpc_max</span><span class="o">.</span><span class="n">Ty</span><span class="o">.</span><span class="n">value</span><span class="p">)]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span>
+            <span class="n">PIXELUNIT</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span></div>
+
+
+<div class="viewcode-block" id="NustarEvt.field_of_view_map">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.field_of_view_map">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field_of_view_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Return a map that is bound by where the event counts are."""</span>
+        <span class="n">nustar_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_native_map</span><span class="p">(</span><span class="n">event_data</span><span class="o">=</span><span class="n">event_data</span><span class="p">)</span>
+        <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_of_view_bounds</span><span class="p">(</span><span class="n">nustar_map</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">get_submap</span><span class="p">(</span><span class="n">nustar_map</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NustarEvt.nustar_map">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.nustar_map">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nustar_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Create a map with custom bounds.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bottom_left : `~astropy.units.Quantity`</span>
+<span class="sd">            The bottom left coordinates of the submap. Unit aware (e.g.,</span>
+<span class="sd">            arc-seconds)</span>
+
+<span class="sd">        top_right : `~astropy.units.Quantity`</span>
+<span class="sd">            The top right coordinates of the submap. Unit aware (e.g.,</span>
+<span class="sd">            arc-seconds)</span>
+<span class="sd">        """</span>
+        <span class="n">nustar_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_native_map</span><span class="p">(</span><span class="n">event_data</span><span class="o">=</span><span class="n">event_data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">get_submap</span><span class="p">(</span><span class="n">nustar_map</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="sunpos_evt">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.sunpos_evt">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">sunpos_evt</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">load_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert a .evt NuSTAR file to a _sunpos.evt file.</span>
+
+<span class="sd">    The new file will contain Solar-X/-Y coordinates for each event.</span>
+<span class="sd">    """</span>
+    <span class="c1"># importing this causes the docs to fail for this file</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">nustar_pysolar</span>
+
+    <span class="n">load_path</span> <span class="o">=</span> <span class="s2">"./"</span> <span class="k">if</span> <span class="n">load_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">load_path</span>
+    <span class="n">nustar_pysolar</span><span class="o">.</span><span class="n">convert</span><span class="o">.</span><span class="n">convert_file</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">load_path</span><span class="o">=</span><span class="n">load_path</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="chu_state_array">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.chu_state_array">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">chu_state_array</span><span class="p">(</span><span class="n">chu_filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Get an array of camera head unit states for NuSTAR from a file.</span>
+
+<span class="sd">    [1] https://github.com/ianan/nustar_sac/blob/master/idl/load_nschu.pro</span>
+<span class="sd">    [2] https://github.com/NuSTAR/nustar_solar/blob/master/deprecated/solar_mosaic_20150429/read_chus.pro</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    chu_filename : `str`</span>
+<span class="sd">        The FITS file containing the CHU information. Should be of the</span>
+<span class="sd">        form `nu&lt;OBSID&gt;_chu123.fits` and may be in the HK folder.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The times, CHU states and corresponding labels.</span>
+<span class="sd">    """</span>
+    <span class="c1"># not self.chu_filename as fits.open needs to know the full path to the file</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">chu_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdulist</span><span class="p">:</span>
+        <span class="n">data1</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">data2</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">data3</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="c1"># easier to work with numpy arrays later</span>
+    <span class="n">data_c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data1</span><span class="p">)</span>
+    <span class="n">data_c2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data2</span><span class="p">)</span>
+    <span class="n">data_c3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data3</span><span class="p">)</span>
+
+    <span class="n">maxres</span> <span class="o">=</span> <span class="mi">20</span>
+
+    <span class="k">for</span> <span class="n">chu_num</span><span class="p">,</span> <span class="n">dat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">data_c1</span><span class="p">,</span> <span class="n">data_c2</span><span class="p">,</span> <span class="n">data_c3</span><span class="p">]):</span>
+        <span class="n">chu_bool</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="s2">"VALID"</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="s2">"RESIDUAL"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">maxres</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="s2">"STARSFAIL"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dat</span><span class="p">[</span><span class="s2">"OBJECTS"</span><span class="p">])</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">dat</span><span class="p">[</span><span class="s2">"CHUQ"</span><span class="p">][:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">chu_01</span> <span class="o">=</span> <span class="n">chu_bool</span> <span class="o">*</span> <span class="mi">1</span>  <span class="c1"># change true/false into 1/0</span>
+
+        <span class="n">chu_mask</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">chu_01</span> <span class="o">*</span> <span class="p">(</span><span class="n">chu_num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="p">)</span>  <span class="c1"># give each chu a unique number that when it is added to another it gives a unique chu combo, like file permissions</span>
+
+        <span class="k">if</span> <span class="n">chu_num</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">chu_all</span> <span class="o">=</span> <span class="n">chu_mask</span>  <span class="c1"># after chu 1 file have an array with 1s and 0s</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">chu_all</span> <span class="o">+=</span> <span class="n">chu_mask</span>  <span class="c1"># after the others (chu2 and chu3) have an array with 1,4,9,5,10,13,14</span>
+
+    <span class="c1"># last data array in the for loop can give the time, no. of seconds from 1-Jan-2010</span>
+    <span class="n">chu_time</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="s2">"TIME"</span><span class="p">]</span>
+
+    <span class="n">tick_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"12"</span><span class="p">,</span> <span class="s2">"3"</span><span class="p">,</span> <span class="s2">"13"</span><span class="p">,</span> <span class="s2">"23"</span><span class="p">,</span> <span class="s2">"123"</span><span class="p">]</span>
+    <span class="n">tick_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">104</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">106</span><span class="p">]</span>
+    <span class="n">tick_label_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">tick_labels</span><span class="p">,</span> <span class="n">tick_values</span><span class="p">))</span>
+
+    <span class="c1"># reassigned values are at 100, etc. as to not accidentally double sort the values again</span>
+    <span class="c1"># e.g. if mask value was changed to 10, then if it was accidentally run again it would get sorted into chu state 13 etc.</span>
+    <span class="n">chu_all</span><span class="p">[</span><span class="n">chu_all</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tick_label_map</span><span class="p">[</span>
+        <span class="s2">"1"</span>
+    <span class="p">]</span>  <span class="c1"># chu1 # mask value in array is changed to chu state, e.g. mask value=5, chu state is 12, and value 102</span>
+    <span class="n">chu_all</span><span class="p">[</span><span class="n">chu_all</span> <span class="o">==</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">tick_label_map</span><span class="p">[</span><span class="s2">"2"</span><span class="p">]</span>  <span class="c1"># chu2</span>
+    <span class="n">chu_all</span><span class="p">[</span><span class="n">chu_all</span> <span class="o">==</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="n">tick_label_map</span><span class="p">[</span><span class="s2">"12"</span><span class="p">]</span>  <span class="c1"># chu12</span>
+    <span class="n">chu_all</span><span class="p">[</span><span class="n">chu_all</span> <span class="o">==</span> <span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="n">tick_label_map</span><span class="p">[</span><span class="s2">"3"</span><span class="p">]</span>  <span class="c1"># chu3</span>
+    <span class="n">chu_all</span><span class="p">[</span><span class="n">chu_all</span> <span class="o">==</span> <span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="n">tick_label_map</span><span class="p">[</span><span class="s2">"13"</span><span class="p">]</span>  <span class="c1"># chu13</span>
+    <span class="n">chu_all</span><span class="p">[</span><span class="n">chu_all</span> <span class="o">==</span> <span class="mi">13</span><span class="p">]</span> <span class="o">=</span> <span class="n">tick_label_map</span><span class="p">[</span><span class="s2">"23"</span><span class="p">]</span>  <span class="c1"># chu23</span>
+    <span class="n">chu_all</span><span class="p">[</span><span class="n">chu_all</span> <span class="o">==</span> <span class="mi">14</span><span class="p">]</span> <span class="o">=</span> <span class="n">tick_label_map</span><span class="p">[</span><span class="s2">"123"</span><span class="p">]</span>  <span class="c1"># chu123</span>
+
+    <span class="n">chu_time</span> <span class="o">=</span> <span class="n">chu_time</span><span class="p">[</span>
+        <span class="n">chu_all</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="p">]</span>  <span class="c1"># if there is still no chu assignment for that time then remove</span>
+    <span class="n">chu_all</span> <span class="o">=</span> <span class="n">chu_all</span><span class="p">[</span><span class="n">chu_all</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">chu_times</span> <span class="o">=</span> <span class="n">utc_from_nustar_time</span><span class="p">(</span><span class="n">chu_time</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Time</span><span class="p">(</span><span class="n">chu_times</span><span class="p">),</span> <span class="n">chu_all</span><span class="p">,</span> <span class="n">tick_label_map</span></div>
+
+
+
+<div class="viewcode-block" id="livetime_array">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.livetime_array">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">livetime_array</span><span class="p">(</span><span class="n">hk_filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Get an array of the livetime fractions for NuSTAR from a file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    hk_filename : `str`</span>
+<span class="sd">        The FITS file containing the livetime information. Should be of</span>
+<span class="sd">        the form `nu&lt;OBSID&gt;&lt;FPM&gt;_fpm.hk` and may be in the HK folder.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The times and livetimes.</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">hk_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdulist</span><span class="p">:</span>
+        <span class="n">hk_data</span> <span class="o">=</span> <span class="n">hdulist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="n">lvt_times</span> <span class="o">=</span> <span class="n">utc_from_nustar_time</span><span class="p">(</span><span class="n">hk_data</span><span class="p">[</span><span class="s2">"time"</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">hk_livetimes</span> <span class="o">=</span> <span class="n">hk_data</span><span class="p">[</span><span class="s2">"livetime"</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">percent</span>
+
+    <span class="k">return</span> <span class="n">Time</span><span class="p">(</span><span class="n">lvt_times</span><span class="p">),</span> <span class="n">hk_livetimes</span></div>
+
+
+
+<div class="viewcode-block" id="nustar_time_from_utc">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.nustar_time_from_utc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">nustar_time_from_utc</span><span class="p">(</span><span class="n">utc_time</span><span class="p">:</span> <span class="n">Time</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Get the number of seconds from 2010-01-01 for a given UTC time.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    utc_time : `~astropy.time.Time`</span>
+<span class="sd">        The UTC time Astropy object.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    : `~astropy.units.Quantity`</span>
+<span class="sd">        The number of seconds from the NuSTAR epoch.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">utc_time</span> <span class="o">-</span> <span class="n">NUSTAR_EPOCH</span><span class="p">)</span><span class="o">.</span><span class="n">sec</span></div>
+
+
+
+<div class="viewcode-block" id="utc_from_nustar_time">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.utc_from_nustar_time">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">utc_from_nustar_time</span><span class="p">(</span><span class="n">nustar_time</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Get the UTC time from a number of seconds after 2010-01-01.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nustar_time : `~astropy.units.Quantity`</span>
+<span class="sd">        The number of seconds from the NuSTAR epoch.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    : `~astropy.time.Time`</span>
+<span class="sd">        The Astropy time object in UTC.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">NUSTAR_EPOCH</span> <span class="o">+</span> <span class="p">(</span><span class="n">nustar_time</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="make_sunpy_map">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.nustar_evt.make_sunpy_map">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_sunpy_map</span><span class="p">(</span><span class="n">evtdata</span><span class="p">,</span> <span class="n">hdr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Make a sunpy map based on the NuSTAR data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    evtdata: FITS data structure</span>
+<span class="sd">        This should be an hdu.data structure from a NuSTAR FITS file.</span>
+
+<span class="sd">    hdr: FITS header containing the astrometric information</span>
+
+<span class="sd">    **kwargs :</span>
+<span class="sd">        Added to the header.</span>
+<span class="sd">    """</span>
+
+    <span class="c1"># Parse Header keywords</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">hdr</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>  <span class="c1"># noqa</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">"TYPE"</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">hdr</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"X"</span><span class="p">:</span>
+                <span class="n">xval</span> <span class="o">=</span> <span class="n">field</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">hdr</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"Y"</span><span class="p">:</span>
+                <span class="n">yval</span> <span class="o">=</span> <span class="n">field</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">8</span><span class="p">]</span>
+
+    <span class="n">min_x</span> <span class="o">=</span> <span class="n">hdr</span><span class="p">[</span><span class="s2">"TLMIN"</span> <span class="o">+</span> <span class="n">xval</span><span class="p">]</span>
+    <span class="n">min_y</span> <span class="o">=</span> <span class="n">hdr</span><span class="p">[</span><span class="s2">"TLMIN"</span> <span class="o">+</span> <span class="n">yval</span><span class="p">]</span>
+    <span class="n">max_x</span> <span class="o">=</span> <span class="n">hdr</span><span class="p">[</span><span class="s2">"TLMAX"</span> <span class="o">+</span> <span class="n">xval</span><span class="p">]</span>
+    <span class="n">max_y</span> <span class="o">=</span> <span class="n">hdr</span><span class="p">[</span><span class="s2">"TLMAX"</span> <span class="o">+</span> <span class="n">yval</span><span class="p">]</span>
+
+    <span class="n">delx</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">hdr</span><span class="p">[</span><span class="s2">"TCDLT"</span> <span class="o">+</span> <span class="n">xval</span><span class="p">])</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">evtdata</span><span class="p">[</span><span class="s2">"X"</span><span class="p">][:]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">evtdata</span><span class="p">[</span><span class="s2">"Y"</span><span class="p">][:]</span>
+    <span class="n">met</span> <span class="o">=</span> <span class="n">evtdata</span><span class="p">[</span><span class="s2">"TIME"</span><span class="p">][:]</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span>
+    <span class="n">mjdref</span> <span class="o">=</span> <span class="n">hdr</span><span class="p">[</span><span class="s2">"MJDREFI"</span><span class="p">]</span>
+
+    <span class="n">mid_obs_time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">mjdref</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">d</span> <span class="o">+</span> <span class="n">met</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"mjd"</span><span class="p">)</span>
+    <span class="n">sta_obs_time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">mjdref</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">d</span> <span class="o">+</span> <span class="n">met</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"mjd"</span><span class="p">)</span>
+
+    <span class="c1"># Add in the exposure time (or livetime), just a number not units of seconds</span>
+    <span class="n">exp_time</span> <span class="o">=</span> <span class="n">hdr</span><span class="p">[</span><span class="s2">"EXPOSURE"</span><span class="p">]</span>
+
+    <span class="c1"># Assume X and Y are the same size</span>
+    <span class="n">resample</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">scale</span> <span class="o">=</span> <span class="n">delx</span> <span class="o">*</span> <span class="n">resample</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">max_x</span> <span class="o">-</span> <span class="n">min_x</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">resample</span><span class="p">))</span>
+
+    <span class="n">H</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[[</span><span class="n">min_y</span><span class="p">,</span> <span class="n">max_y</span><span class="p">],</span> <span class="p">[</span><span class="n">min_x</span><span class="p">,</span> <span class="n">max_x</span><span class="p">]])</span>
+
+    <span class="c1"># Normalise the data with the exposure (or live) time?</span>
+    <span class="n">pixluname</span> <span class="o">=</span> <span class="s2">"count"</span>
+
+    <span class="n">dict_header</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"DATE-OBS"</span><span class="p">:</span> <span class="n">sta_obs_time</span><span class="o">.</span><span class="n">iso</span><span class="p">,</span>
+        <span class="s2">"EXPTIME"</span><span class="p">:</span> <span class="n">exp_time</span><span class="p">,</span>
+        <span class="s2">"CDELT1"</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
+        <span class="s2">"NAXIS1"</span><span class="p">:</span> <span class="n">bins</span><span class="p">,</span>
+        <span class="s2">"CRVAL1"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">"CRPIX1"</span><span class="p">:</span> <span class="n">bins</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s2">"CUNIT1"</span><span class="p">:</span> <span class="n">PIXELUNIT</span><span class="p">,</span>
+        <span class="s2">"CTYPE1"</span><span class="p">:</span> <span class="s2">"HPLN-TAN"</span><span class="p">,</span>
+        <span class="s2">"CDELT2"</span><span class="p">:</span> <span class="n">scale</span><span class="p">,</span>
+        <span class="s2">"NAXIS2"</span><span class="p">:</span> <span class="n">bins</span><span class="p">,</span>
+        <span class="s2">"CRVAL2"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="s2">"CRPIX2"</span><span class="p">:</span> <span class="n">bins</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span>
+        <span class="s2">"CUNIT2"</span><span class="p">:</span> <span class="n">PIXELUNIT</span><span class="p">,</span>
+        <span class="s2">"CTYPE2"</span><span class="p">:</span> <span class="s2">"HPLT-TAN"</span><span class="p">,</span>
+        <span class="s2">"PIXLUNIT"</span><span class="p">:</span> <span class="n">pixluname</span><span class="p">,</span>
+        <span class="s2">"HGLT_OBS"</span><span class="p">:</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">B0</span><span class="p">(</span><span class="n">mid_obs_time</span><span class="p">),</span>  <span class="c1"># get_sun_B0(mid_obs_time),</span>
+        <span class="s2">"HGLN_OBS"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s2">"RSUN_OBS"</span><span class="p">:</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">angular_radius</span><span class="p">(</span>
+            <span class="n">mid_obs_time</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>  <span class="c1"># sun.solar_semidiameter_angular_size(mid_obs_time).value,</span>
+        <span class="s2">"RSUN_REF"</span><span class="p">:</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>  <span class="c1"># sun.constants.radius.value,</span>
+        <span class="c1"># Assumes dsun_obs in m if don't specify the units, so give units</span>
+        <span class="s2">"DSUN_OBS"</span><span class="p">:</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">coordinates</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">earth_distance</span><span class="p">(</span><span class="n">mid_obs_time</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">astrophys</span><span class="o">.</span><span class="n">au</span><span class="p">,</span>  <span class="c1"># get_sunearth_distance(mid_obs_time).value*u.astrophys.au</span>
+    <span class="p">}</span>
+    <span class="n">dict_header</span> <span class="o">|=</span> <span class="n">kwargs</span>
+    <span class="c1"># For some reason the DSUN_OBS crashed the save...</span>
+
+    <span class="n">header</span> <span class="o">=</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">MetaDict</span><span class="p">(</span><span class="n">dict_header</span><span class="p">)</span>
+
+    <span class="n">nustar_map</span> <span class="o">=</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">header</span><span class="p">)</span>
+    <span class="n">nustar_map</span> <span class="o">=</span> <span class="n">assign_plot_settings</span><span class="p">(</span><span class="n">nustar_map</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">nustar_map</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_submap</span><span class="p">(</span><span class="n">sunpy_map_obj</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">top_right</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Create and return a submap of a Sunpy map object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sunpy_map_obj : ``</span>
+<span class="sd">        The map object.</span>
+
+<span class="sd">    bottom_left : `~astropy.units.Quantity`</span>
+<span class="sd">        The bottom left coordinates of the submap. Unit aware (e.g.,</span>
+<span class="sd">        arc-seconds)</span>
+
+<span class="sd">    top_right : `~astropy.units.Quantity`</span>
+<span class="sd">        The top right coordinates of the submap. Unit aware (e.g.,</span>
+<span class="sd">        arc-seconds)</span>
+<span class="sd">    """</span>
+    <span class="c1"># fix really large plot, instead of going from -3600 to 3600 in x and y</span>
+    <span class="n">bl</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="o">*</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">coordinate_frame</span><span class="p">)</span>
+    <span class="n">tr</span> <span class="o">=</span> <span class="n">SkyCoord</span><span class="p">(</span><span class="o">*</span><span class="n">top_right</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">coordinate_frame</span><span class="p">)</span>
+    <span class="n">_submap</span> <span class="o">=</span> <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">submap</span><span class="p">(</span>
+        <span class="n">bl</span><span class="p">,</span> <span class="n">top_right</span><span class="o">=</span><span class="n">tr</span>
+    <span class="p">)</span>  <span class="c1"># submaps act differently to normal maps</span>
+    <span class="k">return</span> <span class="n">assign_plot_settings</span><span class="p">(</span><span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">_submap</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">_submap</span><span class="o">.</span><span class="n">meta</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_map</span><span class="p">(</span><span class="n">sunpy_map_obj</span><span class="p">,</span> <span class="n">hk_filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Normalize the given map data with its EXPOSURE header keyword.</span>
+
+<span class="sd">    Updates the PIXLUNIT keyword value too.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"PIXLUNIT"</span><span class="p">]</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">"/s"</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">"PIXLUNIT in map object already ends in `/s`. Returning original map."</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">sunpy_map_obj</span>
+
+    <span class="n">lvt_exp</span> <span class="o">=</span> <span class="n">get_livetime_exposure</span><span class="p">(</span>
+        <span class="n">Time</span><span class="p">(</span><span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"start_t"</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"isot"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">"utc"</span><span class="p">),</span>
+        <span class="n">Time</span><span class="p">(</span><span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"end_t"</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s2">"isot"</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">"utc"</span><span class="p">),</span>
+        <span class="n">hk_filename</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">new_data</span> <span class="o">=</span> <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">data</span> <span class="o">/</span> <span class="n">lvt_exp</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">"PIXLUNIT"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s1">'PIXLUNIT'</span><span class="p">]</span><span class="si">}</span><span class="s2">/s"</span>
+    <span class="k">return</span> <span class="n">assign_plot_settings</span><span class="p">(</span><span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">new_data</span><span class="p">,</span> <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">meta</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_livetime_exposure</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">hk_filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Use the HK file and time span to get the livetime corrected exposure."""</span>
+    <span class="n">lvt_times</span><span class="p">,</span> <span class="n">hk_livetimes</span> <span class="o">=</span> <span class="n">livetime_array</span><span class="p">(</span><span class="n">hk_filename</span><span class="p">)</span>
+    <span class="n">new_time_bins</span> <span class="o">=</span> <span class="p">[[</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">]]</span>
+
+    <span class="n">format_lvt_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">lvt_times</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">][:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">lvt_times</span><span class="p">[</span><span class="mi">1</span><span class="p">:][:,</span> <span class="kc">None</span><span class="p">]))</span>
+    <span class="n">new_livetimes</span> <span class="o">=</span> <span class="n">regroup_any_array</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">hk_livetimes</span><span class="p">,</span>
+        <span class="n">old_bins</span><span class="o">=</span><span class="n">format_lvt_times</span><span class="p">,</span>
+        <span class="n">new_bins</span><span class="o">=</span><span class="n">new_time_bins</span><span class="p">,</span>
+        <span class="n">combine_by</span><span class="o">=</span><span class="s2">"mean"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">time_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span><span class="o">.</span><span class="n">sec</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span>
+    <span class="k">return</span> <span class="n">new_livetimes</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">time_diff</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">draw_grid</span><span class="p">(</span><span class="n">sunpy_map_obj</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Draw a grid representing the Sun."""</span>
+    <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">draw_limb</span><span class="p">(</span>
+        <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"black"</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"dashed"</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">)</span>
+    <span class="n">sunpy_map_obj</span><span class="o">.</span><span class="n">draw_grid</span><span class="p">(</span>
+        <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s2">"grey"</span><span class="p">,</span>
+        <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">linestyle</span><span class="o">=</span><span class="s2">"dashed"</span><span class="p">,</span>
+        <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">annotate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

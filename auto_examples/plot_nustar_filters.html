@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using Event Filters &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Full Analysis Pipeline" href="plot_full_pipeline.html" />
+    <link rel="prev" title="Plotting NuSTAR Time Profiles" href="plot_nustar_time_profiles.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">JDHSRPY Example Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar.html">Using <code class="docutils literal notranslate"><span class="pre">NuSTAREvt</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_download_sdo_data.html">Downloading SDO Data and Creating Fe18 Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_multi_maps.html">Plotting NuSTAR and AIA Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_images.html">Plotting NuSTAR Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_spectral_fitting.html">NuSTAR Spectral Fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_time_profiles.html">Plotting NuSTAR Time Profiles</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Using Event Filters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#combining-filters">Combining filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-by-energy">Filter by energy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-by-detector">Filter by detector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-by-time">Filter by time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-by-region">Filter by region</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plot_full_pipeline.html">Full Analysis Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">JDHSRPY Example Gallery</a></li>
+      <li class="breadcrumb-item active">Using Event Filters</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/auto_examples/plot_nustar_filters.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-plot-nustar-filters-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="using-event-filters">
+<span id="sphx-glr-auto-examples-plot-nustar-filters-py"></span><h1>Using Event Filters<a class="headerlink" href="#using-event-filters" title="Link to this heading"></a></h1>
+<p>This example shows tusing the event list filters found in <code class="docutils literal notranslate"><span class="pre">jdhsrpy.list_filters</span></code>.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">ntpath</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">urllib</span><span class="nn">.</span><span class="nn">request</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">time_support</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">TEST_DATA_LOCATION</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">list_filters</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_detector" title="jdhsrpy.list_filters.by_detector"><span class="n">by_detector</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_energy" title="jdhsrpy.list_filters.by_energy"><span class="n">by_energy</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_region" title="jdhsrpy.list_filters.by_region"><span class="n">by_region</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_time" title="jdhsrpy.list_filters.by_time"><span class="n">by_time</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">nustar_evt</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">NustarEvt</span></a><span class="p">,</span> <span class="n">draw_grid</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">visualize</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="w">
+</span></pre></div></div>
+<p>Download an example “sunpos” NuSTAR EVT file.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_sunpos.evt</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>Use the class to load in and work with the file.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">NustarEvt</span></a><span class="p">(</span><span class="n">evt_filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>All of the image and time profile methods and functions that depend on
+the event list accept an event list as an input. If one isn’t given
+then the default cleaned one is used.</p>
+<p>If a user wants to filter the data then all they must do is filter the
+event list and pass it.</p>
+<p>There are two event lists a user might be interested in. For the vast
+majority of cases <code class="docutils literal notranslate"><span class="pre">nustar_object.cleaned_evt_data</span></code> is going to work.
+This even list has already bee filtered to remove bad pixel data,
+only includes grade 0 counts, and to only include counts with energies
+between 2.5 keV and 80 keV.</p>
+<p>The original event list directly from the EVT file is stored in
+<code class="docutils literal notranslate"><span class="pre">nustar_object.evt_data</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">jdhsrpy.list_filters</span></code> module has a number of event list filters
+and a few will be shown here.</p>
+<section id="combining-filters">
+<h2>Combining filters<a class="headerlink" href="#combining-filters" title="Link to this heading"></a></h2>
+<p>All filter functions from <code class="docutils literal notranslate"><span class="pre">jdhsrpy.list_filters</span></code> return an event
+list. This means that these filters can easily be chained together.</p>
+<p>For example, if a user wished to filter an event list by time and
+region then it is possible.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">multiple-filters</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span class="n">time0</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:22:10</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">time1</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:25:30</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">bottom_left</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="n">top_right</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">350</span><span class="p">,</span> <span class="mi">300</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="w">
+</span><span class="n">new_event_data</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_time" title="jdhsrpy.list_filters.by_time"><span class="n">by_time</span></a><span class="p">(</span><span class="w">
+</span>                         <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_region" title="jdhsrpy.list_filters.by_region"><span class="n">by_region</span></a><span class="p">(</span><span class="w">
+</span>                                   <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span><span class="w">
+</span>                                   <span class="n">bottom_left</span><span class="p">,</span><span class="w">
+</span>                                   <span class="n">top_right</span><span class="w">
+</span>                                   <span class="p">)</span><span class="p">,</span><span class="w">
+</span>                         <span class="n">time0</span><span class="p">,</span><span class="w">
+</span>                         <span class="n">time1</span><span class="w">
+</span>                         <span class="p">)</span><span class="w">
+</span></pre></div></div>
+</div>
+<p>The filter order should not matter.</p>
+<p>Examples below shows how to use the newly filtered event list being
+returned from the event list filters.</p>
+</section>
+<section id="filter-by-energy">
+<h2>Filter by energy<a class="headerlink" href="#filter-by-energy" title="Link to this heading"></a></h2>
+<p>Let’s create a time profile from the counts over a few energy ranges.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># choose 3 energy ranges in keV</span><span class="w">
+</span><span class="n">energy_ranges</span> <span class="o">=</span> <span class="p">[</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span><span class="p">,</span> <span class="p">[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span><span class="p">,</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">unix_tai</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="k">for</span> <span class="n">er</span> <span class="ow">in</span> <span class="n">energy_ranges</span><span class="p">:</span><span class="w">
+</span>    <span class="n">timese</span><span class="p">,</span> <span class="n">cte</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array" title="jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array"><span class="n">nustar_object</span><span class="o">.</span><span class="n">count_time_profile_array</span></a><span class="p">(</span><span class="w">
+</span>        <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_energy" title="jdhsrpy.list_filters.by_energy"><span class="n">by_energy</span></a><span class="p">(</span><span class="w">
+</span>            <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span> <span class="n">energy_low</span><span class="o">=</span><span class="n">er</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">energy_high</span><span class="o">=</span><span class="n">er</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w">
+</span>        <span class="p">)</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span>    <span class="n">axes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">(</span><span class="n">timese</span><span class="p">,</span> <span class="n">cte</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">er</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">er</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> keV</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">FPM</span><span class="si">{</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">fpm</span><span class="si">}</span><span class="s2"> energy time profiles</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">right</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Counts</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Time</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">log</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_filters_001.png" srcset="../_images/sphx_glr_plot_nustar_filters_001.png" alt="FPMA energy time profiles" class = "sphx-glr-single-img"/><p>Let’s show off the <code class="docutils literal notranslate"><span class="pre">full_disk_map</span></code> map method while filtering for
+counts 3&lt;=E&lt;15 keV.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># obtain a Sunpy map object of the NuSTAR observation</span><span class="w">
+</span><span class="n">image_range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span><span class="w">
+</span><span class="n">m</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.full_disk_map" title="jdhsrpy.nustar_evt.NustarEvt.full_disk_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">full_disk_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_energy" title="jdhsrpy.list_filters.by_energy"><span class="n">by_energy</span></a><span class="p">(</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span><span class="w">
+</span>        <span class="n">energy_low</span><span class="o">=</span><span class="n">image_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>        <span class="n">energy_high</span><span class="o">=</span><span class="n">image_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="c1"># now use it in plotting, this is now just Sunpy API stuff</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">m</span><span class="p">)</span><span class="w">
+</span><span class="n">m</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">draw_grid</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Energy range: </span><span class="si">{</span><span class="n">image_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">image_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> keV</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_filters_002.png" srcset="../_images/sphx_glr_plot_nustar_filters_002.png" alt="Energy range: 3-15 keV" class = "sphx-glr-single-img"/></section>
+<section id="filter-by-detector">
+<h2>Filter by detector<a class="headerlink" href="#filter-by-detector" title="Link to this heading"></a></h2>
+<p>Let’s create a time profile from the counts from each NuSTAR detector.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">unix_tai</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">timesd</span><span class="p">,</span> <span class="n">ctd</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array" title="jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array"><span class="n">nustar_object</span><span class="o">.</span><span class="n">count_time_profile_array</span></a><span class="p">(</span><span class="w">
+</span>        <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_detector" title="jdhsrpy.list_filters.by_detector"><span class="n">by_detector</span></a><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span> <span class="n">det</span><span class="p">)</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span>    <span class="n">axes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">(</span><span class="n">timesd</span><span class="p">,</span> <span class="n">ctd</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Det</span><span class="si">{</span><span class="n">det</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">FPM</span><span class="si">{</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">fpm</span><span class="si">}</span><span class="s2"> time profile - by detector</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">right</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Counts</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Time</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_filters_003.png" srcset="../_images/sphx_glr_plot_nustar_filters_003.png" alt="FPMA time profile - by detector" class = "sphx-glr-single-img"/><p>As previously stated, the image methods can also accept a new event
+list so let’s try the <code class="docutils literal notranslate"><span class="pre">field_of_view_map</span></code> method and only look at
+detector 0.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># obtain a Sunpy map object of the NuSTAR observation</span><span class="w">
+</span><span class="n">md0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.field_of_view_map" title="jdhsrpy.nustar_evt.NustarEvt.field_of_view_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">field_of_view_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_detector" title="jdhsrpy.list_filters.by_detector"><span class="n">by_detector</span></a><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">md2</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.field_of_view_map" title="jdhsrpy.nustar_evt.NustarEvt.field_of_view_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">field_of_view_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_detector" title="jdhsrpy.list_filters.by_detector"><span class="n">by_detector</span></a><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="c1"># now use it in plotting, this is now just Sunpy API stuff</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">md0</span><span class="p">)</span><span class="w">
+</span><span class="n">md0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">md2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">draw_grid</span><span class="p">(</span><span class="n">md0</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">FPM</span><span class="si">{</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">fpm</span><span class="si">}</span><span class="s2">: Detector 0 (top left) and 2 (bottom right)</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_filters_004.png" srcset="../_images/sphx_glr_plot_nustar_filters_004.png" alt="FPMA: Detector 0 (top left) and 2 (bottom right)" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: Using image-based autoalignment [sunpy.map.mapbase]
+</pre></div>
+</div>
+</section>
+<section id="filter-by-time">
+<h2>Filter by time<a class="headerlink" href="#filter-by-time" title="Link to this heading"></a></h2>
+<p>Let’s create a time profile from the counts over a time range.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">time0</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:22:10</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">time1</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:25:30</span><span class="s2">&quot;</span><span class="w">
+</span><span class="w">
+</span><span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">unix_tai</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">times</span><span class="p">,</span> <span class="n">ct</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array" title="jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array"><span class="n">nustar_object</span><span class="o">.</span><span class="n">count_time_profile_array</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">timest</span><span class="p">,</span> <span class="n">ctt</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array" title="jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array"><span class="n">nustar_object</span><span class="o">.</span><span class="n">count_time_profile_array</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_time" title="jdhsrpy.list_filters.by_time"><span class="n">by_time</span></a><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">time1</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="n">time_bins</span><span class="o">=</span><span class="n">times</span><span class="p">,</span>  <span class="c1"># we can make sure the same time bins are used between profiles</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">Full time</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">(</span><span class="n">timest</span><span class="p">,</span> <span class="n">ctt</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">time0</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">time1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">FPM</span><span class="si">{</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">fpm</span><span class="si">}</span><span class="s2"> time selection profiles</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">right</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Counts</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Time</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_filters_005.png" srcset="../_images/sphx_glr_plot_nustar_filters_005.png" alt="FPMA time selection profiles" class = "sphx-glr-single-img"/><p>Let’s show the time filtered image.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># obtain a Sunpy map object of the NuSTAR observation</span><span class="w">
+</span><span class="n">mt</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.field_of_view_map" title="jdhsrpy.nustar_evt.NustarEvt.field_of_view_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">field_of_view_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_time" title="jdhsrpy.list_filters.by_time"><span class="n">by_time</span></a><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">time1</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="c1"># now use it in plotting, this is now just Sunpy API stuff</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">mt</span><span class="p">)</span><span class="w">
+</span><span class="n">mt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">draw_grid</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Time range: </span><span class="si">{</span><span class="n">time0</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">time1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_filters_006.png" srcset="../_images/sphx_glr_plot_nustar_filters_006.png" alt="Time range: 2021-11-20T02:22:10-2021-11-20T02:25:30" class = "sphx-glr-single-img"/></section>
+<section id="filter-by-region">
+<h2>Filter by region<a class="headerlink" href="#filter-by-region" title="Link to this heading"></a></h2>
+<p>Let’s create a time profile from the counts in a region.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">bottom_left</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="n">top_right</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">350</span><span class="p">,</span> <span class="mi">300</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="w">
+</span><span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">unix_tai</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">timesr</span><span class="p">,</span> <span class="n">ctr</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array" title="jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array"><span class="n">nustar_object</span><span class="o">.</span><span class="n">count_time_profile_array</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_region" title="jdhsrpy.list_filters.by_region"><span class="n">by_region</span></a><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">ct</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">Full observed area</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">(</span><span class="n">timesr</span><span class="p">,</span> <span class="n">ctr</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bottom_left</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">top_right</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">FPM</span><span class="si">{</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">fpm</span><span class="si">}</span><span class="s2"> region time profiles</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">right</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Counts</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Time</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_filters_007.png" srcset="../_images/sphx_glr_plot_nustar_filters_007.png" alt="FPMA region time profiles" class = "sphx-glr-single-img"/><p>Let’s show the region filtered image with the original map in grey
+behind.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># obtain a Sunpy map object of the NuSTAR observation</span><span class="w">
+</span><span class="n">m</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.field_of_view_map" title="jdhsrpy.nustar_evt.NustarEvt.field_of_view_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">field_of_view_map</span></a><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">mr</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt.field_of_view_map" title="jdhsrpy.nustar_evt.NustarEvt.field_of_view_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">field_of_view_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_region" title="jdhsrpy.list_filters.by_region"><span class="n">by_region</span></a><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_evt sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_evt.NustarEvt" title="jdhsrpy.nustar_evt.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span> <span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="c1"># now use it in plotting, this is now just Sunpy API stuff</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">m</span><span class="p">)</span><span class="w">
+</span><span class="n">m</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">Greys</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">mr</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">draw_grid</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Region: </span><span class="si">{</span><span class="n">bottom_left</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">top_right</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_filters_008.png" srcset="../_images/sphx_glr_plot_nustar_filters_008.png" alt="Region: [-500.  150.] arcsec-[-350.  300.] arcsec" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: Using image-based autoalignment [sunpy.map.mapbase]
+</pre></div>
+</div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 3.563 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-nustar-filters-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/5d59a000a8d36c550f33c7a6b7515a22/plot_nustar_filters.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_nustar_filters.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/acec893a1488afde2d1b5d3e3e31fc80/plot_nustar_filters.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_nustar_filters.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/4e71259049e38f578eb5c461a6c8f7e0/plot_nustar_filters.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_nustar_filters.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plot_nustar_time_profiles.html" class="btn btn-neutral float-left" title="Plotting NuSTAR Time Profiles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plot_full_pipeline.html" class="btn btn-neutral float-right" title="Full Analysis Pipeline" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

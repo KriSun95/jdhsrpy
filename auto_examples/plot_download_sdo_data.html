@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Downloading SDO Data and Creating Fe18 Proxy &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Plotting NuSTAR and AIA Images" href="plot_multi_maps.html" />
+    <link rel="prev" title="Using NuSTAREvt" href="plot_nustar.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">JDHSRPY Example Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar.html">Using <code class="docutils literal notranslate"><span class="pre">NuSTAREvt</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Downloading SDO Data and Creating Fe18 Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_multi_maps.html">Plotting NuSTAR and AIA Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_images.html">Plotting NuSTAR Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_spectral_fitting.html">NuSTAR Spectral Fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_time_profiles.html">Plotting NuSTAR Time Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_filters.html">Using Event Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_full_pipeline.html">Full Analysis Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">JDHSRPY Example Gallery</a></li>
+      <li class="breadcrumb-item active">Downloading SDO Data and Creating Fe18 Proxy</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/auto_examples/plot_download_sdo_data.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-plot-download-sdo-data-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="downloading-sdo-data-and-creating-fe18-proxy">
+<span id="sphx-glr-auto-examples-plot-download-sdo-data-py"></span><h1>Downloading SDO Data and Creating Fe18 Proxy<a class="headerlink" href="#downloading-sdo-data-and-creating-fe18-proxy" title="Link to this heading"></a></h1>
+<p>This example shows a function in the package being used to download SDO
+data.</p>
+<p>Following this, the example then goes on to create the Fe18 proxy
+described in Del Zanna 2013</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">ntpath</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">urllib</span><span class="nn">.</span><span class="nn">request</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">sunpy</span><span class="nn">.</span><span class="nn">map</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sunpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sunpy</span><span class="nn">.</span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_time</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">TEST_DATA_LOCATION</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">iron_channel</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-iron_channel sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.iron_channel.create_iron18" title="jdhsrpy.iron_channel.create_iron18"><span class="n">create_iron18</span></a><span class="w">
+</span><span class="w">
+</span><span class="n">TIME_FORMAT</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">general</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">time_format</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>Download 30 second’s worth of data for the 94 A SDO/AIA channel.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">wave_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">94</span><span class="p">,</span> <span class="mi">171</span><span class="p">,</span> <span class="mi">211</span><span class="p">]</span><span class="w">
+</span><span class="n">file_directory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>The following can be used to download 30 seconds worth of data for the
+three SDO/AIA channels. However, let’s avoid the documentation doing
+the download and instead rely on the test data.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">jdhsrpy.download.sdo_download</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">download</span><span class="w"> </span><span class="kn">import</span> <span class="n">sdo_download</span><span class="w">
+</span><span class="n">sdo_download</span><span class="p">(</span><span class="w">
+</span>    <span class="n">start_time</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">2021-11-20T02:25:30</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="n">end_time</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">2021-11-20T02:26:00</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="n">directory</span><span class="o">=</span><span class="n">file_directory</span><span class="p">,</span><span class="w">
+</span>    <span class="n">wave_values</span><span class="o">=</span><span class="n">wave_values</span><span class="p">,</span><span class="w">
+</span>    <span class="n">get_hmi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</div>
+<p>The above code will be skipped here. Let’s rely on the back-up to get
+some files.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">aia_files</span> <span class="o">=</span> <span class="p">[</span><span class="w">
+</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_sdo_data/aia.lev1.94A_2021_11_20T02_25_35.12Z.image_lev1.fits</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_sdo_data/aia.lev1.171A_2021_11_20T02_25_45.35Z.image_lev1.fits</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_sdo_data/aia.lev1.211A_2021_11_20T02_25_45.63Z.image_lev1.fits</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span><span class="k">for</span> <span class="n">wv</span><span class="p">,</span> <span class="n">af</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">wave_values</span><span class="p">,</span> <span class="n">aia_files</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">new_folder</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">wv</span><span class="si">}</span><span class="s2">angstrom</span><span class="s2">&quot;</span><span class="w">
+</span>    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_directory</span><span class="p">,</span> <span class="n">new_folder</span><span class="p">)</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="w">
+</span>    <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_directory</span><span class="p">,</span> <span class="n">new_folder</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">af</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">af</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>Can plot one of the files contents using Sunpy</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">dir_094</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_directory</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">94angstrom</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">file_94</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_094</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">fits</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">]</span><span class="w">
+</span><span class="n">map_094</span> <span class="o">=</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_094</span><span class="p">,</span> <span class="n">file_94</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">map_094</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clip_interval</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">99.99</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">percent</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_download_sdo_data_001.png" srcset="../_images/sphx_glr_plot_download_sdo_data_001.png" alt="AIA $94 \; \mathrm{\mathring{A}}$ 2021-11-20 02:25:35" class = "sphx-glr-single-img"/><p>Create the Fe18 files.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">dir_171</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_directory</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">171angstrom</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">dir_211</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_directory</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">211angstrom</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">dir_fe18</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_directory</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">fe18</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-iron_channel sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.iron_channel.create_iron18" title="jdhsrpy.iron_channel.create_iron18"><span class="n">create_iron18</span></a><span class="p">(</span><span class="n">dir_094</span><span class="p">,</span> <span class="n">dir_171</span><span class="p">,</span> <span class="n">dir_211</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="n">dir_fe18</span><span class="p">,</span> <span class="n">needing_prepped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>/opt/hostedtoolcache/Python/3.14.8/x64/lib/python3.14/site-packages/astropy/io/fits/hdu/image.py:610: VerifyWarning: Invalid 'BLANK' keyword in header.  The 'BLANK' keyword is only applicable to integer data, and will be ignored in this HDU.
+  warnings.warn(msg, VerifyWarning)
+
+[function: create_iron18] Saved 0 submap(s) of 1.
+[]
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">needing_prepped</span></code> input should likely be set to <code class="docutils literal notranslate"><span class="pre">True</span></code> for a
+user as this will prep the AIA file data before creating the Fe18
+proxy channel files.</p>
+<p>However, to avoid downloading SDO/AIA calibration data during the
+documentation build, let’s just set it to <code class="docutils literal notranslate"><span class="pre">False</span></code> here.</p>
+<p>Can plot the result</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">file_fe18</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dir_fe18</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">fits</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">]</span><span class="w">
+</span><span class="n">map_fe18</span> <span class="o">=</span> <span class="n">sunpy</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_fe18</span><span class="p">,</span> <span class="n">file_fe18</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">map_fe18</span><span class="o">.</span><span class="n">plot_settings</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="p">{</span><span class="s2">&quot;</span><span class="s2">cmap</span><span class="s2">&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="s2">Blues_r</span><span class="s2">&quot;</span><span class="p">}</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">map_fe18</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">clip_interval</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">99.99</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">percent</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Fe18 </span><span class="si">{</span><span class="n">parse_time</span><span class="p">(</span><span class="n">map_fe18</span><span class="o">.</span><span class="n">date</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">TIME_FORMAT</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_download_sdo_data_002.png" srcset="../_images/sphx_glr_plot_download_sdo_data_002.png" alt="Fe18 2021-11-20 02:25:35" class = "sphx-glr-single-img"/><p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 13.160 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-download-sdo-data-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/490bc57bce69d2b154446a3bb3ddce5f/plot_download_sdo_data.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_download_sdo_data.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/a9866afda0359e932074383388093443/plot_download_sdo_data.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_download_sdo_data.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/491c5a346689c5c9915be20c684828ac/plot_download_sdo_data.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_download_sdo_data.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plot_nustar.html" class="btn btn-neutral float-left" title="Using NuSTAREvt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plot_multi_maps.html" class="btn btn-neutral float-right" title="Plotting NuSTAR and AIA Images" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

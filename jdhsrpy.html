@@ -1,0 +1,1157 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jdhsrpy package &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="_static/nustarbranding_1280_lq_model.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="jdhsrpy" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other_software.html">Additional NuSTAR Software</a></li>
+<li class="toctree-l1"><a class="reference internal" href="publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">JDHSRPY Example Gallery</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">jdhsrpy</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">jdhsrpy package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.download">jdhsrpy.download module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.download.fido_download"><code class="docutils literal notranslate"><span class="pre">fido_download()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.download.handle_retries"><code class="docutils literal notranslate"><span class="pre">handle_retries()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.download.sdo_download"><code class="docutils literal notranslate"><span class="pre">sdo_download()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.image_filters">jdhsrpy.image_filters module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.image_filters.deconvolve_with_array"><code class="docutils literal notranslate"><span class="pre">deconvolve_with_array()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.image_filters.deconvolve_with_file"><code class="docutils literal notranslate"><span class="pre">deconvolve_with_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.image_filters.gaussian_filter"><code class="docutils literal notranslate"><span class="pre">gaussian_filter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.io">jdhsrpy.io module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.io.read_heasarc_arf"><code class="docutils literal notranslate"><span class="pre">read_heasarc_arf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.io.read_heasarc_rmf"><code class="docutils literal notranslate"><span class="pre">read_heasarc_rmf()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.io.read_nustar_pha"><code class="docutils literal notranslate"><span class="pre">read_nustar_pha()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.iron_channel">jdhsrpy.iron_channel module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.iron_channel.create_iron18"><code class="docutils literal notranslate"><span class="pre">create_iron18()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.iron_channel.get_unprepped_file_time"><code class="docutils literal notranslate"><span class="pre">get_unprepped_file_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.iron_channel.prep"><code class="docutils literal notranslate"><span class="pre">prep()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.list_filters">jdhsrpy.list_filters module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.list_filters.by_detector"><code class="docutils literal notranslate"><span class="pre">by_detector()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.list_filters.by_energy"><code class="docutils literal notranslate"><span class="pre">by_energy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.list_filters.by_good_pix"><code class="docutils literal notranslate"><span class="pre">by_good_pix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.list_filters.by_gradezero"><code class="docutils literal notranslate"><span class="pre">by_gradezero()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.list_filters.by_region"><code class="docutils literal notranslate"><span class="pre">by_region()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.list_filters.by_time"><code class="docutils literal notranslate"><span class="pre">by_time()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.list_filters.event_filter"><code class="docutils literal notranslate"><span class="pre">event_filter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.nustar_evt">jdhsrpy.nustar_evt module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_evt.NustarEvt"><code class="docutils literal notranslate"><span class="pre">NustarEvt</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_evt.chu_state_array"><code class="docutils literal notranslate"><span class="pre">chu_state_array()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_evt.livetime_array"><code class="docutils literal notranslate"><span class="pre">livetime_array()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_evt.make_sunpy_map"><code class="docutils literal notranslate"><span class="pre">make_sunpy_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_evt.nustar_time_from_utc"><code class="docutils literal notranslate"><span class="pre">nustar_time_from_utc()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_evt.sunpos_evt"><code class="docutils literal notranslate"><span class="pre">sunpos_evt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_evt.utc_from_nustar_time"><code class="docutils literal notranslate"><span class="pre">utc_from_nustar_time()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.nustar_spectrum">jdhsrpy.nustar_spectrum module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_spectrum.get_effective_area_info"><code class="docutils literal notranslate"><span class="pre">get_effective_area_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_spectrum.get_observable_info"><code class="docutils literal notranslate"><span class="pre">get_observable_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_spectrum.get_response_info"><code class="docutils literal notranslate"><span class="pre">get_response_info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.nustar_spectrum.nustar_pha_spectrum"><code class="docutils literal notranslate"><span class="pre">nustar_pha_spectrum()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.photon_spectrum">jdhsrpy.photon_spectrum module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.photon_spectrum.thermal"><code class="docutils literal notranslate"><span class="pre">thermal()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.photon_spectrum.thick_target"><code class="docutils literal notranslate"><span class="pre">thick_target()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.screening">jdhsrpy.screening module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.screening.make_gti_file"><code class="docutils literal notranslate"><span class="pre">make_gti_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.screening.time_filtered_evt_file"><code class="docutils literal notranslate"><span class="pre">time_filtered_evt_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.spectral_fitting">jdhsrpy.spectral_fitting module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.spectral_fitting.get_fitter_object"><code class="docutils literal notranslate"><span class="pre">get_fitter_object()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.spectral_fitting.multi_or_single_fit_model"><code class="docutils literal notranslate"><span class="pre">multi_or_single_fit_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.spectral_fitting.set_double_thermal_model"><code class="docutils literal notranslate"><span class="pre">set_double_thermal_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.spectral_fitting.set_double_thermal_single_nonthermal_model"><code class="docutils literal notranslate"><span class="pre">set_double_thermal_single_nonthermal_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.spectral_fitting.set_single_thermal_model"><code class="docutils literal notranslate"><span class="pre">set_single_thermal_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.spectral_fitting.set_single_thermal_single_nonthermal_model"><code class="docutils literal notranslate"><span class="pre">set_single_thermal_single_nonthermal_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.spectral_fitting.set_triple_thermal_model"><code class="docutils literal notranslate"><span class="pre">set_triple_thermal_model()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.utils">jdhsrpy.utils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.utils.assign_plot_settings"><code class="docutils literal notranslate"><span class="pre">assign_plot_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.utils.only_numbers"><code class="docutils literal notranslate"><span class="pre">only_numbers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.utils.regroup_any_array"><code class="docutils literal notranslate"><span class="pre">regroup_any_array()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy.visualize">jdhsrpy.visualize module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.visualize.time_profile_plot"><code class="docutils literal notranslate"><span class="pre">time_profile_plot()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#jdhsrpy.visualize.vertical_line_of_time"><code class="docutils literal notranslate"><span class="pre">vertical_line_of_time()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-jdhsrpy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">jdhsrpy</a></li>
+      <li class="breadcrumb-item active">jdhsrpy package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/jdhsrpy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="jdhsrpy-package">
+<h1>jdhsrpy package<a class="headerlink" href="#jdhsrpy-package" title="Link to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
+</section>
+<section id="module-jdhsrpy.download">
+<span id="jdhsrpy-download-module"></span><h2>jdhsrpy.download module<a class="headerlink" href="#module-jdhsrpy.download" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.download.fido_download">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.download.</span></span><span class="sig-name descname"><span class="pre">fido_download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fetch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/download.html#fido_download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.download.fido_download" title="Link to this definition"></a></dt>
+<dd><p>Handle the common download elements for <cite>sunpy.Fido</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>search</strong> (<cite>tuple</cite>) – The inputs given to the <cite>Fido.search</cite> query.</p></li>
+<li><p><strong>fetch</strong> (<cite>dict</cite>) – Kyeword arguments to be passed to the <cite>Fido.fetch</cite> method. If
+<cite>None</cite> then an empty <cite>dict</cite> object is passed.
+Default: None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list object containing the names of the files that failed to
+download.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>sunpy.UnifiedResponse</cite> object</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>## Download some SDO/AIA data
+&gt;&gt;&gt; from sunpy.net import attrs as a
+&gt;&gt;&gt; search = (a.Time(“2024-04-17T21:30:00”,</p>
+<blockquote>
+<div><blockquote>
+<div><p>“2024-04-17T22:30:00”),</p>
+</div></blockquote>
+<p>a.Instrument(‘AIA’),
+a.Wavelength(wave))</p>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fetch</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span><span class="s2">"path/to/save/</span><span class="si">{file}</span><span class="s2">"</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filepaths</span> <span class="o">=</span> <span class="n">fido_download</span><span class="p">(</span><span class="n">search</span><span class="p">,</span> <span class="n">fetch</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>## Download some SDO/HMI data
+&gt;&gt;&gt; from sunpy.net import attrs as a
+&gt;&gt;&gt; search = (a.Time(“2024-04-17T21:30:00”,</p>
+<blockquote>
+<div><blockquote>
+<div><p>“2024-04-17T22:30:00”),</p>
+</div></blockquote>
+<p>a.Instrument(‘hmi’),
+a.Physobs(‘LOS_magnetic_field’))</p>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fetch</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span><span class="s2">"path/to/save/</span><span class="si">{file}</span><span class="s2">"</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filepaths</span> <span class="o">=</span> <span class="n">fido_download</span><span class="p">(</span><span class="n">search</span><span class="p">,</span> <span class="n">fetch</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.download.handle_retries">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.download.</span></span><span class="sig-name descname"><span class="pre">handle_retries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepaths</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">needed_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/download.html#handle_retries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.download.handle_retries" title="Link to this definition"></a></dt>
+<dd><p>If a file(s) isn’t downloaded straight away, retry the download.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepaths</strong> (<cite>sunpy.UnifiedResponse</cite> object) – An object used to store the failed downloaded files.</p></li>
+<li><p><strong>tries</strong> (<cite>int</cite>) – The number of times to retry downloading the given files.
+Default: 5</p></li>
+<li><p><strong>needed_files</strong> (<cite>list[str]</cite>) – A list of files already needed to be returned if failed after
+retrying <cite>tries</cite> times.For example, [] which is the value taken
+if input is <cite>None</cite>. If this is a list object then the failed
+files will be appended to this list.
+Default: None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list object containing the file names of the failed downloads
+after retrying.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>list[str]</cite></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>## Retry failed downloads and return a list still un-downloaded
+&gt;&gt;&gt; needed_files = handle_retries(filepaths)</p>
+<p>## If a list of un-downloaded already exists then pass to append
+&gt;&gt;&gt; needed_files = handle_retries(filepaths, needed_files=needed_files)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.download.sdo_download">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.download.</span></span><span class="sig-name descname"><span class="pre">sdo_download</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_hmi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/download.html#sdo_download"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.download.sdo_download" title="Link to this definition"></a></dt>
+<dd><p>Allows the download of SDO/AIA and /HMI data.</p>
+<p>If the files already exist in the same directory, they will not be
+downloaded again.</p>
+<p><strong>* Due to downloading stuff, this function might need to be run
+several times. *</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<cite>str</cite>, <cite>None</cite>) – The start time (UTC) for the data. In the following format; e.g.,
+“2024-04-17T21:57:00”.</p></li>
+<li><p><strong>end_time</strong> (<cite>str</cite>, <cite>None</cite>) – The end time (UTC) for the data. In the following format; e.g.,
+“2024-04-17T22:30:00”.</p></li>
+<li><p><strong>directory</strong> (<cite>str</cite>) – The directory where the SDO files will be saved. Default is the
+current directory. Default is <cite>os.getcwd()</cite> if <cite>None</cite>.
+Default: None</p></li>
+<li><p><strong>wave_values</strong> (<cite>list[int]</cite>, <cite>None</cite>) – A list of the wavelengths (in angstroms) to be downloaded. For
+example, [94, 131, 171, 211, 1600, 1700] which is the value
+taken if input is <cite>None</cite>.
+Default: None</p></li>
+<li><p><strong>get_hmi</strong> (<cite>Bool</cite>) – A boolean flag where, if True, HMI LOS data will also be
+downloaded.
+Default: False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list object containing the names of the files that failed to
+download.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>list[str]</cite></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p># Default behaviour for the FOXSI M1 flare time
+&gt;&gt;&gt; sdo_download()</p>
+<p># Extend the time interval, download a subset of wavelengths,
+# define a specific directory, and get the SDO/HMI data as well
+&gt;&gt;&gt; sdo_download(start_time=”2024-04-17T21:30:00”, end_time=”2024-04-17T22:45:00”, directory=”path/to/save/directory/”, wave_values=[94,171], get_hmi=True)</p>
+<p># Only download SDO/HMI LOS data
+&gt;&gt;&gt; sdo_download(…, wave_values=[], get_hmi=True)</p>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.image_filters">
+<span id="jdhsrpy-image-filters-module"></span><h2>jdhsrpy.image_filters module<a class="headerlink" href="#module-jdhsrpy.image_filters" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.image_filters.deconvolve_with_array">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.image_filters.</span></span><span class="sig-name descname"><span class="pre">deconvolve_with_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sunpy_map_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_array</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/image_filters.html#deconvolve_with_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.image_filters.deconvolve_with_array" title="Link to this definition"></a></dt>
+<dd><p>Take a map and a point spread function and deconvolve using the
+Richardson-Lucy method with a number of iterations.</p>
+<p>[1] <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.restoration.html#skimage.restoration.richardson_lucy">https://scikit-image.org/docs/stable/api/skimage.restoration.html#skimage.restoration.richardson_lucy</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sunpy_map_obj</strong> (<code class="docutils literal notranslate"><span class="pre">~sunpy.map.Map</span></code>) – The map for the filter to be applied to.</p></li>
+<li><p><strong>psf_array</strong> (<code class="docutils literal notranslate"><span class="pre">~numpy.ndarray</span></code>) – The PSF you want to use.</p></li>
+<li><p><strong>**kwargs</strong> (Passed to <code class="docutils literal notranslate"><span class="pre">~skimage.restoration.richardson_lucy</span></code>. The) – Default for the clip input will be False and the number of
+iterations (num_iter) will be 100.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.image_filters.deconvolve_with_file">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.image_filters.</span></span><span class="sig-name descname"><span class="pre">deconvolve_with_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sunpy_map_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oa_to_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hor_to_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/image_filters.html#deconvolve_with_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.image_filters.deconvolve_with_file" title="Link to this definition"></a></dt>
+<dd><p>Take a map and a point spread function and deconvolve using the
+Richardson-Lucy method with a number of iterations.</p>
+<p>[1] <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.restoration.html#skimage.restoration.richardson_lucy">https://scikit-image.org/docs/stable/api/skimage.restoration.html#skimage.restoration.richardson_lucy</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sunpy_map_obj</strong> (<code class="docutils literal notranslate"><span class="pre">~sunpy.map.Map</span></code>) – The map for the filter to be applied to.</p></li>
+<li><p><strong>psf_file</strong> (<cite>str</cite>) – The file containing the NuSTAR PSF. This should be in the user’s
+CALDB install, in the location “…/caldb/data/nustar/fpm/bcf/psf/”
+with the name format “nu&lt;FPM&gt;2dpsfen1_20100101v001.fits”, where
+&lt;FPM&gt; will be A or B.</p></li>
+<li><p><strong>oa_to_source</strong> (<em>float</em>) – Angle subtended between the optical axis (OA), observer, and the
+X-ray source in arcminutes (0&lt;=oa_to_source&lt;8.5 arcminutes),
+i.e. radial distance to the source from the OA. Chooses the
+correct PSF data to use. If None, then assumes source is on-axis
+with an <cite>oa_to_source</cite> of 0.
+Default: None</p></li>
+<li><p><strong>hor_to_source</strong> (<em>float</em>) – Angle subtended between horizontal through the optical axis (OA),
+and the line through the X-ray source and OA in degrees.
+Clockwise is positive and anticlockwise is negative. Symmetric
+reflected in the origin so -90&lt;=hor_to_source&lt;=90. If None,
+assumes no rotation is needed with an <cite>hor_to_source</cite> of 0.
+Default: None</p></li>
+<li><p><strong>**kwargs</strong> (Passed to <code class="docutils literal notranslate"><span class="pre">~skimage.restoration.richardson_lucy</span></code>. The) – Default for the clip input will be False and the number of
+iterations will be 10.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.image_filters.gaussian_filter">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.image_filters.</span></span><span class="sig-name descname"><span class="pre">gaussian_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sunpy_map_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/image_filters.html#gaussian_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.image_filters.gaussian_filter" title="Link to this definition"></a></dt>
+<dd><p>Takes a Sunpy map and applies a Gaussian filter.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">~scipy.ndimage.gaussian_filter</span></code> for the method.</p>
+<p>[1] <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.gaussian_filter.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.gaussian_filter.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sunpy_map_obj</strong> (<code class="docutils literal notranslate"><span class="pre">~sunpy.map.Map</span></code>) – The map for the filter to be applied to.</p></li>
+<li><p><strong>sigma</strong> (<em>scalar</em><em> or </em><em>sequence</em><em> of </em><em>scalars</em><em> or </em><em>None</em>) – Standard deviation for Gaussian kernel. The standard deviations
+of the Gaussian filter are given for each axis as a sequence, or
+as a single number, in which case it is equal for all axes. If
+None, then NuSTAR’s FWHM of 18” and the default 2.45810736 arc/pix
+will be used.</p></li>
+<li><p><strong>**kwargs</strong> (Passed to <code class="docutils literal notranslate"><span class="pre">~scipy.ndimage.gaussian_filter</span></code>. The mode) – default is “nearest” if none is given.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The altered Sunpy map object</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">~sunpy.map.Map</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.io">
+<span id="jdhsrpy-io-module"></span><h2>jdhsrpy.io module<a class="headerlink" href="#module-jdhsrpy.io" title="Link to this heading"></a></h2>
+<p>Module containing functions that load HEASARC compliant files.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.io.read_heasarc_arf">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.io.</span></span><span class="sig-name descname"><span class="pre">read_heasarc_arf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/io.html#read_heasarc_arf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.io.read_heasarc_arf" title="Link to this definition"></a></dt>
+<dd><p>Read a HEASARC compliant <cite>.arf</cite> file and extract useful information.</p>
+<p>[1] <a class="reference external" href="https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/docs/memos/cal_gen_92_002/cal_gen_92_002.html">https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/docs/memos/cal_gen_92_002/cal_gen_92_002.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> (<cite>str</cite>, <cite>file-like</cite> or <cite>pathlib.Path</cite>) – A <cite>.arf</cite> file (see <cite>~astropy.fits.io.open</cite> for details ).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>The effective area data component from the file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.io.read_heasarc_rmf">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.io.</span></span><span class="sig-name descname"><span class="pre">read_heasarc_rmf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/io.html#read_heasarc_rmf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.io.read_heasarc_rmf" title="Link to this definition"></a></dt>
+<dd><p>Read a HEASARC compliant <cite>.rmf</cite> file and extract useful information.</p>
+<p>[1] <a class="reference external" href="https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/docs/memos/cal_gen_92_002/cal_gen_92_002.html">https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/docs/memos/cal_gen_92_002/cal_gen_92_002.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> (<cite>str</cite>, <cite>file-like</cite> or <cite>pathlib.Path</cite>) – A <cite>.rmf</cite> file (see <cite>~astropy.fits.io.open</cite> for details).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>The channel bin data mapping (channel number to energy for the</em></p></li>
+<li><p><em>corresponding PHA file) and the RMF &amp; photon channel data.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.io.read_nustar_pha">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.io.</span></span><span class="sig-name descname"><span class="pre">read_nustar_pha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/io.html#read_nustar_pha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.io.read_nustar_pha" title="Link to this definition"></a></dt>
+<dd><p>Read a <cite>.pha</cite> file and extract data ande header information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file</strong> (<cite>str</cite>, <cite>file-like</cite> or <cite>pathlib.Path</cite>) – A <cite>.pha</cite> file (see <cite>~astropy.fits.io.open</cite> for details).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>The counts and channel data component and the livetime header</em></p></li>
+<li><p><em>component.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.iron_channel">
+<span id="jdhsrpy-iron-channel-module"></span><h2>jdhsrpy.iron_channel module<a class="headerlink" href="#module-jdhsrpy.iron_channel" title="Link to this heading"></a></h2>
+<p>Functions to create proxy AIA channels.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.iron_channel.create_iron18">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.iron_channel.</span></span><span class="sig-name descname"><span class="pre">create_iron18</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dir_094</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_171</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dir_211</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">needing_prepped</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/iron_channel.html#create_iron18"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.iron_channel.create_iron18" title="Link to this definition"></a></dt>
+<dd><p>Takes the 94, 171, 211 channels from SDO/AIA to create an iron18 emission proxy (Del Zanna 2013).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dir_***</strong> (<em>str</em>) – The string of the directory with the 94A (dir_094), 171A (dir_171), and 211A (dir_211) files.</p></li>
+<li><p><strong>outdir</strong> (<em>str</em>) – Directory for the output iron18 files.</p></li>
+<li><p><strong>needing_prepped</strong> (<em>bool</em>) – Is the AIA data in dir_*** needing prepped?</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filenames of the iron 18 files.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.iron_channel.get_unprepped_file_time">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.iron_channel.</span></span><span class="sig-name descname"><span class="pre">get_unprepped_file_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename_time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/iron_channel.html#get_unprepped_file_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.iron_channel.get_unprepped_file_time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.iron_channel.prep">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.iron_channel.</span></span><span class="sig-name descname"><span class="pre">prep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">smap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/iron_channel.html#prep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.iron_channel.prep" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-jdhsrpy.list_filters">
+<span id="jdhsrpy-list-filters-module"></span><h2>jdhsrpy.list_filters module<a class="headerlink" href="#module-jdhsrpy.list_filters" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.list_filters.by_detector">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.list_filters.</span></span><span class="sig-name descname"><span class="pre">by_detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/list_filters.html#by_detector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.list_filters.by_detector" title="Link to this definition"></a></dt>
+<dd><p>Filter and return event list filtered for the desired detector.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.list_filters.by_energy">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.list_filters.</span></span><span class="sig-name descname"><span class="pre">by_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/list_filters.html#by_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.list_filters.by_energy" title="Link to this definition"></a></dt>
+<dd><p>Apply energy filtering to the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_data</strong> (<em>FITS data class</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p></li>
+<li><p><strong>energy_low</strong> (<em>float</em>) – Low-side energy bound for the map you want to produce (in keV).
+Defaults to 2.5 keV.</p></li>
+<li><p><strong>energy_high</strong> (<em>float</em>) – High-side energy bound for the map you want to produce (in keV).
+Defaults to 10 keV.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.list_filters.by_good_pix">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.list_filters.</span></span><span class="sig-name descname"><span class="pre">by_good_pix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fpm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/list_filters.html#by_good_pix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.list_filters.by_good_pix" title="Link to this definition"></a></dt>
+<dd><p>Do some basic filtering on known bad pixels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_data</strong> (<em>FITS data class</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p></li>
+<li><p><strong>fpm</strong> (<em>{&quot;A&quot;</em><em> | </em><em>&quot;B&quot;}</em>) – Which FPM you’re filtering on. Assumes A if not set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>goodinds</strong> – Index of event_data that passes the filtering.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>iterable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.list_filters.by_gradezero">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.list_filters.</span></span><span class="sig-name descname"><span class="pre">by_gradezero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/list_filters.html#by_gradezero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.list_filters.by_gradezero" title="Link to this definition"></a></dt>
+<dd><p>Only accept counts with GRADE==0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event_data</strong> (<em>FITS data class</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>goodinds</strong> – Index of event_data that passes the filtering.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>iterable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.list_filters.by_region">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.list_filters.</span></span><span class="sig-name descname"><span class="pre">by_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_right</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/list_filters.html#by_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.list_filters.by_region" title="Link to this definition"></a></dt>
+<dd><p>Filter and return event list filtered for a square region.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.list_filters.by_time">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.list_filters.</span></span><span class="sig-name descname"><span class="pre">by_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/list_filters.html#by_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.list_filters.by_time" title="Link to this definition"></a></dt>
+<dd><p>Only include counts within a given time range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_data</strong> (<em>FITS data class</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p></li>
+<li><p><strong>start</strong> (<cite>str</cite>) – Input two times in the form ‘yyyy/mm/dd, HH:MM:SS’
+(e.g. ‘2019/03/06, 16:45:30’) for the time range,
+default is the whole observation for the file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>goodinds</strong> – Index of event_data that lies within the time range.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>iterable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.list_filters.event_filter">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.list_filters.</span></span><span class="sig-name descname"><span class="pre">event_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fpm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FPMA'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tmrng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/list_filters.html#event_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.list_filters.event_filter" title="Link to this definition"></a></dt>
+<dd><dl>
+<dt>All in one filter module. By default applies an energy cut,</dt><dd><p>selects only events with grade == 0, and removes known hot pixel.</p>
+<p>Note that this module returns a cleaned eventlist rather than
+the indices to the cleaned events.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_data</strong> (<em>FITS data structure</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p></li>
+<li><p><strong>fpm</strong> (<em>{&quot;FPMA&quot;</em><em> | </em><em>&quot;FPMB&quot;}</em>) – Which FPM you’re filtering on. Defaults to FPMA.</p></li>
+<li><p><strong>energy_low</strong> (<em>float</em>) – Low-side energy bound for the map you want to produce (in keV).
+Defaults to 2.5 keV.</p></li>
+<li><p><strong>energy_high</strong> (<em>float</em>) – High-side energy bound for the map you want to produce (in keV).
+Defaults to 10 keV.</p></li>
+<li><p><strong>tmrng</strong> (<em>list</em><em> of </em><em>strings</em><em>, </em><em>length 2</em>) – Input two times in the form ‘yyyy-mm-ddTHH:MM:SS.ZZZ’
+(e.g. ‘2010-01-01T00:00:00.000’) for the time range,
+default is the whole observation for the file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>cleanevt</strong> – This is the subset of event_data that pass the data selection cuts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FITS data class.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.nustar_evt">
+<span id="jdhsrpy-nustar-evt-module"></span><h2>jdhsrpy.nustar_evt module<a class="headerlink" href="#module-jdhsrpy.nustar_evt" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_evt.</span></span><span class="sig-name descname"><span class="pre">NustarEvt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt_filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to load in and work with NuSTAR EVT and EVT related files.</p>
+<p>For full functionality, this class expects an EVT file with
+coordinates already converted to solar X/Y. However, this only
+affects the image plotting methods.</p>
+<p>See <code class="docutils literal notranslate"><span class="pre">~jdhsrpy.nustar_evt.sunpos_evt</span></code> for more details on obtaining
+the necessary file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>evt_filename</strong> (<cite>str</cite>) – The path and file name to the EVT file.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.clean_evt">
+<span class="sig-name descname"><span class="pre">clean_evt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fpm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_low</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_high</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.clean_evt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.clean_evt" title="Link to this definition"></a></dt>
+<dd><p>Filter the event list.</p>
+<p>Filter by energy (default 1.6&lt;=E&lt;80), only grade 0,
+and remove events from bad pixels from the given FPM.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array">
+<span class="sig-name descname"><span class="pre">count_time_profile_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_binning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.count_time_profile_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array" title="Link to this definition"></a></dt>
+<dd><p>Get counts and time bins for plotting a NuSTAR time profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_data</strong> – The event list. If <cite>None</cite> then <cite>self.cleaned_evt_data</cite> will
+be used.
+Default: None</p></li>
+<li><p><strong>time_bins</strong> – Takes priority over <cite>time_binning</cite>, <cite>start_time</cite>, and
+<cite>stop_time</cite>.
+Default: None</p></li>
+<li><p><strong>time_binning</strong> – If <cite>None</cite> then a default value is used.
+Default: None</p></li>
+<li><p><strong>start_time</strong> – If <cite>None</cite> then a default value is used.
+Default: None</p></li>
+<li><p><strong>end_time</strong> – If <cite>None</cite> then a default value is used.
+Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array_from_binning_array">
+<span class="sig-name descname"><span class="pre">count_time_profile_array_from_binning_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.count_time_profile_array_from_binning_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array_from_binning_array" title="Link to this definition"></a></dt>
+<dd><p>Get counts and time bins for plotting a NuSTAR time profile.</p>
+<p>User given time bins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_data</strong> – The event list. If <cite>None</cite> then <cite>self.cleaned_evt_data</cite> will
+be used.
+Default: None</p></li>
+<li><p><strong>time_bins</strong> – Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array_from_start_stop_binning">
+<span class="sig-name descname"><span class="pre">count_time_profile_array_from_start_stop_binning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_binning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.count_time_profile_array_from_start_stop_binning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.count_time_profile_array_from_start_stop_binning" title="Link to this definition"></a></dt>
+<dd><p>Get counts and time bins for plotting a NuSTAR time profile.</p>
+<p>User given start, stop, and/or time bin size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_data</strong> – The event list. If <cite>None</cite> then <cite>self.cleaned_evt_data</cite> will
+be used.
+Default: None</p></li>
+<li><p><strong>time_binning</strong> – Default: None</p></li>
+<li><p><strong>start_time</strong> – Default: None</p></li>
+<li><p><strong>end_time</strong> – Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.field_of_view_bounds">
+<span class="sig-name descname"><span class="pre">field_of_view_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sunpy_map_obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.field_of_view_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.field_of_view_bounds" title="Link to this definition"></a></dt>
+<dd><p>Obtain the on-disk bounds of the NuSTAR event list.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.field_of_view_map">
+<span class="sig-name descname"><span class="pre">field_of_view_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.field_of_view_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.field_of_view_map" title="Link to this definition"></a></dt>
+<dd><p>Return a map that is bound by where the event counts are.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.full_disk_bounds">
+<span class="sig-name descname"><span class="pre">full_disk_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.full_disk_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.full_disk_bounds" title="Link to this definition"></a></dt>
+<dd><p>Obtain the on-disk bounds of the NuSTAR event list.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.full_disk_map">
+<span class="sig-name descname"><span class="pre">full_disk_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.full_disk_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.full_disk_map" title="Link to this definition"></a></dt>
+<dd><p>Return a Sunpy map of the NuSTAR data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.nustar_map">
+<span class="sig-name descname"><span class="pre">nustar_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bottom_left</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.nustar_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.nustar_map" title="Link to this definition"></a></dt>
+<dd><p>Create a map with custom bounds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bottom_left</strong> (<cite>~astropy.units.Quantity</cite>) – The bottom left coordinates of the submap. Unit aware (e.g.,
+arc-seconds)</p></li>
+<li><p><strong>top_right</strong> (<cite>~astropy.units.Quantity</cite>) – The top right coordinates of the submap. Unit aware (e.g.,
+arc-seconds)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.NustarEvt.rate_time_profile_array">
+<span class="sig-name descname"><span class="pre">rate_time_profile_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hk_filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_binning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#NustarEvt.rate_time_profile_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.NustarEvt.rate_time_profile_array" title="Link to this definition"></a></dt>
+<dd><p>Get counts and time bins for plotting a NuSTAR time profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hk_filename</strong> (<cite>str</cite>) – The FITS file containing the livetime information. Should be of
+the form <cite>nu&lt;OBSID&gt;&lt;FPM&gt;_fpm.hk</cite> and may be in the HK folder.</p></li>
+<li><p><strong>event_data</strong> – The event list. If <cite>None</cite> then <cite>self.cleaned_evt_data</cite> will
+be used.
+Default: None</p></li>
+<li><p><strong>time_bins</strong> – Takes priority over <cite>time_binning</cite>, <cite>start_time</cite>, and
+<cite>stop_time</cite>.
+Default: None</p></li>
+<li><p><strong>time_binning</strong> – If <cite>None</cite> then a default value is used.
+Default: None</p></li>
+<li><p><strong>start_time</strong> – If <cite>None</cite> then a default value is used.
+Default: None</p></li>
+<li><p><strong>end_time</strong> – If <cite>None</cite> then a default value is used.
+Default: None</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.chu_state_array">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_evt.</span></span><span class="sig-name descname"><span class="pre">chu_state_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chu_filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#chu_state_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.chu_state_array" title="Link to this definition"></a></dt>
+<dd><p>Get an array of camera head unit states for NuSTAR from a file.</p>
+<p>[1] <a class="reference external" href="https://github.com/ianan/nustar_sac/blob/master/idl/load_nschu.pro">https://github.com/ianan/nustar_sac/blob/master/idl/load_nschu.pro</a>
+[2] <a class="reference external" href="https://github.com/NuSTAR/nustar_solar/blob/master/deprecated/solar_mosaic_20150429/read_chus.pro">https://github.com/NuSTAR/nustar_solar/blob/master/deprecated/solar_mosaic_20150429/read_chus.pro</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>chu_filename</strong> (<cite>str</cite>) – The FITS file containing the CHU information. Should be of the
+form <cite>nu&lt;OBSID&gt;_chu123.fits</cite> and may be in the HK folder.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>The times, CHU states and corresponding labels.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.livetime_array">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_evt.</span></span><span class="sig-name descname"><span class="pre">livetime_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hk_filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#livetime_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.livetime_array" title="Link to this definition"></a></dt>
+<dd><p>Get an array of the livetime fractions for NuSTAR from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>hk_filename</strong> (<cite>str</cite>) – The FITS file containing the livetime information. Should be of
+the form <cite>nu&lt;OBSID&gt;&lt;FPM&gt;_fpm.hk</cite> and may be in the HK folder.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>The times and livetimes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.make_sunpy_map">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_evt.</span></span><span class="sig-name descname"><span class="pre">make_sunpy_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evtdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#make_sunpy_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.make_sunpy_map" title="Link to this definition"></a></dt>
+<dd><p>Make a sunpy map based on the NuSTAR data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>evtdata</strong> (<em>FITS data structure</em>) – This should be an hdu.data structure from a NuSTAR FITS file.</p></li>
+<li><p><strong>hdr</strong> (<em>FITS header containing the astrometric information</em>)</p></li>
+<li><p><strong>**kwargs</strong> – Added to the header.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.nustar_time_from_utc">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_evt.</span></span><span class="sig-name descname"><span class="pre">nustar_time_from_utc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">utc_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Time</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#nustar_time_from_utc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.nustar_time_from_utc" title="Link to this definition"></a></dt>
+<dd><p>Get the number of seconds from 2010-01-01 for a given UTC time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>utc_time</strong> (<cite>~astropy.time.Time</cite>) – The UTC time Astropy object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The number of seconds from the NuSTAR epoch.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~astropy.units.Quantity</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.sunpos_evt">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_evt.</span></span><span class="sig-name descname"><span class="pre">sunpos_evt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#sunpos_evt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.sunpos_evt" title="Link to this definition"></a></dt>
+<dd><p>Convert a .evt NuSTAR file to a _sunpos.evt file.</p>
+<p>The new file will contain Solar-X/-Y coordinates for each event.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_evt.utc_from_nustar_time">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_evt.</span></span><span class="sig-name descname"><span class="pre">utc_from_nustar_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nustar_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Quantity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_evt.html#utc_from_nustar_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_evt.utc_from_nustar_time" title="Link to this definition"></a></dt>
+<dd><p>Get the UTC time from a number of seconds after 2010-01-01.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nustar_time</strong> (<cite>~astropy.units.Quantity</cite>) – The number of seconds from the NuSTAR epoch.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Astropy time object in UTC.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~astropy.time.Time</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.nustar_spectrum">
+<span id="jdhsrpy-nustar-spectrum-module"></span><h2>jdhsrpy.nustar_spectrum module<a class="headerlink" href="#module-jdhsrpy.nustar_spectrum" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_spectrum.get_effective_area_info">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_spectrum.</span></span><span class="sig-name descname"><span class="pre">get_effective_area_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arf_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FITS_rec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_spectrum.html#get_effective_area_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_spectrum.get_effective_area_info" title="Link to this definition"></a></dt>
+<dd><p>Extract the channel, observable, and livetime from NuSTAR ARF file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_spectrum.get_observable_info">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_spectrum.</span></span><span class="sig-name descname"><span class="pre">get_observable_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pha_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FITS_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pha_header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FITS_rec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_spectrum.html#get_observable_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_spectrum.get_observable_info" title="Link to this definition"></a></dt>
+<dd><p>Extract the channel, observable, and livetime from NuSTAR PHA file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_spectrum.get_response_info">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_spectrum.</span></span><span class="sig-name descname"><span class="pre">get_response_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rmf_cdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FITS_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmf_pdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FITS_rec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_spectrum.html#get_response_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_spectrum.get_response_info" title="Link to this definition"></a></dt>
+<dd><p>Extract the channel, observable, and livetime from NuSTAR RMF file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.nustar_spectrum.nustar_pha_spectrum">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.nustar_spectrum.</span></span><span class="sig-name descname"><span class="pre">nustar_pha_spectrum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counts_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/nustar_spectrum.html#nustar_pha_spectrum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.nustar_spectrum.nustar_pha_spectrum" title="Link to this definition"></a></dt>
+<dd><p>Takes a .pha file and returns plotting information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>Str</em>) – String for the .pha file of the spectrum under investigation.</p></li>
+<li><p><strong>counts_only</strong> (<cite>bool</cite>) – If True, then return just the counts spectrum, else return the
+spectrum in counts/keV/s.
+Default: False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>The energy bin edges, count or count rate per keV, and its error.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.photon_spectrum">
+<span id="jdhsrpy-photon-spectrum-module"></span><h2>jdhsrpy.photon_spectrum module<a class="headerlink" href="#module-jdhsrpy.photon_spectrum" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.photon_spectrum.thermal">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.photon_spectrum.</span></span><span class="sig-name descname"><span class="pre">thermal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">emission_measure</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/photon_spectrum.html#thermal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.photon_spectrum.thermal" title="Link to this definition"></a></dt>
+<dd><p>Thermal bremsstrahlung emission</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energies</strong> (<cite>~numpy.ndarray</cite>) – A 1D array of the energy bin edges.</p></li>
+<li><p><strong>temperature</strong> (<cite>int</cite> | <cite>float</cite>) – The plasma temperature in MK.</p></li>
+<li><p><strong>emission_measure</strong> (<cite>int</cite> | <cite>float</cite>) – The plasma emission measure in cm^-3.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The photon spectrum in ph/keV/s/cm^2 with length one less than
+the <cite>energy</cite> array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~numpy.ndarray</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.photon_spectrum.thick_target">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.photon_spectrum.</span></span><span class="sig-name descname"><span class="pre">thick_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">energies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_eflux</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e_c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/photon_spectrum.html#thick_target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.photon_spectrum.thick_target" title="Link to this definition"></a></dt>
+<dd><p>Single electron power-law thick-target emission</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>energies</strong> (<cite>~numpy.ndarray</cite>) – A 1D array of the energy bin edges.</p></li>
+<li><p><strong>total_eflux</strong> (<cite>int</cite> | <cite>float</cite>) – The electron flux in 1e35 e/s.</p></li>
+<li><p><strong>index</strong> (<cite>int</cite> | <cite>float</cite>) – The power-law index.</p></li>
+<li><p><strong>e_c</strong> (<cite>int</cite> | <cite>float</cite>) – The low-energy cut-off in keV.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The photon spectrum in ph/keV/s/cm^2 with length one less than
+the <cite>energy</cite> array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><cite>~numpy.ndarray</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.screening">
+<span id="jdhsrpy-screening-module"></span><h2>jdhsrpy.screening module<a class="headerlink" href="#module-jdhsrpy.screening" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.screening.make_gti_file">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.screening.</span></span><span class="sig-name descname"><span class="pre">make_gti_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gti_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">good_time_interval</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/screening.html#make_gti_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.screening.make_gti_file" title="Link to this definition"></a></dt>
+<dd><p>Create a new GTI file with your own start and stop time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gti_file</strong> (<em>str</em>) – The original GTI file for the NuSTAR observation. E.g., gti_file=”./nu80414201001B06_gti.fits”.</p></li>
+<li><p><strong>save_name</strong> (<em>str</em>) – The name of your new GTI file. E.g., save_name = “./new_gti.fits”</p></li>
+<li><p><strong>good_time_interval</strong> (<em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – A list made of 2 string with the start and stop time for your good time interval.
+E.g., good_time_interval = [‘2018-09-09 09:13:36’, ‘2018-09-09 09:17:00’] will produce
+a new GTI file with data START=’2018-09-09 09:13:36’ and STOP=’2018-09-09 09:17:00’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>gtiFile = “./nu80414201001B06_gti.fits”
+saveName = “./new_gti.fits”
+goodTimeInterval = [‘2018-09-09T09:13:36’, ‘2018-09-09T09:17:00’]</p>
+<p>make_gti(gtiFile, saveName, goodTimeInterval, overwrite=True)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.screening.time_filtered_evt_file">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.screening.</span></span><span class="sig-name descname"><span class="pre">time_filtered_evt_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evt_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_range</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/screening.html#time_filtered_evt_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.screening.time_filtered_evt_file" title="Link to this definition"></a></dt>
+<dd><p>Takes a .evt file and filters the events list to a given time range.
+Only for region selection, do not use directly with spectral fitting
+software.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> (<em>Str</em>) – File (or directory/file) of the .evt file to be filtered by time.</p></li>
+<li><p><strong>save_name</strong> (<em>str</em>) – The name of your new time filtered file. E.g., save_name = “./new.evt”</p></li>
+<li><p><strong>time_range</strong> (<em>list</em>) – A list of length 2 with the start and end date and time. Must
+be given in a specific format, e.g. time_range=[‘2018/09/10, 16:22:30’, ‘2018/09/10, 16:24:30’].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Creates a new file file with ‘_time_filtered’ before the file extension</em></p></li>
+<li><p><em>and returns the name of the new file.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.spectral_fitting">
+<span id="jdhsrpy-spectral-fitting-module"></span><h2>jdhsrpy.spectral_fitting module<a class="headerlink" href="#module-jdhsrpy.spectral_fitting" title="Link to this heading"></a></h2>
+<p>Essentially a wrapper for sunkit-spex things.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.spectral_fitting.get_fitter_object">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.spectral_fitting.</span></span><span class="sig-name descname"><span class="pre">get_fitter_object</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arf_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmf_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/spectral_fitting.html#get_fitter_object"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.spectral_fitting.get_fitter_object" title="Link to this definition"></a></dt>
+<dd><p>Returns the <code class="docutils literal notranslate"><span class="pre">sunkit-spex.legacy.fitting.fitter.Fitter</span></code> object.</p>
+<p>The fitter object has been initialised with the given strings for
+NuSTAR PHA files.</p>
+<p>If the ARF and RMF files are in the same directory as the PHA with
+the same naming structure then they are not necessary to be given,
+else give a corresponding ARF and/or RMF file for each PHA given.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.spectral_fitting.multi_or_single_fit_model">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.spectral_fitting.</span></span><span class="sig-name descname"><span class="pre">multi_or_single_fit_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/spectral_fitting.html#multi_or_single_fit_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.spectral_fitting.multi_or_single_fit_model" title="Link to this definition"></a></dt>
+<dd><p>Adds a constant to the model if multiple data-sets exist.</p>
+<p>So return <code class="docutils literal notranslate"><span class="pre">C*base_model</span></code> if <code class="docutils literal notranslate"><span class="pre">len(fitter.data.loaded_spec_data)&gt;1</span></code>
+else <code class="docutils literal notranslate"><span class="pre">base_model</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.spectral_fitting.set_double_thermal_model">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.spectral_fitting.</span></span><span class="sig-name descname"><span class="pre">set_double_thermal_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/spectral_fitting.html#set_double_thermal_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.spectral_fitting.set_double_thermal_model" title="Link to this definition"></a></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">fitter.model</span></code> with the <code class="docutils literal notranslate"><span class="pre">f_vth+f_vth</span></code> model.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.spectral_fitting.set_double_thermal_single_nonthermal_model">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.spectral_fitting.</span></span><span class="sig-name descname"><span class="pre">set_double_thermal_single_nonthermal_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/spectral_fitting.html#set_double_thermal_single_nonthermal_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.spectral_fitting.set_double_thermal_single_nonthermal_model" title="Link to this definition"></a></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">fitter.model</span></code> with the <code class="docutils literal notranslate"><span class="pre">f_vth+f_vth+thick_fn</span></code> model.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.spectral_fitting.set_single_thermal_model">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.spectral_fitting.</span></span><span class="sig-name descname"><span class="pre">set_single_thermal_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/spectral_fitting.html#set_single_thermal_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.spectral_fitting.set_single_thermal_model" title="Link to this definition"></a></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">fitter.model</span></code> with the <code class="docutils literal notranslate"><span class="pre">f_vth</span></code> model.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.spectral_fitting.set_single_thermal_single_nonthermal_model">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.spectral_fitting.</span></span><span class="sig-name descname"><span class="pre">set_single_thermal_single_nonthermal_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/spectral_fitting.html#set_single_thermal_single_nonthermal_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.spectral_fitting.set_single_thermal_single_nonthermal_model" title="Link to this definition"></a></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">fitter.model</span></code> with the <code class="docutils literal notranslate"><span class="pre">f_vth+thick_fn</span></code> model.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.spectral_fitting.set_triple_thermal_model">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.spectral_fitting.</span></span><span class="sig-name descname"><span class="pre">set_triple_thermal_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/spectral_fitting.html#set_triple_thermal_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.spectral_fitting.set_triple_thermal_model" title="Link to this definition"></a></dt>
+<dd><p>Set <code class="docutils literal notranslate"><span class="pre">fitter.model</span></code> with the <code class="docutils literal notranslate"><span class="pre">f_vth+f_vth+f_vth</span></code> model.</p>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.utils">
+<span id="jdhsrpy-utils-module"></span><h2>jdhsrpy.utils module<a class="headerlink" href="#module-jdhsrpy.utils" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.utils.assign_plot_settings">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.utils.</span></span><span class="sig-name descname"><span class="pre">assign_plot_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nustar_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/utils.html#assign_plot_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.utils.assign_plot_settings" title="Link to this definition"></a></dt>
+<dd><p>Function to set plot settings that are multiple lines.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.utils.only_numbers">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.utils.</span></span><span class="sig-name descname"><span class="pre">only_numbers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/utils.html#only_numbers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.utils.only_numbers" title="Link to this definition"></a></dt>
+<dd><p>Remove all non-numeric characters from a string.</p>
+<p>For example, “1a2H 3;” becomes “123”.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.utils.regroup_any_array">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.utils.</span></span><span class="sig-name descname"><span class="pre">regroup_any_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Quantity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combine_by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/utils.html#regroup_any_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.utils.regroup_any_array" title="Link to this definition"></a></dt>
+<dd><p>Takes any array of data in old_bins space and rebins along data
+array axis==0 to have new_bins.</p>
+<p>Can specify how the bins are combined: [“sum”, “mean”, “quadrature”].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<cite>~numpy.ndarray</cite> | <cite>~astropy.units.Quantity</cite>) – Array of the data, current bins for the data, and new bins
+for the data. Shape of the bin arrays should be <cite>(N, 2)</cite>
+where <cite>N</cite> is the length of <cite>data</cite>.</p></li>
+<li><p><strong>old_bins</strong> (<cite>~numpy.ndarray</cite> | <cite>~astropy.units.Quantity</cite>) – Array of the data, current bins for the data, and new bins
+for the data. Shape of the bin arrays should be <cite>(N, 2)</cite>
+where <cite>N</cite> is the length of <cite>data</cite>.</p></li>
+<li><p><strong>new_bins</strong> (<cite>~numpy.ndarray</cite> | <cite>~astropy.units.Quantity</cite>) – Array of the data, current bins for the data, and new bins
+for the data. Shape of the bin arrays should be <cite>(N, 2)</cite>
+where <cite>N</cite> is the length of <cite>data</cite>.</p></li>
+<li><p><strong>combine_by</strong> (<em>string</em>) – Defines how to combine multiple bins along axis 0. E.g., “sum”
+adds the data, “mean” averages the data, and “quadrature”
+sums the data in quadrature. If <cite>None</cite>, then “sum” is used.
+Default: None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>The grouped data array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy.visualize">
+<span id="jdhsrpy-visualize-module"></span><h2>jdhsrpy.visualize module<a class="headerlink" href="#module-jdhsrpy.visualize" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.visualize.time_profile_plot">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.visualize.</span></span><span class="sig-name descname"><span class="pre">time_profile_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/visualize.html#time_profile_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.visualize.time_profile_plot" title="Link to this definition"></a></dt>
+<dd><p>Plot a time profile (on a given axes if given).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>times</strong> (<cite>~astropy.time.Time`|`~datetime.datetime</cite>) – The time edges.</p></li>
+<li><p><strong>ydata</strong> (<cite>list`|`~numpy.ndarray</cite>) – The data varying with time. Length will be one less the <cite>times</cite>.
+length.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Axes input.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="jdhsrpy.visualize.vertical_line_of_time">
+<span class="sig-prename descclassname"><span class="pre">jdhsrpy.visualize.</span></span><span class="sig-name descname"><span class="pre">vertical_line_of_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Time</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/jdhsrpy/visualize.html#vertical_line_of_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#jdhsrpy.visualize.vertical_line_of_time" title="Link to this definition"></a></dt>
+<dd><p>Use <cite>axvline</cite> to plot <cite>time</cite> input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>time</strong> (<cite>str`|`astropy.time.core.Time`|`datetime</cite>) – If <cite>str</cite> then need ISOT format. E.g., 2021-11-20T02:25:30.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Axes input.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-jdhsrpy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-jdhsrpy" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="jdhsrpy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
