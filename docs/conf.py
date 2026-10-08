@@ -13,8 +13,6 @@
 import os
 import sys
 
-from sphinx_gallery.sorting import ExplicitOrder
-
 sys.path.insert(0, os.path.abspath(".."))
 
 this_folder = os.path.dirname(__file__)
@@ -77,14 +75,5 @@ html_css_files = [os.path.join(this_folder, "styles", "svg_width_style.css")]
 sphinx_gallery_conf = {
     "examples_dirs": os.path.join("..", "examples"),  # path to your example scripts
     "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
-    "subsection_order": ExplicitOrder(
-        [
-            "../examples/nustar_image_and_time_profile_examples",
-            "../examples/nustar_pipeline_examples",
-            "../examples/spectral_fitting_examples",
-            "../examples/using_non_nustar_data_examples",
-        ]
-    ),
-    "abort_on_example_error": False,
     "default_thumb_file": html_favicon,
 }
