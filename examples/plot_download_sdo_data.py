@@ -75,12 +75,20 @@ map_094.plot(clip_interval=(1, 99.99) * u.percent)
 plt.show()
 
 # %%
-# Create the Fe18 files
+# Create the Fe18 files.
 
 dir_171 = os.path.join(file_directory, "171angstrom")
 dir_211 = os.path.join(file_directory, "211angstrom")
 dir_fe18 = os.path.join(file_directory, "fe18")
-create_iron18(dir_094, dir_171, dir_211, outdir=dir_fe18, needing_prepped=True)
+create_iron18(dir_094, dir_171, dir_211, outdir=dir_fe18, needing_prepped=False)
+
+# %%
+# The ``needing_prepped`` input should likely be set to ``True`` for a
+# user as this will prep the AIA file data before creating the Fe18
+# proxy channel files.
+#
+# However, to avoid downloading SDO/AIA calibration data during the
+# documentation build, let's just set it to ``False`` here.
 
 # %%
 # Can plot the result
