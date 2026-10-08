@@ -45,12 +45,12 @@ nustar_object = NustarEvt(evt_filename=filename_evt)
 # Image filters
 # -------------
 #
-# Any image filter from ``~jdhsrpy.image_filters`` will return a Sunpy 
-# map object. This means that the Sunpy map API can be used with their 
-# output. 
-# 
-# Additionally, these filters can be chained together very easily, with 
-# the output of one filter being able to be passed as an input into 
+# Any image filter from ``~jdhsrpy.image_filters`` will return a Sunpy
+# map object. This means that the Sunpy map API can be used with their
+# output.
+#
+# Additionally, these filters can be chained together very easily, with
+# the output of one filter being able to be passed as an input into
 # another.
 
 # %%

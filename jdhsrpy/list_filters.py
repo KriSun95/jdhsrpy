@@ -2,7 +2,7 @@ import astropy.units as u
 import numpy as np
 from astropy.time import Time
 
-from jdhsrpy import NUSTAR_EPOCH, IMAGE_RES
+from jdhsrpy import IMAGE_RES, NUSTAR_EPOCH
 
 __all__ = [
     "by_detector",
@@ -37,7 +37,9 @@ def by_good_pix(event_data, fpm):
 
     if fpm.find("B") == -1:
         pix_filter = np.invert(
-            (event_data["DET_ID"] == 2) & (event_data["RAWX"] == 16) & (event_data["RAWY"] == 5)
+            (event_data["DET_ID"] == 2)
+            & (event_data["RAWX"] == 16)
+            & (event_data["RAWY"] == 5)
             | (event_data["DET_ID"] == 2)
             & (event_data["RAWX"] == 24)
             & (event_data["RAWY"] == 22)
@@ -53,7 +55,9 @@ def by_good_pix(event_data, fpm):
             | (event_data["DET_ID"] == 3)
             & (event_data["RAWX"] == 15)
             & (event_data["RAWY"] == 3)
-            | (event_data["DET_ID"] == 3) & (event_data["RAWX"] == 5) & (event_data["RAWY"] == 5)
+            | (event_data["DET_ID"] == 3)
+            & (event_data["RAWX"] == 5)
+            & (event_data["RAWY"] == 5)
             | (event_data["DET_ID"] == 3)
             & (event_data["RAWX"] == 22)
             & (event_data["RAWY"] == 7)
@@ -72,7 +76,9 @@ def by_good_pix(event_data, fpm):
         )
     else:
         pix_filter = np.invert(
-            (event_data["DET_ID"] == 0) & (event_data["RAWX"] == 24) & (event_data["RAWY"] == 24)
+            (event_data["DET_ID"] == 0)
+            & (event_data["RAWX"] == 24)
+            & (event_data["RAWY"] == 24)
         )
 
     inds = (pix_filter).nonzero()
@@ -217,8 +223,10 @@ def event_filter(event_data, fpm="FPMA", energy_low=2.5, energy_high=10, tmrng=N
     cleanevt: FITS data class.
         This is the subset of event_data that pass the data selection cuts.
     """
-    
-    evt_timefilter = by_time(event_data, tmrng[0], tmrng[1]) if tmrng is not None else event_data
+
+    evt_timefilter = (
+        by_time(event_data, tmrng[0], tmrng[1]) if tmrng is not None else event_data
+    )
     evt_badfilter = by_good_pix(evt_timefilter, fpm=fpm)
     evt_energy = by_energy(
         evt_badfilter, energy_low=energy_low, energy_high=energy_high
@@ -236,10 +244,15 @@ def by_detector(event_data, detector):
 def by_region(event_data, bottom_left, top_right):
     """Filter and return event list filtered for a square region."""
     pix_map_centre = 1500
-    sol_x_pix = (event_data["X"]-pix_map_centre) << u.pixel
-    sol_y_pix = (event_data["Y"]-pix_map_centre) << u.pixel
-    sol_x_arc = sol_x_pix*IMAGE_RES
-    sol_y_arc = sol_y_pix*IMAGE_RES
-    reg_filter = (bottom_left[0]<=sol_x_arc) & (sol_x_arc<top_right[0]) & (bottom_left[1]<=sol_y_arc) & (sol_y_arc<top_right[1])
+    sol_x_pix = (event_data["X"] - pix_map_centre) << u.pixel
+    sol_y_pix = (event_data["Y"] - pix_map_centre) << u.pixel
+    sol_x_arc = sol_x_pix * IMAGE_RES
+    sol_y_arc = sol_y_pix * IMAGE_RES
+    reg_filter = (
+        (bottom_left[0] <= sol_x_arc)
+        & (sol_x_arc < top_right[0])
+        & (bottom_left[1] <= sol_y_arc)
+        & (sol_y_arc < top_right[1])
+    )
     inds = (reg_filter).nonzero()[0]
     return event_data[inds]

@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from astropy.visualization import time_support
 
 from jdhsrpy import TEST_DATA_LOCATION
-from jdhsrpy.list_filters import by_energy, by_detector, by_time, by_region
+from jdhsrpy.list_filters import by_detector, by_energy, by_region, by_time
 from jdhsrpy.nustar_evt import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
 
@@ -56,10 +56,10 @@ nustar_object = NustarEvt(evt_filename=filename)
 # Combining filters
 # -----------------
 #
-# All filter functions from ``jdhsrpy.list_filters`` return an event 
+# All filter functions from ``jdhsrpy.list_filters`` return an event
 # list. This means that these filters can easily be chained together.
 #
-# For example, if a user wished to filter an event list by time and 
+# For example, if a user wished to filter an event list by time and
 # region then it is possible.
 #
 # .. code-block:: python3
@@ -72,17 +72,17 @@ nustar_object = NustarEvt(evt_filename=filename)
 #
 #    new_event_data = by_time(
 #                             by_region(
-#                                       nustar_object.cleaned_evt_data, 
-#                                       bottom_left, 
+#                                       nustar_object.cleaned_evt_data,
+#                                       bottom_left,
 #                                       top_right
-#                                       ), 
-#                             time0, 
+#                                       ),
+#                             time0,
 #                             time1
 #                             )
 #
 # The filter order should not matter.
 #
-# Examples below shows how to use the newly filtered event list being 
+# Examples below shows how to use the newly filtered event list being
 # returned from the event list filters.
 
 # %%
@@ -188,12 +188,10 @@ times, ct = nustar_object.count_time_profile_array(
     event_data=nustar_object.cleaned_evt_data
 )
 timest, ctt = nustar_object.count_time_profile_array(
-    event_data=by_time(
-        nustar_object.cleaned_evt_data, time0, time1
-    ),
-    time_bins=times # we can make sure the same time bins are used between profiles
+    event_data=by_time(nustar_object.cleaned_evt_data, time0, time1),
+    time_bins=times,  # we can make sure the same time bins are used between profiles
 )
-axes = time_profile_plot(times, ct, label=f"Full time")
+axes = time_profile_plot(times, ct, label="Full time")
 axes = time_profile_plot(timest, ctt, label=f"{time0}-{time1}", axes=axes)
 plt.title(f"FPM{nustar_object.fpm} time selection profiles")
 plt.xticks(rotation=30, ha="right")
@@ -207,11 +205,7 @@ plt.show()
 
 # obtain a Sunpy map object of the NuSTAR observation
 mt = nustar_object.field_of_view_map(
-    event_data=by_time(
-        nustar_object.cleaned_evt_data, 
-        time0, 
-        time1
-    )
+    event_data=by_time(nustar_object.cleaned_evt_data, time0, time1)
 )
 # now use it in plotting, this is now just Sunpy API stuff
 fig = plt.figure()
@@ -233,11 +227,9 @@ top_right = [-350, 300] << u.arcsec
 time_support(format="unix_tai")
 plt.figure()
 timesr, ctr = nustar_object.count_time_profile_array(
-    event_data=by_region(
-        nustar_object.cleaned_evt_data, bottom_left, top_right
-    )
+    event_data=by_region(nustar_object.cleaned_evt_data, bottom_left, top_right)
 )
-axes = time_profile_plot(times, ct, label=f"Full observed area")
+axes = time_profile_plot(times, ct, label="Full observed area")
 axes = time_profile_plot(timesr, ctr, label=f"{bottom_left}-{top_right}", axes=axes)
 plt.title(f"FPM{nustar_object.fpm} region time profiles")
 plt.xticks(rotation=30, ha="right")
@@ -247,15 +239,13 @@ plt.legend()
 plt.show()
 
 # %%
-# Let's show the region filtered image with the original map in grey 
+# Let's show the region filtered image with the original map in grey
 # behind.
 
 # obtain a Sunpy map object of the NuSTAR observation
 m = nustar_object.field_of_view_map()
 mr = nustar_object.field_of_view_map(
-    event_data=by_region(
-        nustar_object.cleaned_evt_data, bottom_left, top_right
-    )
+    event_data=by_region(nustar_object.cleaned_evt_data, bottom_left, top_right)
 )
 # now use it in plotting, this is now just Sunpy API stuff
 fig = plt.figure()
