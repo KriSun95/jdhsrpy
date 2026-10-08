@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from astropy.visualization import time_support
 
 from jdhsrpy import TEST_DATA_LOCATION
-from jdhsrpy.list_filters import by_detector, by_energy, by_time, by_region
+from jdhsrpy.list_filters import by_energy, by_detector, by_time, by_region
 from jdhsrpy.nustar_evt import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
 
@@ -86,43 +86,6 @@ nustar_object = NustarEvt(evt_filename=filename)
 # returned from the event list filters.
 
 # %%
-# Filter by detector
-# ------------------
-#
-# Let's create a time profile from the counts from each NuSTAR detector.
-
-time_support(format="unix_tai")
-plt.figure()
-for det in range(4):
-    timesd, ctd = nustar_object.count_time_profile_array(
-        event_data=by_detector(nustar_object.cleaned_evt_data, det)
-    )
-    axes = time_profile_plot(timesd, ctd, label=f"Det{det}")
-plt.title(f"FPM{nustar_object.fpm} time profile - by detector")
-plt.xticks(rotation=30, ha="right")
-plt.ylabel("Counts")
-plt.xlabel("Time")
-plt.legend()
-plt.show()
-
-# %%
-# As previously stated, the image methods can also accept a new event
-# list so let's try the ``field_of_view_map`` method and only look at
-# detector 0.
-
-# obtain a Sunpy map object of the NuSTAR observation
-m = nustar_object.field_of_view_map(
-    event_data=by_detector(nustar_object.cleaned_evt_data, 0)
-)
-# now use it in plotting, this is now just Sunpy API stuff
-fig = plt.figure()
-ax = fig.add_subplot(projection=m)
-m.plot(axes=ax)
-draw_grid(m, ax)
-plt.title("Detector 0")
-plt.show()
-
-# %%
 # Filter by energy
 # ----------------
 #
@@ -170,6 +133,47 @@ plt.title(f"Energy range: {image_range[0]}-{image_range[1]} keV")
 plt.show()
 
 # %%
+# Filter by detector
+# ------------------
+#
+# Let's create a time profile from the counts from each NuSTAR detector.
+
+time_support(format="unix_tai")
+plt.figure()
+for det in range(4):
+    timesd, ctd = nustar_object.count_time_profile_array(
+        event_data=by_detector(nustar_object.cleaned_evt_data, det)
+    )
+    axes = time_profile_plot(timesd, ctd, label=f"Det{det}")
+plt.title(f"FPM{nustar_object.fpm} time profile - by detector")
+plt.xticks(rotation=30, ha="right")
+plt.ylabel("Counts")
+plt.xlabel("Time")
+plt.legend()
+plt.show()
+
+# %%
+# As previously stated, the image methods can also accept a new event
+# list so let's try the ``field_of_view_map`` method and only look at
+# detector 0.
+
+# obtain a Sunpy map object of the NuSTAR observation
+md0 = nustar_object.field_of_view_map(
+    event_data=by_detector(nustar_object.cleaned_evt_data, 0)
+)
+md2 = nustar_object.field_of_view_map(
+    event_data=by_detector(nustar_object.cleaned_evt_data, 2)
+)
+# now use it in plotting, this is now just Sunpy API stuff
+fig = plt.figure()
+ax = fig.add_subplot(projection=md0)
+md0.plot(axes=ax)
+md2.plot(axes=ax)
+draw_grid(md0, ax)
+plt.title(f"FPM{nustar_object.fpm}: Detector 0 (top left) and 2 (bottom right)")
+plt.show()
+
+# %%
 # Filter by time
 # --------------
 #
@@ -195,7 +199,6 @@ plt.title(f"FPM{nustar_object.fpm} time selection profiles")
 plt.xticks(rotation=30, ha="right")
 plt.ylabel("Counts")
 plt.xlabel("Time")
-plt.yscale("log")
 plt.legend()
 plt.show()
 
@@ -244,7 +247,8 @@ plt.legend()
 plt.show()
 
 # %%
-# Let's show the time filtered image.
+# Let's show the region filtered image with the original map in grey 
+# behind.
 
 # obtain a Sunpy map object of the NuSTAR observation
 m = nustar_object.field_of_view_map()
