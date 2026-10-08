@@ -1,5 +1,6 @@
-JDHSRPY examples
-================
+***********************
+JDHSRPY Example Gallery
+***********************
 
 This module contains examples for the spectral analysis.
 
