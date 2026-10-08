@@ -10,11 +10,12 @@ import ntpath
 import os
 import urllib.request
 
+import astropy.units as u
 import matplotlib.pyplot as plt
 from astropy.visualization import time_support
 
 from jdhsrpy import TEST_DATA_LOCATION
-from jdhsrpy.list_filters import by_detector, by_energy
+from jdhsrpy.list_filters import by_detector, by_energy, by_time, by_region
 from jdhsrpy.nustar_evt import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
 
@@ -52,6 +53,39 @@ nustar_object = NustarEvt(evt_filename=filename)
 # and a few will be shown here.
 
 # %%
+# Combining filters
+# -----------------
+#
+# All filter functions from ``jdhsrpy.list_filters`` return an event 
+# list. This means that these filters can easily be chained together.
+#
+# For example, if a user wished to filter an event list by time and 
+# region then it is possible.
+#
+# .. code-block:: python3
+#    :caption: multiple-filters
+#
+#    time0 = "2021-11-20T02:22:10"
+#    time1 = "2021-11-20T02:25:30"
+#    bottom_left = [-500, 150] << u.arcsec
+#    top_right = [-350, 300] << u.arcsec
+#
+#    new_event_data = by_time(
+#                             by_region(
+#                                       nustar_object.cleaned_evt_data, 
+#                                       bottom_left, 
+#                                       top_right
+#                                       ), 
+#                             time0, 
+#                             time1
+#                             )
+#
+# The filter order should not matter.
+#
+# Examples below shows how to use the newly filtered event list being 
+# returned from the event list filters.
+
+# %%
 # Filter by detector
 # ------------------
 #
@@ -85,6 +119,7 @@ fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
 draw_grid(m, ax)
+plt.title("Detector 0")
 plt.show()
 
 # %%
@@ -132,4 +167,97 @@ ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
 draw_grid(m, ax)
 plt.title(f"Energy range: {image_range[0]}-{image_range[1]} keV")
+plt.show()
+
+# %%
+# Filter by time
+# --------------
+#
+# Let's create a time profile from the counts over a time range.
+
+time0 = "2021-11-20T02:22:10"
+time1 = "2021-11-20T02:25:30"
+
+time_support(format="unix_tai")
+plt.figure()
+times, ct = nustar_object.count_time_profile_array(
+    event_data=nustar_object.cleaned_evt_data
+)
+timest, ctt = nustar_object.count_time_profile_array(
+    event_data=by_time(
+        nustar_object.cleaned_evt_data, time0, time1
+    ),
+    time_bins=times # we can make sure the same time bins are used between profiles
+)
+axes = time_profile_plot(times, ct, label=f"Full time")
+axes = time_profile_plot(timest, ctt, label=f"{time0}-{time1}", axes=axes)
+plt.title(f"FPM{nustar_object.fpm} time selection profiles")
+plt.xticks(rotation=30, ha="right")
+plt.ylabel("Counts")
+plt.xlabel("Time")
+plt.yscale("log")
+plt.legend()
+plt.show()
+
+# %%
+# Let's show the time filtered image.
+
+# obtain a Sunpy map object of the NuSTAR observation
+mt = nustar_object.field_of_view_map(
+    event_data=by_time(
+        nustar_object.cleaned_evt_data, 
+        time0, 
+        time1
+    )
+)
+# now use it in plotting, this is now just Sunpy API stuff
+fig = plt.figure()
+ax = fig.add_subplot(projection=mt)
+mt.plot(axes=ax)
+draw_grid(mt, ax)
+plt.title(f"Time range: {time0}-{time1}")
+plt.show()
+
+# %%
+# Filter by region
+# ----------------
+#
+# Let's create a time profile from the counts in a region.
+
+bottom_left = [-500, 150] << u.arcsec
+top_right = [-350, 300] << u.arcsec
+
+time_support(format="unix_tai")
+plt.figure()
+timesr, ctr = nustar_object.count_time_profile_array(
+    event_data=by_region(
+        nustar_object.cleaned_evt_data, bottom_left, top_right
+    )
+)
+axes = time_profile_plot(times, ct, label=f"Full observed area")
+axes = time_profile_plot(timesr, ctr, label=f"{bottom_left}-{top_right}", axes=axes)
+plt.title(f"FPM{nustar_object.fpm} region time profiles")
+plt.xticks(rotation=30, ha="right")
+plt.ylabel("Counts")
+plt.xlabel("Time")
+plt.legend()
+plt.show()
+
+# %%
+# Let's show the time filtered image.
+
+# obtain a Sunpy map object of the NuSTAR observation
+m = nustar_object.field_of_view_map()
+mr = nustar_object.field_of_view_map(
+    event_data=by_region(
+        nustar_object.cleaned_evt_data, bottom_left, top_right
+    )
+)
+# now use it in plotting, this is now just Sunpy API stuff
+fig = plt.figure()
+ax = fig.add_subplot(projection=m)
+m.plot(axes=ax, cmap="Greys")
+mr.plot(axes=ax)
+draw_grid(m, ax)
+plt.title(f"Region: {bottom_left}-{top_right}")
 plt.show()

@@ -58,7 +58,7 @@ class NustarEvt:
     def clean_evt(self, event_data, fpm=None, energy_low=None, energy_high=None):
         """Filter the event list.
 
-        Filter by energy (default 2.5<=E<80), only grade 0,
+        Filter by energy (default 1.6<=E<80), only grade 0,
         and remove events from bad pixels from the given FPM."""
         fpm = self.fpm if fpm is None else fpm
         energy_low = 2.5 if energy_low is None else energy_low
@@ -88,8 +88,8 @@ class NustarEvt:
             [2.5, 2.5],
             atol=1e-1,
         ):
-            self.evt_header["TCDLT13"] = IMAGE_RES  # x
-            self.evt_header["TCDLT14"] = IMAGE_RES  # y
+            self.evt_header["TCDLT13"] = IMAGE_RES.value  # x
+            self.evt_header["TCDLT14"] = IMAGE_RES.value  # y
 
     def count_time_profile_array(
         self,
@@ -203,6 +203,8 @@ class NustarEvt:
         Returns
         -------
         """
+        if isinstance(time_bins, Time):
+            time_bins = nustar_time_from_utc(time_bins)
         counts, time_bins = np.histogram(event_data["TIME"], time_bins)
         return utc_from_nustar_time(time_bins << u.second), counts << u.ct
 

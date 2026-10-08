@@ -198,7 +198,7 @@ time1 = "2021-11-20T02:25:30"
 m_tf = nustar_object.nustar_map(
     bottom_left,
     top_right,
-    event_data=by_time(nustar_object.cleaned_evt_data, [time0, time1]),
+    event_data=by_time(nustar_object.cleaned_evt_data, time0, time1),
 )
 
 time_support(format="unix_tai")

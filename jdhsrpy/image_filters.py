@@ -39,7 +39,7 @@ def gaussian_filter(sunpy_map_obj, sigma=None, **kwargs):
     """
     gaussian_filter = {"mode": "nearest"} | kwargs
     gaussian_width_arcsec = FWHM_ARCSEC / (2 * np.sqrt(2 * np.log(2)))
-    sigma = gaussian_width_arcsec.value / IMAGE_RES if sigma is None else sigma
+    sigma = (gaussian_width_arcsec / IMAGE_RES).value if sigma is None else sigma
     dd = ndimage.gaussian_filter(
         sunpy_map_obj.data, sigma, mode=gaussian_filter["mode"]
     )

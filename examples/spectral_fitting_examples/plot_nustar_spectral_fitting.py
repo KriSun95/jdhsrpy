@@ -64,6 +64,12 @@ plt.tight_layout()
 plt.show()
 
 # %%
+# Let's make sure the same random processing occur each time this is run
+# so we'll set the random seed for Numpy
+
+np.random.seed(42)
+
+# %%
 # Setting up the fitting
 # ----------------------
 #
@@ -148,7 +154,7 @@ plt.show()
 # We can also easily run MCMC analysis.
 
 mcmc_result = fitter.run_mcmc(steps_per_walker=1_000)
-fitter.burn_mcmc = 200
+fitter.burn_mcmc = 100
 
 # %%
 # We can see the log-probability chain of the walkers.

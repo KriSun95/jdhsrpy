@@ -42,6 +42,18 @@ if not os.path.isfile(filename_psf):
 nustar_object = NustarEvt(evt_filename=filename_evt)
 
 # %%
+# Image filters
+# -------------
+#
+# Any image filter from ``~jdhsrpy.image_filters`` will return a Sunpy 
+# map object. This means that the Sunpy map API can be used with their 
+# output. 
+# 
+# Additionally, these filters can be chained together very easily, with 
+# the output of one filter being able to be passed as an input into 
+# another.
+
+# %%
 # Normal binned image
 # -------------------
 #
@@ -59,6 +71,7 @@ fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
 draw_grid(m, ax)
+plt.title("Normal binned map")
 plt.colorbar(fraction=0.035, pad=0.03, label=m.meta["PIXLUNIT"])
 plt.show()
 
@@ -76,6 +89,7 @@ fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 nm.plot(axes=ax)
 draw_grid(m, ax)
+plt.title("Livetime normalized map")
 plt.colorbar(fraction=0.035, pad=0.03, label=nm.meta["PIXLUNIT"])
 plt.show()
 
@@ -96,6 +110,7 @@ fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 gm.plot(axes=ax, vmin=1e0)
 draw_grid(m, ax)
+plt.title("Gaussian filtered map")
 plt.colorbar(fraction=0.035, pad=0.03, label=gm.meta["PIXLUNIT"])
 plt.show()
 
@@ -113,5 +128,6 @@ fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 dm.plot(axes=ax, vmin=1e0)
 draw_grid(m, ax)
+plt.title("Deconvolved map")
 plt.colorbar(fraction=0.035, pad=0.03, label=dm.meta["PIXLUNIT"])
 plt.show()

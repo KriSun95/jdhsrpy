@@ -1,7 +1,8 @@
+import astropy.units as u
 import numpy as np
 from astropy.time import Time
 
-from jdhsrpy import NUSTAR_EPOCH
+from jdhsrpy import NUSTAR_EPOCH, IMAGE_RES
 
 __all__ = [
     "by_detector",
@@ -13,12 +14,12 @@ __all__ = [
 ]
 
 
-def by_good_pix(evtdata, fpm):
+def by_good_pix(event_data, fpm):
     """Do some basic filtering on known bad pixels.
 
     Parameters
     ----------
-    evtdata: FITS data class
+    event_data: FITS data class
         This should be an hdu.data structure from a NuSTAR FITS file.
 
     fpm: {"A" | "B"}
@@ -28,7 +29,7 @@ def by_good_pix(evtdata, fpm):
     -------
 
     goodinds: iterable
-        Index of evtdata that passes the filtering.
+        Index of event_data that passes the filtering.
     """
     # Hot pixel filters
 
@@ -36,56 +37,56 @@ def by_good_pix(evtdata, fpm):
 
     if fpm.find("B") == -1:
         pix_filter = np.invert(
-            (evtdata["DET_ID"] == 2) & (evtdata["RAWX"] == 16) & (evtdata["RAWY"] == 5)
-            | (evtdata["DET_ID"] == 2)
-            & (evtdata["RAWX"] == 24)
-            & (evtdata["RAWY"] == 22)
-            | (evtdata["DET_ID"] == 2)
-            & (evtdata["RAWX"] == 27)
-            & (evtdata["RAWY"] == 6)
-            | (evtdata["DET_ID"] == 2)
-            & (evtdata["RAWX"] == 27)
-            & (evtdata["RAWY"] == 21)
-            | (evtdata["DET_ID"] == 3)
-            & (evtdata["RAWX"] == 22)
-            & (evtdata["RAWY"] == 1)
-            | (evtdata["DET_ID"] == 3)
-            & (evtdata["RAWX"] == 15)
-            & (evtdata["RAWY"] == 3)
-            | (evtdata["DET_ID"] == 3) & (evtdata["RAWX"] == 5) & (evtdata["RAWY"] == 5)
-            | (evtdata["DET_ID"] == 3)
-            & (evtdata["RAWX"] == 22)
-            & (evtdata["RAWY"] == 7)
-            | (evtdata["DET_ID"] == 3)
-            & (evtdata["RAWX"] == 16)
-            & (evtdata["RAWY"] == 11)
-            | (evtdata["DET_ID"] == 3)
-            & (evtdata["RAWX"] == 18)
-            & (evtdata["RAWY"] == 3)
-            | (evtdata["DET_ID"] == 3)
-            & (evtdata["RAWX"] == 24)
-            & (evtdata["RAWY"] == 4)
-            | (evtdata["DET_ID"] == 3)
-            & (evtdata["RAWX"] == 25)
-            & (evtdata["RAWY"] == 5)
+            (event_data["DET_ID"] == 2) & (event_data["RAWX"] == 16) & (event_data["RAWY"] == 5)
+            | (event_data["DET_ID"] == 2)
+            & (event_data["RAWX"] == 24)
+            & (event_data["RAWY"] == 22)
+            | (event_data["DET_ID"] == 2)
+            & (event_data["RAWX"] == 27)
+            & (event_data["RAWY"] == 6)
+            | (event_data["DET_ID"] == 2)
+            & (event_data["RAWX"] == 27)
+            & (event_data["RAWY"] == 21)
+            | (event_data["DET_ID"] == 3)
+            & (event_data["RAWX"] == 22)
+            & (event_data["RAWY"] == 1)
+            | (event_data["DET_ID"] == 3)
+            & (event_data["RAWX"] == 15)
+            & (event_data["RAWY"] == 3)
+            | (event_data["DET_ID"] == 3) & (event_data["RAWX"] == 5) & (event_data["RAWY"] == 5)
+            | (event_data["DET_ID"] == 3)
+            & (event_data["RAWX"] == 22)
+            & (event_data["RAWY"] == 7)
+            | (event_data["DET_ID"] == 3)
+            & (event_data["RAWX"] == 16)
+            & (event_data["RAWY"] == 11)
+            | (event_data["DET_ID"] == 3)
+            & (event_data["RAWX"] == 18)
+            & (event_data["RAWY"] == 3)
+            | (event_data["DET_ID"] == 3)
+            & (event_data["RAWX"] == 24)
+            & (event_data["RAWY"] == 4)
+            | (event_data["DET_ID"] == 3)
+            & (event_data["RAWX"] == 25)
+            & (event_data["RAWY"] == 5)
         )
     else:
         pix_filter = np.invert(
-            (evtdata["DET_ID"] == 0) & (evtdata["RAWX"] == 24) & (evtdata["RAWY"] == 24)
+            (event_data["DET_ID"] == 0) & (event_data["RAWX"] == 24) & (event_data["RAWY"] == 24)
         )
 
     inds = (pix_filter).nonzero()
     goodinds = inds[0]
 
-    return evtdata[goodinds]
+    return event_data[goodinds]
 
 
-def by_energy(evtdata, energy_low=2.5, energy_high=10):
+def by_energy(event_data, energy_low=2.5, energy_high=10):
     """Apply energy filtering to the data.
 
     Parameters
     ----------
-    evtdata: FITS data class
+    event_data: FITS data class
         This should be an hdu.data structure from a NuSTAR FITS file.
 
     energy_low: float
@@ -98,36 +99,36 @@ def by_energy(evtdata, energy_low=2.5, energy_high=10):
     """
     pilow = (energy_low - 1.6) / 0.04
     pihigh = (energy_high - 1.6) / 0.04
-    pi_filter = (evtdata["PI"] >= pilow) & (evtdata["PI"] < pihigh)
+    pi_filter = (event_data["PI"] >= pilow) & (event_data["PI"] < pihigh)
     inds = (pi_filter).nonzero()
     goodinds = inds[0]
 
-    return evtdata[goodinds]
+    return event_data[goodinds]
 
 
-def by_gradezero(evtdata):
+def by_gradezero(event_data):
     """Only accept counts with GRADE==0.
 
     Parameters
     ----------
-    evtdata: FITS data class
+    event_data: FITS data class
         This should be an hdu.data structure from a NuSTAR FITS file.
 
     Returns
     -------
     goodinds: iterable
-        Index of evtdata that passes the filtering.
+        Index of event_data that passes the filtering.
     """
     # Grade filter
-    return by_grade(evtdata, 0)
+    return by_grade(event_data, 0)
 
 
-def by_grade(evtdata, grade: int):
+def by_grade(event_data, grade: int):
     """Only accept counts with GRADE==`grade`.
 
     Parameters
     ----------
-    evtdata: FITS data class
+    event_data: FITS data class
         This should be an hdu.data structure from a NuSTAR FITS file.
 
     grade : `int`
@@ -136,26 +137,26 @@ def by_grade(evtdata, grade: int):
     Returns
     -------
     goodinds: iterable
-        Index of evtdata that passes the filtering.
+        Index of event_data that passes the filtering.
     """
 
     # Grade filter
-    grade_filter = evtdata["GRADE"] == grade
+    grade_filter = event_data["GRADE"] == grade
     inds = (grade_filter).nonzero()
     goodinds = inds[0]
 
-    return evtdata[goodinds]
+    return event_data[goodinds]
 
 
-def by_time(evtdata, tmrng):
+def by_time(event_data, start, end):
     """Only include counts within a given time range.
 
     Parameters
     ----------
-    evtdata: FITS data class
+    event_data: FITS data class
         This should be an hdu.data structure from a NuSTAR FITS file.
 
-    tmrng : list of length 2
+    start : `str`
         Input two times in the form 'yyyy/mm/dd, HH:MM:SS'
         (e.g. '2019/03/06, 16:45:30') for the time range,
         default is the whole observation for the file.
@@ -163,28 +164,26 @@ def by_time(evtdata, tmrng):
     Returns
     -------
     goodinds: iterable
-        Index of evtdata that lies within the time range.
+        Index of event_data that lies within the time range.
     """
-    if tmrng is None:
-        return np.arange(len(evtdata))
 
-    tstart = Time(tmrng[0], format="isot", scale="utc")
-    tend = Time(tmrng[1], format="isot", scale="utc")
+    tstart = Time(start, format="isot", scale="utc")
+    tend = Time(end, format="isot", scale="utc")
     tstart_s = (
         tstart - NUSTAR_EPOCH
     ).sec  # both dates are converted to number of seconds from 2010-Jan-1
     tend_s = (tend - NUSTAR_EPOCH).sec
     tmrng = [tstart_s, tend_s]
 
-    time_filter = (evtdata["TIME"] > tmrng[0]) & (evtdata["TIME"] < tmrng[1])
+    time_filter = (event_data["TIME"] > tmrng[0]) & (event_data["TIME"] < tmrng[1])
     inds = (time_filter).nonzero()
     goodinds = inds[0]
 
-    return evtdata[goodinds]
+    return event_data[goodinds]
 
 
-def event_filter(evtdata, fpm="FPMA", energy_low=2.5, energy_high=10, tmrng=None):
-    # was event_filter(evtdata, fpm='FPMA', energy_low=2.5, energy_high=10) # Kris #
+def event_filter(event_data, fpm="FPMA", energy_low=2.5, energy_high=10, tmrng=None):
+    # was event_filter(event_data, fpm='FPMA', energy_low=2.5, energy_high=10) # Kris #
     """All in one filter module. By default applies an energy cut,
         selects only events with grade == 0, and removes known hot pixel.
 
@@ -193,7 +192,7 @@ def event_filter(evtdata, fpm="FPMA", energy_low=2.5, energy_high=10, tmrng=None
 
     Parameters
     ----------
-    evtdata: FITS data structure
+    event_data: FITS data structure
         This should be an hdu.data structure from a NuSTAR FITS file.
 
     fpm: {"FPMA" | "FPMB"}
@@ -216,10 +215,10 @@ def event_filter(evtdata, fpm="FPMA", energy_low=2.5, energy_high=10, tmrng=None
     -------
 
     cleanevt: FITS data class.
-        This is the subset of evtdata that pass the data selection cuts.
+        This is the subset of event_data that pass the data selection cuts.
     """
-
-    evt_timefilter = by_time(evtdata, tmrng)
+    
+    evt_timefilter = by_time(event_data, tmrng[0], tmrng[1]) if tmrng is not None else event_data
     evt_badfilter = by_good_pix(evt_timefilter, fpm=fpm)
     evt_energy = by_energy(
         evt_badfilter, energy_low=energy_low, energy_high=energy_high
@@ -227,8 +226,20 @@ def event_filter(evtdata, fpm="FPMA", energy_low=2.5, energy_high=10, tmrng=None
     return by_gradezero(evt_energy)
 
 
-def by_detector(evtdata, detector):
+def by_detector(event_data, detector):
     """Filter and return event list filtered for the desired detector."""
     if detector not in range(4):
         raise ValueError("the `detector` input much be an int in [0,1,2,3].")
-    return evtdata[evtdata["DET_ID"] == detector]
+    return event_data[event_data["DET_ID"] == detector]
+
+
+def by_region(event_data, bottom_left, top_right):
+    """Filter and return event list filtered for a square region."""
+    pix_map_centre = 1500
+    sol_x_pix = (event_data["X"]-pix_map_centre) << u.pixel
+    sol_y_pix = (event_data["Y"]-pix_map_centre) << u.pixel
+    sol_x_arc = sol_x_pix*IMAGE_RES
+    sol_y_arc = sol_y_pix*IMAGE_RES
+    reg_filter = (bottom_left[0]<=sol_x_arc) & (sol_x_arc<top_right[0]) & (bottom_left[1]<=sol_y_arc) & (sol_y_arc<top_right[1])
+    inds = (reg_filter).nonzero()[0]
+    return event_data[inds]
