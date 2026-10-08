@@ -104,7 +104,8 @@ class NustarEvt:
         Parameters
         ----------
         event_data :
-
+            The event list. If `None` then `self.cleaned_evt_data` will
+            be used.
             Default: None
 
         time_bins :
@@ -148,7 +149,8 @@ class NustarEvt:
         Parameters
         ----------
         event_data :
-
+            The event list. If `None` then `self.cleaned_evt_data` will
+            be used.
             Default: None
 
         time_binning :
@@ -169,10 +171,14 @@ class NustarEvt:
         time_binning = 10 << u.second if time_binning is None else time_binning
         event_data = self.cleaned_evt_data if event_data is None else event_data
         start_time = (
-            np.min(event_data["TIME"]) << u.second if start_time is None else start_time
+            np.min(event_data["TIME"]) << u.second
+            if start_time is None
+            else nustar_time_from_utc(start_time)
         )
         end_time = (
-            np.max(event_data["TIME"]) << u.second if end_time is None else end_time
+            np.max(event_data["TIME"]) << u.second
+            if end_time is None
+            else nustar_time_from_utc(end_time)
         )
         start_time <<= u.second
         end_time <<= u.second
@@ -193,7 +199,8 @@ class NustarEvt:
         Parameters
         ----------
         event_data :
-
+            The event list. If `None` then `self.cleaned_evt_data` will
+            be used.
             Default: None
 
         time_bins :
@@ -224,8 +231,10 @@ class NustarEvt:
         hk_filename : `str`
             The FITS file containing the livetime information. Should be of
             the form `nu<OBSID><FPM>_fpm.hk` and may be in the HK folder.
-            event_data :
 
+        event_data :
+            The event list. If `None` then `self.cleaned_evt_data` will
+            be used.
             Default: None
 
         time_bins :

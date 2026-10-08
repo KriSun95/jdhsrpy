@@ -9,6 +9,7 @@ __all__ = [
     "by_energy",
     "by_good_pix",
     "by_gradezero",
+    "by_region",
     "by_time",
     "event_filter",
 ]
