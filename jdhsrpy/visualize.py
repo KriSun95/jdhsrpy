@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from astropy.time import Time
 from astropy.visualization import time_support
 
-__all__ = ["time_profile_plot", "vertical_line_of_time"]
+__all__ = ["time_profile_plot", "vertical_line_of_time", "chu_plot", "livetime_plot", "spectrum_plot", "optical_axis_plot"]
 
 
 def time_profile_plot(times, ydata, axes=None, **kwargs):
@@ -145,4 +145,27 @@ def spectrum_plot(energy_bins, ydata, ydata_err, axes=None, **kwargs):
     axes.tick_params(axis="both", which="both", direction="in")
     axes.set_yscale("log")
     axes.set_xlabel(f"Energy [{energy_bins.unit:latex}]")
+    return axes
+
+def optical_axis_plot(times, positions, axes=None, **kwargs):
+    """Plot a time profile (on a given axes if given).
+
+    Parameters
+    ----------
+    times : `~astropy.time.Time`|`~datetime.datetime`
+        The time centers.
+
+    positions : `list`|`~numpy.ndarray`|`astropy.units.Quantity`
+        The optical axis positions for either the X or Y axis.
+
+    Returns
+    -------
+    Axes input.
+    """
+    axes = plt.gca() if axes is None else axes
+    _defaults = {
+        "drawstyle": "steps-mid",
+    }
+    _plot_settings = _defaults | kwargs
+    plt.plot(to_plotting_datetimes(times), positions, **_plot_settings)
     return axes

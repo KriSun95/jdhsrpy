@@ -1,3 +1,4 @@
+import astropy.units as u
 import numpy as np
 import sunpy.map
 from astropy.io import fits
@@ -113,6 +114,9 @@ def deconvolve_with_file(
     oa_to_source = 0 if oa_to_source is None else oa_to_source
     hor_to_source = 0 if hor_to_source is None else hor_to_source
 
+    oa_to_source <<= u.arcmin # PSF header expects arcminutes
+    hor_to_source <<= u.deg # ndimage.rotate expects degrees
+
     hdr_unit = _choose_os_angle_header_unit(oa_to_source)
     with fits.open(psf_file) as psf_hdulist:
         psf_res = psf_hdulist[hdr_unit].header["CDELT1"]  # increment in degrees/pix
@@ -130,9 +134,10 @@ def deconvolve_with_file(
 def _choose_os_angle_header_unit(oa_to_source):
     """Use the OA-to-source angle to select the correct PSF."""
     # angles of 0 to 8.5 arcmin in 0.5 arcmin increments
-    psf_oa_angles = np.arange(0, 9, 0.5)
+    oa_to_source <<= u.arcmin
+    psf_oa_angles = np.arange(0, 9, 0.5) << u.arcmin
     # find the closest arcmin array
     index = np.argmin(
-        [abs(psfoaangles - oa_to_source) for psfoaangles in psf_oa_angles]
+        [abs(psfoaangles.value - oa_to_source.value) for psfoaangles in psf_oa_angles]
     )
     return index + 1

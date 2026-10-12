@@ -3,9 +3,9 @@ import re
 import astropy.units as u
 import numpy as np
 
-from jdhsrpy import IMAGE_COLORMAP, IMAGE_SCALE
+from jdhsrpy import IMAGE_COLORMAP, IMAGE_SCALE, IMAGE_RES
 
-__all__ = ["assign_plot_settings", "only_numbers", "regroup_any_array"]
+__all__ = ["assign_plot_settings", "only_numbers", "regroup_any_array", "pixel_coords_to_solar_coords"]
 
 
 def only_numbers(string):
@@ -120,3 +120,9 @@ def assign_plot_settings(nustar_map):
     nustar_map.plot_settings["norm"] = IMAGE_SCALE
     nustar_map.plot_settings["cmap"] = IMAGE_COLORMAP
     return nustar_map
+
+def pixel_coords_to_solar_coords(pixel_coords):
+    """Convert solar pixel coordinates to solar heliographic coordinates."""
+    pix_map_centre = 1500
+    sol_x_pix = (pixel_coords - pix_map_centre) << u.pixel
+    return sol_x_pix * IMAGE_RES

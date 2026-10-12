@@ -8,6 +8,9 @@ NuSTAR files.
 
 This example will also show how to use the optical axis and source 
 location to perform deconvolution correctly on a NuSTAR image.
+
+This is important as the NuSTAR PSF changes both in radius and 
+azimuth from and around the optical axis location.
 """
 
 import ntpath
@@ -15,13 +18,20 @@ import os
 import urllib.request
 
 import astropy.units as u
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
+import numpy as np
+from astropy.coordinates import SkyCoord
+from astropy.time import Time
 from astropy.visualization import time_support
+from matplotlib import gridspec
 
 from jdhsrpy import TEST_DATA_LOCATION
-from jdhsrpy.nustar_core import NustarEvt, draw_grid
-
-from jdhsrpy.visualize import time_profile_plot
+from jdhsrpy.general_filters import by_value_range
+from jdhsrpy.image_filters import deconvolve_with_file
+from jdhsrpy.list_filters import by_time
+from jdhsrpy.nustar_core import NustarEvt, draw_grid, optical_axis_array
+from jdhsrpy.visualize import optical_axis_plot, time_profile_plot
 
 # %%
 # Download an example "sunpos" NuSTAR EVT file.
@@ -31,47 +41,77 @@ filename = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename):
     urllib.request.urlretrieve(url, filename)
 
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A_fpm.hk"
+filename_lvt = os.path.join(os.getcwd(), ntpath.split(url)[1])
+if not os.path.isfile(filename_lvt):
+    urllib.request.urlretrieve(url, filename_lvt)
+
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl.evt"
+filename_original_evt = os.path.join(os.getcwd(), ntpath.split(url)[1])
+if not os.path.isfile(filename_original_evt):
+    urllib.request.urlretrieve(url, filename_original_evt)
+
 url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A_oa.fits"
 filename_oa = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename_oa):
     urllib.request.urlretrieve(url, filename_oa)
 
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nuA2dpsfen1_20100101v001.fits"
+filename_psf = os.path.join(os.getcwd(), ntpath.split(url)[1])
+if not os.path.isfile(filename_psf):
+    urllib.request.urlretrieve(url, filename_psf)
+
 # %%
 # Use the class to load in and work with the file.
 
 nustar_object = NustarEvt(evt_filename=filename)
-nustar_object.optical_axis_array(filename_oa)
-exit()
 
 # %%
-# Time profile
-# ------------
+# Time profiles
+# -------------
 #
-# The first interesting thing might be to plot the counts time profile.
+# Let's plot some time profile information first. 
 #
-# Notice that the values here are unit aware.
+# We can plot the optical axis locations and the livetime corrected 
+# count rate together.
 
-times, counts = nustar_object.count_time_profile_array()
+times_oa, sol_x, sol_y = optical_axis_array(filename_oa, filename_original_evt)
+
+times_evt, cts = nustar_object.rate_time_profile_array(filename_lvt)
 
 time_support(format="unix_tai")
-plt.figure()
-time_profile_plot(times, counts)
-plt.title(f"FPM{nustar_object.fpm} time profile")
+fig = plt.figure(figsize=(11, 4))
+gs = gridspec.GridSpec(1, 2)
+
+axes0 = fig.add_subplot(gs[0, 0])
+optical_axis_plot(times_oa, sol_x, label="Solar-X", axes=axes0)
+optical_axis_plot(times_oa, sol_y, label="Solar-Y", axes=axes0)
+plt.title("Optical axis time profile")
+plt.ylabel(f"Solar Position [{sol_x.unit:latex}]")
 plt.xticks(rotation=30, ha="right")
-plt.ylabel(f"{counts.unit:latex}")
-plt.xlabel("Time")
+plt.legend()
+
+axes1 = fig.add_subplot(gs[0, 1])
+time_profile_plot(times_evt, cts)
+plt.title("Rate time profile")
+plt.ylabel(f"Rate [{cts.unit:latex}]")
+plt.xticks(rotation=30, ha="right")
+
+fmt = mdates.DateFormatter("%H:%M")
+for ax in [axes0, axes1]:
+    ax.set_xlabel("Time")
+    ax.xaxis.set_major_formatter(fmt)
+plt.suptitle(f"FPM{nustar_object.fpm}")
+plt.tight_layout()
+
 plt.show()
 
 # %%
-# Image
-# -----
+# Image with optical axis
+# -----------------------
 #
-# The class also makes it easy to produce images from the EVT file.
-#
-# There are three user methods that can be used, two to save time and
-# the final more general one called ``nustar_map``.
-#
-# The general one allows a user to specify the bounds for the map.
+# Using the ``NustarEVT`` class, we can plot the optical axis location 
+# easily.
 
 # obtain a Sunpy map object of the NuSTAR observation
 bottom_left = [-1000, -700] << u.arcsec
@@ -82,9 +122,90 @@ fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
 draw_grid(m, ax)
+ax.plot_coord(SkyCoord(sol_x, sol_y, frame=m.coordinate_frame))
 plt.show()
 
 # %%
-# The other two save time with ``field_of_view_map`` and ``full_disk_map``,
-# each returning a map bounded by the field of view and the full solar
-# disk, respectively.
+# Choosing a time
+# ---------------
+# 
+# Let's choose a time range to work with and look at the optical axis 
+# location.
+#
+# We'll be able to get a lot of information here, especially the 
+# information needed to select the appropriate NuSTAR PSF for a given 
+# source and deconvolve correctly.
+
+time0 = "2021-11-20T02:22:10"
+time1 = "2021-11-20T02:25:30"
+
+mt = nustar_object.field_of_view_map(
+    event_data=by_time(nustar_object.cleaned_evt_data, time0, time1)
+)
+
+tf_sol_x = by_value_range(sol_x, Time(time0, format="isot", scale="utc"), Time(time1, format="isot", scale="utc"), array_to_filter_against=times_oa)
+tf_sol_y = by_value_range(sol_y, Time(time0, format="isot", scale="utc"), Time(time1, format="isot", scale="utc"), array_to_filter_against=times_oa)
+
+# %%
+# After choosing the time we want, we can then get a source position 
+# which we can do using this `Sunpy example <https://docs.sunpy.org/en/stable/generated/gallery/map/brightness_pixel_location.html>`__.
+
+pixel_pos = np.argwhere(mt.data == mt.data.max()) * u.pixel
+hpc_max = mt.wcs.pixel_to_world(pixel_pos[0, 1], pixel_pos[0, 0])
+
+# %% 
+# We will also want the mean optical axis position.
+
+mean_tf_sol_x = np.mean(tf_sol_x)
+mean_tf_sol_y = np.mean(tf_sol_y)
+
+# %%
+# Now we can use maths or, for you Americans, math to get the angles we 
+# need for deconvolution.
+
+deltax, deltay = mean_tf_sol_x-hpc_max.Tx, mean_tf_sol_y-hpc_max.Ty
+oa_to_source = np.sqrt((deltax)**2+(deltay)**2) << u.arcmin
+hor_to_source = (-np.arctan(deltay/deltax)*180/np.pi).value << u.deg
+
+# %%
+# Plot all this together.
+
+fig = plt.figure(figsize=(11, 5))
+gs = gridspec.GridSpec(1, 2)
+
+axes0 = fig.add_subplot(gs[0, 0], projection=mt)
+mt.plot(axes=axes0)
+draw_grid(mt, axes0)
+axes0.set_title(f"Time range: {time0}-{time1}")
+
+axes1 = fig.add_subplot(gs[0, 1], projection=mt)
+mt.plot(axes=axes1)
+draw_grid(mt, axes1)
+axes1.plot_coord(SkyCoord([mean_tf_sol_x, hpc_max.Tx], [mean_tf_sol_y, hpc_max.Ty], frame=mt.coordinate_frame), color="black", linestyle="--")
+axes1.plot_coord(SkyCoord(tf_sol_x, tf_sol_y, frame=mt.coordinate_frame), color="grey")
+axes1.plot_coord(SkyCoord(mean_tf_sol_x, mean_tf_sol_y, frame=mt.coordinate_frame), '*', color="black", markersize=10)
+axes1.plot_coord(hpc_max, 'o', color="black", markersize=10)
+axes1.set_title(f"Time range with positions and angles")
+axes1.text(5, 5,f"oa_to_source = {round(oa_to_source,1)}\nhor_to_source = {round(hor_to_source,1)}", size=15, color="k")
+
+plt.show()
+
+# %%
+# Deconvolving
+# ------------
+#
+# Now we have the numbers require to deconvolve the NuSTAR image.
+#
+# Note that the full field-of-view should be considered during 
+# deconvolution as selecting too-small region will exclude counts that
+# otherwise should be collected by the PSF into a smaller area.
+
+dm = deconvolve_with_file(mt, filename_psf, oa_to_source=oa_to_source, hor_to_source=hor_to_source)
+
+fig = plt.figure()
+ax = fig.add_subplot(projection=m)
+dm.plot(axes=ax, vmin=1e0)
+draw_grid(m, ax)
+plt.title("Deconvolved map")
+plt.colorbar(fraction=0.035, pad=0.03, label=dm.meta["PIXLUNIT"])
+plt.show()

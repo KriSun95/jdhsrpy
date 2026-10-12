@@ -1,8 +1,8 @@
-import astropy.units as u
 import numpy as np
 from astropy.time import Time
 
-from jdhsrpy import IMAGE_RES, NUSTAR_EPOCH
+from jdhsrpy import NUSTAR_EPOCH
+from jdhsrpy.utils import pixel_coords_to_solar_coords
 
 __all__ = [
     "by_detector",
@@ -25,12 +25,6 @@ def by_good_pix(event_data, fpm):
 
     fpm: {"A" | "B"}
         Which FPM you're filtering on. Assumes A if not set.
-
-    Returns
-    -------
-
-    goodinds: iterable
-        Index of event_data that passes the filtering.
     """
     # Hot pixel filters
 
@@ -120,11 +114,6 @@ def by_gradezero(event_data):
     ----------
     event_data: FITS data class
         This should be an hdu.data structure from a NuSTAR FITS file.
-
-    Returns
-    -------
-    goodinds: iterable
-        Index of event_data that passes the filtering.
     """
     # Grade filter
     return by_grade(event_data, 0)
@@ -140,11 +129,6 @@ def by_grade(event_data, grade: int):
 
     grade : `int`
         Must be a valid NuSTAR event grade.
-
-    Returns
-    -------
-    goodinds: iterable
-        Index of event_data that passes the filtering.
     """
 
     # Grade filter
@@ -167,11 +151,6 @@ def by_time(event_data, start, end):
         Input two times in the form 'yyyy/mm/dd, HH:MM:SS'
         (e.g. '2019/03/06, 16:45:30') for the time range,
         default is the whole observation for the file.
-
-    Returns
-    -------
-    goodinds: iterable
-        Index of event_data that lies within the time range.
     """
 
     tstart = Time(start, format="isot", scale="utc")
@@ -217,12 +196,6 @@ def event_filter(event_data, fpm="FPMA", energy_low=2.5, energy_high=10, tmrng=N
         Input two times in the form 'yyyy-mm-ddTHH:MM:SS.ZZZ'
         (e.g. '2010-01-01T00:00:00.000') for the time range,
         default is the whole observation for the file.
-
-    Returns
-    -------
-
-    cleanevt: FITS data class.
-        This is the subset of event_data that pass the data selection cuts.
     """
 
     evt_timefilter = (
@@ -244,11 +217,8 @@ def by_detector(event_data, detector):
 
 def by_region(event_data, bottom_left, top_right):
     """Filter and return event list filtered for a square region."""
-    pix_map_centre = 1500
-    sol_x_pix = (event_data["X"] - pix_map_centre) << u.pixel
-    sol_y_pix = (event_data["Y"] - pix_map_centre) << u.pixel
-    sol_x_arc = sol_x_pix * IMAGE_RES
-    sol_y_arc = sol_y_pix * IMAGE_RES
+    sol_x_arc = pixel_coords_to_solar_coords(event_data["X"])
+    sol_y_arc = pixel_coords_to_solar_coords(event_data["Y"])
     reg_filter = (
         (bottom_left[0] <= sol_x_arc)
         & (sol_x_arc < top_right[0])

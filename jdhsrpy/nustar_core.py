@@ -13,7 +13,7 @@ from astropy.time import Time
 
 from jdhsrpy import IMAGE_RES, NUSTAR_EPOCH, PIXELUNIT
 from jdhsrpy.list_filters import by_energy, by_good_pix, by_gradezero
-from jdhsrpy.utils import assign_plot_settings, regroup_any_array
+from jdhsrpy.utils import assign_plot_settings, regroup_any_array, pixel_coords_to_solar_coords
 
 __all__ = [
     "NustarEvt",
@@ -28,6 +28,7 @@ __all__ = [
     "get_livetime_exposure",
     "draw_grid",
     "event_data_xy_shift",
+    "optical_axis_array",
 ]
 
 
@@ -54,7 +55,6 @@ class NustarEvt:
         with fits.open(evt_filename) as hdulist:
             self.evt_data = hdulist[1].data
             self.evt_header = hdulist[1].header
-        self._hacky_pixel_scale_fix()
 
         self.directory, self.filename = ntpath.split(evt_filename)
         # search for 2 digits, a non-digit, then 2 digits again
@@ -85,18 +85,6 @@ class NustarEvt:
                 ``~jdhsrpy.nustar_core.sunpos_core`` for help.
                 """
             )
-
-    def _hacky_pixel_scale_fix(self):
-        """Hacky fix for nustar_pysolar not updating the header units with the value."""
-        ############*********** this is a hacky fix but will do for now ***********############
-        # if Python code is used for the sunpos file creation the re-written header keywords might not save properly, so...
-        if not np.allclose(
-            [self.evt_header["TCDLT13"], self.evt_header["TCDLT14"]],
-            [2.5, 2.5],
-            atol=1e-1,
-        ):
-            self.evt_header["TCDLT13"] = IMAGE_RES.value  # x
-            self.evt_header["TCDLT14"] = IMAGE_RES.value  # y
 
     def count_time_profile_array(
         self,
@@ -337,33 +325,6 @@ class NustarEvt:
         """
         nustar_map = self._native_map(event_data=event_data)
         return get_submap(nustar_map, bottom_left, top_right)
-    
-    def optical_axis_array(self, oa_filename, **kwargs):
-        """Get an array of the optical axis positions for NuSTAR from a file.
-
-        Parameters
-        ----------
-        oa_filename : `str`
-            The FITS file containing the livetime information. Should be of
-            the form `nu<OBSID><FPM>_oa.fits` and may be in the event_cl 
-            folder.
-
-        **kwargs : passed to ``nustar_pysolar.convert.to_solar``.
-
-        Returns
-        -------
-        The times and optical axis positions.
-        """
-        from nustar_pysolar.convert import to_solar
-        with fits.open(oa_filename) as hdulist:
-            oa_data = Table(hdulist[1].data)
-
-        # to_solar expects X/Y fields so add a couple extra columsn copying the X_OA/Y_OA fields
-        oa_data.add_columns([oa_data["TIME"], oa_data["X_OA"], oa_data["Y_OA"]], names=["Time", "X", "Y"])
-        print(oa_data.colnames)
-
-        (newdata, newhdr) = to_solar(oa_data, self.evt_header, **kwargs)
-        print((newdata, newhdr))
 
 
 def sunpos_evt(file, load_path=None):
@@ -700,3 +661,55 @@ def event_data_xy_shift(event_data, dx:u.Quantity|None=None, dy:u.Quantity|None=
     if dy is not None:
         _event_data['Y'] = _event_data['Y'].astype("float64") + ((dy<<u.arcsec)/IMAGE_RES).value
     return _event_data
+
+
+def optical_axis_array(oa_filename, nonsunpos_evt_filename, clip_oa_times=True, **kwargs):
+    """Get an array of the optical axis positions for NuSTAR from a file.
+
+    Parameters
+    ----------
+    oa_filename : `str`
+        The FITS file containing the livetime information. Should be of
+        the form `nu<OBSID><FPM>_oa.fits` and may be in the event_cl 
+        folder.
+    
+    nonsunpos_evt_filename : `str`
+        The original EVT file from which the ``_sunpos`` one was 
+        created.
+    
+    clip_oa_times :`bool`
+        The optical axis times span a longer period than the ones in 
+        the EVT file. Setting this to True slices the optical axis
+        positions to only inlcude those in the same time range 
+        covered by the EVT file.
+        Default: True
+
+    **kwargs : passed to ``nustar_pysolar.convert.to_solar``.
+
+    Returns
+    -------
+    The times and optical axis positions.
+    """
+    from nustar_pysolar.convert import to_solar
+    with fits.open(oa_filename) as hdulist:
+        oa_data = hdulist[1].data
+    with fits.open(nonsunpos_evt_filename) as hdulist:
+        oevt_header = hdulist[1].header
+        oevt_data = hdulist[1].data
+    
+    # to_solar expects X/Y fields so add a couple extra columsn copying the X_OA/Y_OA fields
+    orig_cols = oa_data.columns
+    new_cols = fits.ColDefs([fits.Column(name="Time", format="1D", unit="s", array=oa_data["TIME"]),
+                                fits.Column(name="X", format="1D", unit="pixel", array=oa_data["X_OA"]),
+                                fits.Column(name="Y", format="1D", unit="pixel", array=oa_data["Y_OA"])])
+    oa_data = fits.BinTableHDU.from_columns(orig_cols + new_cols).data
+
+    newdata, _ = to_solar(oa_data, oevt_header, **kwargs)
+
+    if clip_oa_times:
+        time_filter = (newdata["Time"] >= oevt_data["TIME"][0]) & (newdata["Time"] <= oevt_data["TIME"][-1])
+        inds = (time_filter).nonzero()
+        goodinds = inds[0]
+        return utc_from_nustar_time(newdata["Time"][goodinds]), pixel_coords_to_solar_coords(newdata["X"][goodinds]), pixel_coords_to_solar_coords(newdata["Y"][goodinds])
+
+    return utc_from_nustar_time(newdata["Time"]), pixel_coords_to_solar_coords(newdata["X"]), pixel_coords_to_solar_coords(newdata["Y"])

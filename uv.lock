@@ -1547,8 +1547,8 @@ requires-dist = [
     { name = "nestle", specifier = ">=0.2.1" },
     { name = "numdifftools", specifier = ">=0.11.1" },
     { name = "numpy" },
-    { name = "nustar-pysolar", git = "https://github.com/KriSun95/nustar_pysolar.git" },
-    { name = "pip", specifier = ">=26.2.1" },
+    { name = "nustar-pysolar", git = "https://github.com/KriSun95/nustar_pysolar.git?branch=fix-ephem-download" },
+    { name = "pip" },
     { name = "pre-commit", specifier = ">=4.6.2" },
     { name = "reproject", specifier = ">=0.21.0" },
     { name = "scikit-image", specifier = ">=0.26.0" },
@@ -2657,7 +2657,7 @@ wheels = [
 [[package]]
 name = "nustar-pysolar"
 version = "0.0.0"
-source = { git = "https://github.com/KriSun95/nustar_pysolar.git#57597255cd65e4a264f2a7e180a80bbb825fec6f" }
+source = { git = "https://github.com/KriSun95/nustar_pysolar.git?branch=fix-ephem-download#61f058c15d495b46941af12eb4d70ea5d2898bc1" }
 dependencies = [
     { name = "astropy" },
     { name = "jupyterlab" },
