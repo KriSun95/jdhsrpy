@@ -75,5 +75,4 @@ html_css_files = [os.path.join(this_folder, "styles", "svg_width_style.css")]
 sphinx_gallery_conf = {
     "examples_dirs": os.path.join("..", "examples"),  # path to your example scripts
     "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
-    "default_thumb_file": html_favicon,
 }
