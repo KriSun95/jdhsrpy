@@ -59,7 +59,7 @@ def sdo_download(start_time, end_time, directory=None, wave_values=None, get_hmi
     >>> sdo_download(start_time="2024-04-17T21:30:00", end_time="2024-04-17T22:45:00", directory="path/to/save/directory/", wave_values=[94,171], get_hmi=True)
 
     # Only download SDO/HMI LOS data
-    
+
     >>> sdo_download(..., wave_values=[], get_hmi=True)
     """
     # set-up defaults

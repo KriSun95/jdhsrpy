@@ -12,11 +12,10 @@ import urllib.request
 
 import astropy.units as u
 import matplotlib.pyplot as plt
-from matplotlib import gridspec
 
 from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.image_filters import deconvolve_with_file, gaussian_filter
-from jdhsrpy.nustar_core import NustarEvt, draw_grid, normalize_map, event_data_xy_shift
+from jdhsrpy.nustar_core import NustarEvt, draw_grid, event_data_xy_shift, normalize_map
 
 # %%
 # Download an example "sunpos" NuSTAR EVT file.
@@ -98,7 +97,7 @@ plt.show()
 # Shift x and y count positions
 # -----------------------------
 #
-# A function exists to shift the x and y positions of each count to move 
+# A function exists to shift the x and y positions of each count to move
 # the imaged counts.
 #
 # This could be used to align different NuSTAR images to each other or
@@ -107,7 +106,11 @@ plt.show()
 dx = 50 << u.arcsec
 dy = -70 << u.arcsec
 
-dm = nustar_object.nustar_map(bottom_left, top_right, event_data=event_data_xy_shift(nustar_object.cleaned_evt_data, dx=dx, dy=dy))
+dm = nustar_object.nustar_map(
+    bottom_left,
+    top_right,
+    event_data=event_data_xy_shift(nustar_object.cleaned_evt_data, dx=dx, dy=dy),
+)
 
 fig = plt.figure()
 ax = fig.add_subplot(projection=m)

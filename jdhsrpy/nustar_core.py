@@ -1,34 +1,37 @@
-from copy import deepcopy
 import ntpath
 import re
 import warnings
+from copy import deepcopy
 
 import astropy.units as u
 import numpy as np
 import sunpy.map
 from astropy.coordinates import SkyCoord
 from astropy.io import fits
-from astropy.table import Table
 from astropy.time import Time
 
 from jdhsrpy import IMAGE_RES, NUSTAR_EPOCH, PIXELUNIT
 from jdhsrpy.list_filters import by_energy, by_good_pix, by_gradezero
-from jdhsrpy.utils import assign_plot_settings, regroup_any_array, pixel_coords_to_solar_coords
+from jdhsrpy.utils import (
+    assign_plot_settings,
+    pixel_coords_to_solar_coords,
+    regroup_any_array,
+)
 
 __all__ = [
     "NustarEvt",
     "chu_state_array",
-    "livetime_array",
-    "make_sunpy_map",
-    "nustar_time_from_utc",
-    "sunpos_evt",
-    "utc_from_nustar_time",
-    "get_submap",
-    "normalize_map",
-    "get_livetime_exposure",
     "draw_grid",
     "event_data_xy_shift",
+    "get_livetime_exposure",
+    "get_submap",
+    "livetime_array",
+    "make_sunpy_map",
+    "normalize_map",
+    "nustar_time_from_utc",
     "optical_axis_array",
+    "sunpos_evt",
+    "utc_from_nustar_time",
 ]
 
 
@@ -635,52 +638,60 @@ def draw_grid(sunpy_map_obj, axes):
     )
 
 
-def event_data_xy_shift(event_data, dx:u.Quantity|None=None, dy:u.Quantity|None=None):
+def event_data_xy_shift(
+    event_data, dx: u.Quantity | None = None, dy: u.Quantity | None = None
+):
     """Apply a shift in the positions of each event.
-    
+
     Parameters
     ----------
     event_data :
-        The event list. 
-    
+        The event list.
+
     dx : `u.Quantity`|`None`
-        The change in the x-position of the counts. Needs to be 
-        convertable to arcseconds or will be assumed to be arcseconds 
+        The change in the x-position of the counts. Needs to be
+        convertible to arcseconds or will be assumed to be arcseconds
         if no units exist.
-        Default: None 
-    
+        Default: None
+
     dy : `u.Quantity`|`None`
-        The change in the y-position of the counts. Needs to be 
-        convertable to arcseconds or will be assumed to be arcseconds 
+        The change in the y-position of the counts. Needs to be
+        convertible to arcseconds or will be assumed to be arcseconds
         if no units exist.
-        Default: None 
+        Default: None
     """
     _event_data = deepcopy(event_data)
     if dx is not None:
-        _event_data['X'] = _event_data['X'].astype("float64") + ((dx<<u.arcsec)/IMAGE_RES).value
+        _event_data["X"] = (
+            _event_data["X"].astype("float64") + ((dx << u.arcsec) / IMAGE_RES).value
+        )
     if dy is not None:
-        _event_data['Y'] = _event_data['Y'].astype("float64") + ((dy<<u.arcsec)/IMAGE_RES).value
+        _event_data["Y"] = (
+            _event_data["Y"].astype("float64") + ((dy << u.arcsec) / IMAGE_RES).value
+        )
     return _event_data
 
 
-def optical_axis_array(oa_filename, nonsunpos_evt_filename, clip_oa_times=True, **kwargs):
+def optical_axis_array(
+    oa_filename, nonsunpos_evt_filename, clip_oa_times=True, **kwargs
+):
     """Get an array of the optical axis positions for NuSTAR from a file.
 
     Parameters
     ----------
     oa_filename : `str`
         The FITS file containing the livetime information. Should be of
-        the form `nu<OBSID><FPM>_oa.fits` and may be in the event_cl 
+        the form `nu<OBSID><FPM>_oa.fits` and may be in the event_cl
         folder.
-    
+
     nonsunpos_evt_filename : `str`
-        The original EVT file from which the ``_sunpos`` one was 
+        The original EVT file from which the ``_sunpos`` one was
         created.
-    
+
     clip_oa_times :`bool`
-        The optical axis times span a longer period than the ones in 
+        The optical axis times span a longer period than the ones in
         the EVT file. Setting this to True slices the optical axis
-        positions to only inlcude those in the same time range 
+        positions to only include those in the same time range
         covered by the EVT file.
         Default: True
 
@@ -691,25 +702,40 @@ def optical_axis_array(oa_filename, nonsunpos_evt_filename, clip_oa_times=True, 
     The times and optical axis positions.
     """
     from nustar_pysolar.convert import to_solar
+
     with fits.open(oa_filename) as hdulist:
         oa_data = hdulist[1].data
     with fits.open(nonsunpos_evt_filename) as hdulist:
         oevt_header = hdulist[1].header
         oevt_data = hdulist[1].data
-    
-    # to_solar expects X/Y fields so add a couple extra columsn copying the X_OA/Y_OA fields
+
+    # to_solar expects X/Y fields so add a couple extra columns copying the X_OA/Y_OA fields
     orig_cols = oa_data.columns
-    new_cols = fits.ColDefs([fits.Column(name="Time", format="1D", unit="s", array=oa_data["TIME"]),
-                                fits.Column(name="X", format="1D", unit="pixel", array=oa_data["X_OA"]),
-                                fits.Column(name="Y", format="1D", unit="pixel", array=oa_data["Y_OA"])])
+    new_cols = fits.ColDefs(
+        [
+            fits.Column(name="Time", format="1D", unit="s", array=oa_data["TIME"]),
+            fits.Column(name="X", format="1D", unit="pixel", array=oa_data["X_OA"]),
+            fits.Column(name="Y", format="1D", unit="pixel", array=oa_data["Y_OA"]),
+        ]
+    )
     oa_data = fits.BinTableHDU.from_columns(orig_cols + new_cols).data
 
     newdata, _ = to_solar(oa_data, oevt_header, **kwargs)
 
     if clip_oa_times:
-        time_filter = (newdata["Time"] >= oevt_data["TIME"][0]) & (newdata["Time"] <= oevt_data["TIME"][-1])
+        time_filter = (newdata["Time"] >= oevt_data["TIME"][0]) & (
+            newdata["Time"] <= oevt_data["TIME"][-1]
+        )
         inds = (time_filter).nonzero()
         goodinds = inds[0]
-        return utc_from_nustar_time(newdata["Time"][goodinds]), pixel_coords_to_solar_coords(newdata["X"][goodinds]), pixel_coords_to_solar_coords(newdata["Y"][goodinds])
+        return (
+            utc_from_nustar_time(newdata["Time"][goodinds]),
+            pixel_coords_to_solar_coords(newdata["X"][goodinds]),
+            pixel_coords_to_solar_coords(newdata["Y"][goodinds]),
+        )
 
-    return utc_from_nustar_time(newdata["Time"]), pixel_coords_to_solar_coords(newdata["X"]), pixel_coords_to_solar_coords(newdata["Y"])
+    return (
+        utc_from_nustar_time(newdata["Time"]),
+        pixel_coords_to_solar_coords(newdata["X"]),
+        pixel_coords_to_solar_coords(newdata["Y"]),
+    )

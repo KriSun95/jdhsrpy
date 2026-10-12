@@ -114,8 +114,8 @@ def deconvolve_with_file(
     oa_to_source = 0 if oa_to_source is None else oa_to_source
     hor_to_source = 0 if hor_to_source is None else hor_to_source
 
-    oa_to_source <<= u.arcmin # PSF header expects arcminutes
-    hor_to_source <<= u.deg # ndimage.rotate expects degrees
+    oa_to_source <<= u.arcmin  # PSF header expects arcminutes
+    hor_to_source <<= u.deg  # ndimage.rotate expects degrees
 
     hdr_unit = _choose_os_angle_header_unit(oa_to_source)
     with fits.open(psf_file) as psf_hdulist:

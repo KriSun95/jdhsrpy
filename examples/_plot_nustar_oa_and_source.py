@@ -6,10 +6,10 @@ NuSTAR Optical Axis, Source Location, and Deconvolution
 This example shows how to obtain the optical axis information from the
 NuSTAR files.
 
-This example will also show how to use the optical axis and source 
+This example will also show how to use the optical axis and source
 location to perform deconvolution correctly on a NuSTAR image.
 
-This is important as the NuSTAR PSF changes both in radius and 
+This is important as the NuSTAR PSF changes both in radius and
 azimuth from and around the optical axis location.
 """
 
@@ -70,9 +70,9 @@ nustar_object = NustarEvt(evt_filename=filename)
 # Time profiles
 # -------------
 #
-# Let's plot some time profile information first. 
+# Let's plot some time profile information first.
 #
-# We can plot the optical axis locations and the livetime corrected 
+# We can plot the optical axis locations and the livetime corrected
 # count rate together.
 
 times_oa, sol_x, sol_y = optical_axis_array(filename_oa, filename_original_evt)
@@ -110,7 +110,7 @@ plt.show()
 # Image with optical axis
 # -----------------------
 #
-# Using the ``NustarEVT`` class, we can plot the optical axis location 
+# Using the ``NustarEVT`` class, we can plot the optical axis location
 # easily.
 
 # obtain a Sunpy map object of the NuSTAR observation
@@ -128,12 +128,12 @@ plt.show()
 # %%
 # Choosing a time
 # ---------------
-# 
-# Let's choose a time range to work with and look at the optical axis 
+#
+# Let's choose a time range to work with and look at the optical axis
 # location.
 #
-# We'll be able to get a lot of information here, especially the 
-# information needed to select the appropriate NuSTAR PSF for a given 
+# We'll be able to get a lot of information here, especially the
+# information needed to select the appropriate NuSTAR PSF for a given
 # source and deconvolve correctly.
 
 time0 = "2021-11-20T02:22:10"
@@ -143,29 +143,39 @@ mt = nustar_object.field_of_view_map(
     event_data=by_time(nustar_object.cleaned_evt_data, time0, time1)
 )
 
-tf_sol_x = by_value_range(sol_x, Time(time0, format="isot", scale="utc"), Time(time1, format="isot", scale="utc"), array_to_filter_against=times_oa)
-tf_sol_y = by_value_range(sol_y, Time(time0, format="isot", scale="utc"), Time(time1, format="isot", scale="utc"), array_to_filter_against=times_oa)
+tf_sol_x = by_value_range(
+    sol_x,
+    Time(time0, format="isot", scale="utc"),
+    Time(time1, format="isot", scale="utc"),
+    array_to_filter_against=times_oa,
+)
+tf_sol_y = by_value_range(
+    sol_y,
+    Time(time0, format="isot", scale="utc"),
+    Time(time1, format="isot", scale="utc"),
+    array_to_filter_against=times_oa,
+)
 
 # %%
-# After choosing the time we want, we can then get a source position 
+# After choosing the time we want, we can then get a source position
 # which we can do using this `Sunpy example <https://docs.sunpy.org/en/stable/generated/gallery/map/brightness_pixel_location.html>`__.
 
 pixel_pos = np.argwhere(mt.data == mt.data.max()) * u.pixel
 hpc_max = mt.wcs.pixel_to_world(pixel_pos[0, 1], pixel_pos[0, 0])
 
-# %% 
+# %%
 # We will also want the mean optical axis position.
 
 mean_tf_sol_x = np.mean(tf_sol_x)
 mean_tf_sol_y = np.mean(tf_sol_y)
 
 # %%
-# Now we can use maths or, for you Americans, math to get the angles we 
+# Now we can use maths or, for you Americans, math to get the angles we
 # need for deconvolution.
 
-deltax, deltay = mean_tf_sol_x-hpc_max.Tx, mean_tf_sol_y-hpc_max.Ty
-oa_to_source = np.sqrt((deltax)**2+(deltay)**2) << u.arcmin
-hor_to_source = (-np.arctan(deltay/deltax)*180/np.pi).value << u.deg
+deltax, deltay = mean_tf_sol_x - hpc_max.Tx, mean_tf_sol_y - hpc_max.Ty
+oa_to_source = np.sqrt((deltax) ** 2 + (deltay) ** 2) << u.arcmin
+hor_to_source = (-np.arctan(deltay / deltax) * 180 / np.pi).value << u.deg
 
 # %%
 # Plot all this together.
@@ -181,12 +191,31 @@ axes0.set_title(f"Time range: {time0}-{time1}")
 axes1 = fig.add_subplot(gs[0, 1], projection=mt)
 mt.plot(axes=axes1)
 draw_grid(mt, axes1)
-axes1.plot_coord(SkyCoord([mean_tf_sol_x, hpc_max.Tx], [mean_tf_sol_y, hpc_max.Ty], frame=mt.coordinate_frame), color="black", linestyle="--")
+axes1.plot_coord(
+    SkyCoord(
+        [mean_tf_sol_x, hpc_max.Tx],
+        [mean_tf_sol_y, hpc_max.Ty],
+        frame=mt.coordinate_frame,
+    ),
+    color="black",
+    linestyle="--",
+)
 axes1.plot_coord(SkyCoord(tf_sol_x, tf_sol_y, frame=mt.coordinate_frame), color="grey")
-axes1.plot_coord(SkyCoord(mean_tf_sol_x, mean_tf_sol_y, frame=mt.coordinate_frame), '*', color="black", markersize=10)
-axes1.plot_coord(hpc_max, 'o', color="black", markersize=10)
-axes1.set_title(f"Time range with positions and angles")
-axes1.text(5, 5,f"oa_to_source = {round(oa_to_source,1)}\nhor_to_source = {round(hor_to_source,1)}", size=15, color="k")
+axes1.plot_coord(
+    SkyCoord(mean_tf_sol_x, mean_tf_sol_y, frame=mt.coordinate_frame),
+    "*",
+    color="black",
+    markersize=10,
+)
+axes1.plot_coord(hpc_max, "o", color="black", markersize=10)
+axes1.set_title("Time range with positions and angles")
+axes1.text(
+    5,
+    5,
+    f"oa_to_source = {round(oa_to_source, 1)}\nhor_to_source = {round(hor_to_source, 1)}",
+    size=15,
+    color="k",
+)
 
 plt.show()
 
@@ -196,11 +225,13 @@ plt.show()
 #
 # Now we have the numbers require to deconvolve the NuSTAR image.
 #
-# Note that the full field-of-view should be considered during 
+# Note that the full field-of-view should be considered during
 # deconvolution as selecting too-small region will exclude counts that
 # otherwise should be collected by the PSF into a smaller area.
 
-dm = deconvolve_with_file(mt, filename_psf, oa_to_source=oa_to_source, hor_to_source=hor_to_source)
+dm = deconvolve_with_file(
+    mt, filename_psf, oa_to_source=oa_to_source, hor_to_source=hor_to_source
+)
 
 fig = plt.figure()
 ax = fig.add_subplot(projection=m)
