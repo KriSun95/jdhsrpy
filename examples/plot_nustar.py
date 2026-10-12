@@ -3,7 +3,7 @@
 Using ``NuSTAREvt``
 ===================
 
-This example shows the useulness of the ``~jdhsrpy.nustar_evt.NustarEvt`` class.
+This example shows the useulness of the ``~jdhsrpy.nustar_core.NustarEvt`` class.
 """
 
 import ntpath
@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from astropy.visualization import time_support
 
 from jdhsrpy import TEST_DATA_LOCATION
-from jdhsrpy.nustar_evt import NustarEvt, draw_grid
+from jdhsrpy.nustar_core import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
 
 # %%

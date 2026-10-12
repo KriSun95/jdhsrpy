@@ -16,7 +16,7 @@ from astropy.visualization import time_support
 
 from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.list_filters import by_detector, by_energy, by_region, by_time
-from jdhsrpy.nustar_evt import NustarEvt, draw_grid
+from jdhsrpy.nustar_core import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
 
 # %%

@@ -50,13 +50,16 @@ def sdo_download(start_time, end_time, directory=None, wave_values=None, get_hmi
     Examples
     --------
     # Default behaviour for the FOXSI M1 flare time
+
     >>> sdo_download()
 
     # Extend the time interval, download a subset of wavelengths,
     # define a specific directory, and get the SDO/HMI data as well
+
     >>> sdo_download(start_time="2024-04-17T21:30:00", end_time="2024-04-17T22:45:00", directory="path/to/save/directory/", wave_values=[94,171], get_hmi=True)
 
     # Only download SDO/HMI LOS data
+    
     >>> sdo_download(..., wave_values=[], get_hmi=True)
     """
     # set-up defaults
@@ -122,6 +125,7 @@ def fido_download(search, fetch=None):
     Examples
     --------
     ## Download some SDO/AIA data
+
     >>> from sunpy.net import attrs as a
     >>> search = (a.Time("2024-04-17T21:30:00",
                          "2024-04-17T22:30:00"),
@@ -131,6 +135,7 @@ def fido_download(search, fetch=None):
     >>> filepaths = fido_download(search, fetch)
 
     ## Download some SDO/HMI data
+
     >>> from sunpy.net import attrs as a
     >>> search = (a.Time("2024-04-17T21:30:00",
                          "2024-04-17T22:30:00"),
@@ -175,9 +180,11 @@ def handle_retries(filepaths, tries=5, needed_files=None):
     Examples
     --------
     ## Retry failed downloads and return a list still un-downloaded
+
     >>> needed_files = handle_retries(filepaths)
 
     ## If a list of un-downloaded already exists then pass to append
+
     >>> needed_files = handle_retries(filepaths, needed_files=needed_files)
     """
 

@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 from astropy.visualization import time_support
 
 from jdhsrpy import TEST_DATA_LOCATION
-from jdhsrpy.nustar_evt import NustarEvt, chu_state_array, livetime_array
+from jdhsrpy.nustar_core import NustarEvt, chu_state_array, livetime_array
 from jdhsrpy.visualize import (
     chu_plot,
     livetime_plot,

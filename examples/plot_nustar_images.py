@@ -12,10 +12,11 @@ import urllib.request
 
 import astropy.units as u
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 
 from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.image_filters import deconvolve_with_file, gaussian_filter
-from jdhsrpy.nustar_evt import NustarEvt, draw_grid, normalize_map
+from jdhsrpy.nustar_core import NustarEvt, draw_grid, normalize_map, event_data_xy_shift
 
 # %%
 # Download an example "sunpos" NuSTAR EVT file.
@@ -86,18 +87,43 @@ plt.show()
 nm = normalize_map(m, filename_lvt)
 
 fig = plt.figure()
-ax = fig.add_subplot(projection=m)
+ax = fig.add_subplot(projection=nm)
 nm.plot(axes=ax)
-draw_grid(m, ax)
+draw_grid(nm, ax)
 plt.title("Livetime normalized map")
 plt.colorbar(fraction=0.035, pad=0.03, label=nm.meta["PIXLUNIT"])
+plt.show()
+
+# %%
+# Shift x and y count positions
+# -----------------------------
+#
+# A function exists to shift the x and y positions of each count to move 
+# the imaged counts.
+#
+# This could be used to align different NuSTAR images to each other or
+# NuSTAR to other instruments.
+
+dx = 50 << u.arcsec
+dy = -70 << u.arcsec
+
+dm = nustar_object.nustar_map(bottom_left, top_right, event_data=event_data_xy_shift(nustar_object.cleaned_evt_data, dx=dx, dy=dy))
+
+fig = plt.figure()
+ax = fig.add_subplot(projection=m)
+m_cmap = "Blues"
+dm_cmap = "Reds"
+m.plot(axes=ax, cmap=m_cmap)
+dm.plot(axes=ax, cmap=dm_cmap, alpha=0.5)
+draw_grid(dm, ax)
+ax.set_title(f"Original map ({m_cmap})\nX/Y Shifted ({dm_cmap}): dx {dx}, dy {dy}")
 plt.show()
 
 # %%
 # Gaussian filtered
 # -----------------
 #
-# The module ``iamge_filters`` exist that provide a convenient way to
+# The module ``image_filters`` exist that provide a convenient way to
 # edit the Sunpy map objects that we're plotting.
 #
 # For example, a Gaussian filter one exists and all we have to do is

@@ -36,3 +36,4 @@ docs/sg_execution_times.rst
 *.pha
 *.rmf
 *.reg
+*.bsp

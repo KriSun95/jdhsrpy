@@ -9,7 +9,7 @@ sys.path.insert(
 )
 import matplotlib.pyplot as plt
 
-from jdhsrpy import list_filters, nustar_evt, screening, utils, visualize
+from jdhsrpy import list_filters, nustar_core, screening, utils, visualize
 
 DIRECTORY, FILENAME = ntpath.split(__file__)
 
@@ -25,7 +25,7 @@ time1 = "2021-11-20T02:28:50"
 
 # plt.figure()
 # cf = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/hk/nu20619003001_chu123.fits"
-# chu_times, chus, labels = nustar_evt.chu_state_array(cf)
+# chu_times, chus, labels = nustar_core.chu_state_array(cf)
 # axes = visualize.chu_plot(chu_times, chus, labels)
 # plt.title(f'CHU States of NuSTAR on ' + chu_times[0].strftime('%Y/%m/%d')) #get the date in the title
 # plt.xlabel('Start Time - ' + chu_times[0].strftime('%H:%M:%S'))
@@ -58,7 +58,7 @@ lvt_files = [
 ]
 
 for f, lvtf in zip(orig_files, lvt_files):
-    nu_obj = nustar_evt.NustarEvt(evt_filename=f)
+    nu_obj = nustar_core.NustarEvt(evt_filename=f)
     fig = plt.figure()
     m = nu_obj.field_of_view_map()
     # m = image_filters.gaussian_filter(nu_obj.field_of_view_map())
@@ -67,7 +67,7 @@ for f, lvtf in zip(orig_files, lvt_files):
     # ax = plt.subplot(projection=m, frame_on=False)
     ax = fig.add_subplot(projection=m)
     m.plot(axes=ax)
-    nustar_evt.draw_grid(m, ax)
+    nustar_core.draw_grid(m, ax)
     plt.show()
     break
     times, ct = nu_obj.rate_time_profile_array(lvtf)
@@ -114,7 +114,7 @@ for f, lvtf in zip(orig_files, lvt_files):
     plt.show()
 
     plt.figure()
-    axes = visualize.livetime_plot(*nustar_evt.livetime_array(lvtf))
+    axes = visualize.livetime_plot(*nustar_core.livetime_array(lvtf))
     visualize.vertical_line_of_time(time_1, c="r", axes=axes)
     visualize.vertical_line_of_time(time0, c="r", axes=axes)
     visualize.vertical_line_of_time(time0, c="g", axes=axes, ls=":")

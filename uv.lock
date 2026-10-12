@@ -1524,6 +1524,7 @@ dependencies = [
     { name = "numdifftools" },
     { name = "numpy" },
     { name = "nustar-pysolar" },
+    { name = "pip" },
     { name = "pre-commit" },
     { name = "reproject" },
     { name = "scikit-image" },
@@ -1546,7 +1547,8 @@ requires-dist = [
     { name = "nestle", specifier = ">=0.2.1" },
     { name = "numdifftools", specifier = ">=0.11.1" },
     { name = "numpy" },
-    { name = "nustar-pysolar", git = "https://github.com/NuSTAR/nustar_pysolar.git" },
+    { name = "nustar-pysolar", git = "https://github.com/KriSun95/nustar_pysolar.git" },
+    { name = "pip", specifier = ">=26.2.1" },
     { name = "pre-commit", specifier = ">=4.6.2" },
     { name = "reproject", specifier = ">=0.21.0" },
     { name = "scikit-image", specifier = ">=0.26.0" },
@@ -2655,7 +2657,7 @@ wheels = [
 [[package]]
 name = "nustar-pysolar"
 version = "0.0.0"
-source = { git = "https://github.com/NuSTAR/nustar_pysolar.git#57597255cd65e4a264f2a7e180a80bbb825fec6f" }
+source = { git = "https://github.com/KriSun95/nustar_pysolar.git#57597255cd65e4a264f2a7e180a80bbb825fec6f" }
 dependencies = [
     { name = "astropy" },
     { name = "jupyterlab" },
@@ -2884,6 +2886,15 @@ dependencies = [
     { name = "tifffile" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b8/02/5bf3639f5b77e9b183011c08541c5039ba3d04f5316c70312b48a8e003a9/pims-0.7.tar.gz", hash = "sha256:55907a4c301256086d2aa4e34a5361b9109f24e375c2071e1117b9491e82946b", size = 87779, upload-time = "2024-06-10T19:20:42.842Z" }
+
+[[package]]
+name = "pip"
+version = "26.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ae/15/4500e320e6b101ec3b719ae85b697d9940b6cda672bc555bd6016fc60c6f/pip-26.2.1.tar.gz", hash = "sha256:f6ad667e89a1fe78046c8f13232b247200f5258d7828f3f7883d660878e0813f", size = 1848877, upload-time = "2026-08-04T22:51:14.148Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl", hash = "sha256:71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e", size = 1816632, upload-time = "2026-08-04T22:51:12.472Z" },
+]
 
 [[package]]
 name = "platformdirs"

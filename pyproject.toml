@@ -24,10 +24,11 @@ dependencies = [
             "aiapy>=0.12.1",
             "scikit-image>=0.26.0",
             "pre-commit>=4.6.2",
+            "pip>=26.2.1",
 ]
 
 [tool.uv.sources]
-nustar-pysolar = { git = "https://github.com/NuSTAR/nustar_pysolar.git" }
+nustar-pysolar = { git = "https://github.com/KriSun95/nustar_pysolar.git" }
 
 [tool.setuptools.packages.find]
 where = ["jdhsrpy"]

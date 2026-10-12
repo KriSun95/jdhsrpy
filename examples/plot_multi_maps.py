@@ -17,7 +17,7 @@ from astropy.coordinates import SkyCoord
 
 from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.image_filters import gaussian_filter
-from jdhsrpy.nustar_evt import NustarEvt, draw_grid
+from jdhsrpy.nustar_core import NustarEvt, draw_grid
 
 # %%
 # Download an example "sunpos" NuSTAR EVT and SDO/AIA file.

@@ -10,7 +10,7 @@ sys.path.insert(
 )
 import matplotlib.pyplot as plt
 
-from jdhsrpy import nustar_evt, screening, utils, visualize
+from jdhsrpy import nustar_core, screening, utils, visualize
 
 DIRECTORY, FILENAME = ntpath.split(__file__)
 
@@ -27,7 +27,7 @@ orig_files = [
 ]
 
 for f in orig_files:
-    nu_obj = nustar_evt.NustarEvt(evt_filename=f)
+    nu_obj = nustar_core.NustarEvt(evt_filename=f)
     ct, times = nu_obj.time_profile_array()
 
     time_support(format="unix_tai")

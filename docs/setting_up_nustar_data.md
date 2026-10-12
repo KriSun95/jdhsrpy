@@ -30,6 +30,8 @@ The a user only has to run ``gunzip -r 20619003001`` to get the files ready to w
 
 Processing NuSTAR data can have a lot of steps to it so let's get started.
 
+The official [NuSTAR data analysis guide](https://heasarc.gsfc.nasa.gov/docs/nustar/analysis/nustar_swguide.pdf) is available online.
+
 ### HEASoft install
 
 In order to process NuSTAR data, you will require a working ``HEASoft`` install. I have a walkthrough in [heasoft-test-base/heasoft_install_instructions](https://github.com/KriSun95/heasoft-test-base/blob/main/heasoft_install_instructions/README.md) but you can also use the [official instructions](https://heasarc.gsfc.nasa.gov/docs/software/lheasoft/download.html) which look _a lot_ nicer than when I went through them a while ago (there are videos and Docker containers now).

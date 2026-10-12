@@ -117,12 +117,12 @@ if not os.path.isfile(filename_g0_evt):
 # work in solar coordinates.
 #
 # .. code-block:: python3
-#    :caption: jdhsrpy.nustar_evt.sunpos_evt
+#    :caption: jdhsrpy.nustar_core.sunpos_evt
 #
-#    from jdhsrpy.nustar_evt import sunpos_evt
+#    from jdhsrpy.nustar_core import sunpos_evt
 #    sunpos_evt(filename_base_evt)
 #
-# The ``jdhsrpy.nustar_evt.sunpos_evt`` Python code has been skipped in
+# The ``jdhsrpy.nustar_core.sunpos_evt`` Python code has been skipped in
 # this example, and we will rely on the test, back-up data stored
 # elsewhere that would be produced by the above code.
 
@@ -132,7 +132,7 @@ if not os.path.isfile(filename_sunpos_evt):
     urllib.request.urlretrieve(url, filename_sunpos_evt)
 
 # %%
-# This file can then be easily used with ``jdhsrpy.nustar_evt.NuSTAREvt``.
+# This file can then be easily used with ``jdhsrpy.nustar_core.NuSTAREvt``.
 
 import astropy.units as u
 import matplotlib.dates as mdates
@@ -140,7 +140,7 @@ import matplotlib.pyplot as plt
 from astropy.visualization import time_support
 from matplotlib import gridspec
 
-from jdhsrpy.nustar_evt import NustarEvt, draw_grid
+from jdhsrpy.nustar_core import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
 
 nustar_object = NustarEvt(evt_filename=filename_sunpos_evt)
@@ -180,7 +180,7 @@ plt.show()
 # To obtain a good time interval (GTI) file, a user will likely want to
 # inspect the NuSTAR time profile to select times.
 #
-# We could use any EVT file  together with ``~jdhsrpy.nustar_evt.NustarEvt``
+# We could use any EVT file  together with ``~jdhsrpy.nustar_core.NustarEvt``
 # for this. If none of them have been processed to convert their
 # X-Y coordinates to solar coordinated yet, we would just get a warning
 # from the class saying imaging methods probably will not work.

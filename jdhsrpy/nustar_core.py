@@ -1,3 +1,4 @@
+from copy import deepcopy
 import ntpath
 import re
 import warnings
@@ -7,6 +8,7 @@ import numpy as np
 import sunpy.map
 from astropy.coordinates import SkyCoord
 from astropy.io import fits
+from astropy.table import Table
 from astropy.time import Time
 
 from jdhsrpy import IMAGE_RES, NUSTAR_EPOCH, PIXELUNIT
@@ -21,6 +23,11 @@ __all__ = [
     "nustar_time_from_utc",
     "sunpos_evt",
     "utc_from_nustar_time",
+    "get_submap",
+    "normalize_map",
+    "get_livetime_exposure",
+    "draw_grid",
+    "event_data_xy_shift",
 ]
 
 
@@ -31,7 +38,7 @@ class NustarEvt:
     coordinates already converted to solar X/Y. However, this only
     affects the image plotting methods.
 
-    See ``~jdhsrpy.nustar_evt.sunpos_evt`` for more details on obtaining
+    See ``~jdhsrpy.nustar_core.sunpos_evt`` for more details on obtaining
     the necessary file.
 
     Parameters
@@ -75,7 +82,7 @@ class NustarEvt:
                 """
                 The provided file does not look like a sunpos file. Limited
                 functionality with solar coordinate related functions. See
-                ``~jdhsrpy.nustar_evt.sunpos_evt`` for help.
+                ``~jdhsrpy.nustar_core.sunpos_core`` for help.
                 """
             )
 
@@ -330,6 +337,33 @@ class NustarEvt:
         """
         nustar_map = self._native_map(event_data=event_data)
         return get_submap(nustar_map, bottom_left, top_right)
+    
+    def optical_axis_array(self, oa_filename, **kwargs):
+        """Get an array of the optical axis positions for NuSTAR from a file.
+
+        Parameters
+        ----------
+        oa_filename : `str`
+            The FITS file containing the livetime information. Should be of
+            the form `nu<OBSID><FPM>_oa.fits` and may be in the event_cl 
+            folder.
+
+        **kwargs : passed to ``nustar_pysolar.convert.to_solar``.
+
+        Returns
+        -------
+        The times and optical axis positions.
+        """
+        from nustar_pysolar.convert import to_solar
+        with fits.open(oa_filename) as hdulist:
+            oa_data = Table(hdulist[1].data)
+
+        # to_solar expects X/Y fields so add a couple extra columsn copying the X_OA/Y_OA fields
+        oa_data.add_columns([oa_data["TIME"], oa_data["X_OA"], oa_data["Y_OA"]], names=["Time", "X", "Y"])
+        print(oa_data.colnames)
+
+        (newdata, newhdr) = to_solar(oa_data, self.evt_header, **kwargs)
+        print((newdata, newhdr))
 
 
 def sunpos_evt(file, load_path=None):
@@ -338,10 +372,10 @@ def sunpos_evt(file, load_path=None):
     The new file will contain Solar-X/-Y coordinates for each event.
     """
     # importing this causes the docs to fail for this file
-    import nustar_pysolar
+    from nustar_pysolar.convert import convert_file
 
     load_path = "./" if load_path is None else load_path
-    nustar_pysolar.convert.convert_file(file, load_path=load_path)
+    convert_file(file, load_path=load_path)
 
 
 def chu_state_array(chu_filename):
@@ -638,3 +672,31 @@ def draw_grid(sunpy_map_obj, axes):
         zorder=0,
         annotate=False,
     )
+
+
+def event_data_xy_shift(event_data, dx:u.Quantity|None=None, dy:u.Quantity|None=None):
+    """Apply a shift in the positions of each event.
+    
+    Parameters
+    ----------
+    event_data :
+        The event list. 
+    
+    dx : `u.Quantity`|`None`
+        The change in the x-position of the counts. Needs to be 
+        convertable to arcseconds or will be assumed to be arcseconds 
+        if no units exist.
+        Default: None 
+    
+    dy : `u.Quantity`|`None`
+        The change in the y-position of the counts. Needs to be 
+        convertable to arcseconds or will be assumed to be arcseconds 
+        if no units exist.
+        Default: None 
+    """
+    _event_data = deepcopy(event_data)
+    if dx is not None:
+        _event_data['X'] = _event_data['X'].astype("float64") + ((dx<<u.arcsec)/IMAGE_RES).value
+    if dy is not None:
+        _event_data['Y'] = _event_data['Y'].astype("float64") + ((dy<<u.arcsec)/IMAGE_RES).value
+    return _event_data
