@@ -186,8 +186,33 @@ mean_tf_sol_y = np.mean(tf_sol_y)
 # need for deconvolution.
 
 deltax, deltay = mean_tf_sol_x - hpc_max.Tx, mean_tf_sol_y - hpc_max.Ty
+
+## %%
+# We want the angular radial distance from the optical axis (OA) to the 
+# source. This is ``oa_to_source``. 
+# 
+# This dictates what point-spread function (PSF) to use from the file; 
+# either the on-axis (<0.5') or which off-axis PSF to use (these change 
+# in 0.5' incrememnts up to 8.5').
+
 oa_to_source = np.sqrt((deltax) ** 2 + (deltay) ** 2) << u.arcmin
+
+## %%
+# Finally, we want the azimuthal angle from the horizontal to the 
+# source. This is ``hor_to_source``. 
+# 
+# This angle is used to rotate the PSF from the file so it is in the 
+# correct orientation for the desired source location.
+
 hor_to_source = (-np.arctan(deltay / deltax) * 180 / np.pi).value << u.deg
+
+# %%
+# A user will be able to see how crucial these values are, especially 
+# when inspecting the that NuSTAR's PSF elongates with increasing 
+# off-axis angles.
+# 
+# See Figure 1 of `preprint: Bhattacharya et al. 2025 <https://www.preprints.org/manuscript/202502.1249>`__
+# for the off-axis changes to the PSF.
 
 # %%
 # Plot the result
@@ -268,3 +293,51 @@ plt.colorbar(ax=axes1, fraction=0.035, pad=0.03, label=dm.meta["PIXLUNIT"])
 
 plt.tight_layout()
 plt.show()
+
+# %%
+# By default, the number of deconvolution iterations is 100. This can be 
+# changed by passing ``num_iter`` to 
+# ``~jdhsrpy.image_filters.deconvolve_with_file``.
+#
+# Let's try 50 iterations.
+
+it50 = 50
+dm50 = deconvolve_with_file(
+    mt, filename_psf, oa_to_source=oa_to_source, hor_to_source=hor_to_source, num_iter=it50
+)
+sub_dm50 = get_submap(
+    dm50, bottom_left=[-500, 150] << u.arcsec, top_right=[-350, 300] << u.arcsec
+)
+
+fig = plt.figure(figsize=(11, 6))
+gs = gridspec.GridSpec(1, 2)
+
+axes0 = fig.add_subplot(gs[0, 0], projection=dm50)
+dm50.plot(axes=axes0, vmin=1e0)
+draw_grid(dm50, axes0)
+axes0.set_title(f"Deconvolved map: {it50} iterations")
+plt.colorbar(ax=axes0, fraction=0.035, pad=0.03, label=dm50.meta["PIXLUNIT"])
+
+axes1 = fig.add_subplot(gs[0, 1], projection=sub_dm50)
+sub_dm50.plot(axes=axes1, vmin=1e0)
+draw_grid(sub_dm50, axes1)
+axes1.set_title("Approximately valid deconvolved region")
+plt.colorbar(ax=axes1, fraction=0.035, pad=0.03, label=dm50.meta["PIXLUNIT"])
+
+plt.tight_layout()
+plt.show()
+
+# %%
+# A good quesiton to ask is "how many iterations should I use?" No one 
+# really knows the answer to this, and they're lying if they say they 
+# do! 
+# 
+# The number of iterations does not have a solid answer but your choice 
+# should be justifiable.
+#
+# Personally, I would try a sample of iteration values and compare the 
+# results between both NuSTAR FPMs and what was seen by other 
+# observatories.
+#
+# It also becomes obvious to the eye when you start resolving noise so 
+# what out for that.

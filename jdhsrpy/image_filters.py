@@ -109,7 +109,7 @@ def deconvolve_with_file(
 
     **kwargs : Passed to ``~skimage.restoration.richardson_lucy``. The
         Default for the clip input will be False and the number of
-        iterations will be 10.
+        iterations (num_iter) will be 100.
     """
     oa_to_source = 0 if oa_to_source is None else oa_to_source
     hor_to_source = 0 if hor_to_source is None else hor_to_source
