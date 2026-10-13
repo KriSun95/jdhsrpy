@@ -650,13 +650,13 @@ def event_data_xy_shift(
 
     dx : `u.Quantity`|`None`
         The change in the x-position of the counts. Needs to be
-        convertable to arcseconds or will be assumed to be arcseconds
+        convertible to arcseconds or will be assumed to be arcseconds
         if no units exist.
         Default: None
 
     dy : `u.Quantity`|`None`
         The change in the y-position of the counts. Needs to be
-        convertable to arcseconds or will be assumed to be arcseconds
+        convertible to arcseconds or will be assumed to be arcseconds
         if no units exist.
         Default: None
     """
@@ -691,7 +691,7 @@ def optical_axis_array(
     clip_oa_times :`bool`
         The optical axis times span a longer period than the ones in
         the EVT file. Setting this to True slices the optical axis
-        positions to only inlcude those in the same time range
+        positions to only include those in the same time range
         covered by the EVT file.
         Default: True
 
@@ -709,7 +709,7 @@ def optical_axis_array(
         oevt_header = hdulist[1].header
         oevt_data = hdulist[1].data
 
-    # to_solar expects X/Y fields so add a couple extra columsn copying the X_OA/Y_OA fields
+    # to_solar expects X/Y fields so add a couple extra columns copying the X_OA/Y_OA fields
     orig_cols = oa_data.columns
     new_cols = fits.ColDefs(
         [
