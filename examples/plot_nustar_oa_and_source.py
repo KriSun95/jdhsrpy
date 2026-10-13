@@ -187,7 +187,7 @@ mean_tf_sol_y = np.mean(tf_sol_y)
 
 deltax, deltay = mean_tf_sol_x - hpc_max.Tx, mean_tf_sol_y - hpc_max.Ty
 
-## %%
+# %%
 # We want the angular radial distance from the optical axis (OA) to the
 # source. This is ``oa_to_source``.
 #
@@ -197,7 +197,7 @@ deltax, deltay = mean_tf_sol_x - hpc_max.Tx, mean_tf_sol_y - hpc_max.Ty
 
 oa_to_source = np.sqrt((deltax) ** 2 + (deltay) ** 2) << u.arcmin
 
-## %%
+# %%
 # Finally, we want the azimuthal angle from the horizontal to the
 # source. This is ``hor_to_source``.
 #
@@ -299,34 +299,34 @@ plt.show()
 # changed by passing ``num_iter`` to
 # ``~jdhsrpy.image_filters.deconvolve_with_file``.
 #
-# Let's try 50 iterations.
+# Let's only try 10 iterations.
 
-it50 = 50
-dm50 = deconvolve_with_file(
+it10 = 10
+dm10 = deconvolve_with_file(
     mt,
     filename_psf,
     oa_to_source=oa_to_source,
     hor_to_source=hor_to_source,
-    num_iter=it50,
+    num_iter=it10,
 )
-sub_dm50 = get_submap(
-    dm50, bottom_left=[-500, 150] << u.arcsec, top_right=[-350, 300] << u.arcsec
+sub_dm10 = get_submap(
+    dm10, bottom_left=[-500, 150] << u.arcsec, top_right=[-350, 300] << u.arcsec
 )
 
 fig = plt.figure(figsize=(11, 6))
 gs = gridspec.GridSpec(1, 2)
 
-axes0 = fig.add_subplot(gs[0, 0], projection=dm50)
-dm50.plot(axes=axes0, vmin=1e0)
-draw_grid(dm50, axes0)
-axes0.set_title(f"Deconvolved map: {it50} iterations")
-plt.colorbar(ax=axes0, fraction=0.035, pad=0.03, label=dm50.meta["PIXLUNIT"])
+axes0 = fig.add_subplot(gs[0, 0], projection=dm10)
+dm10.plot(axes=axes0, vmin=1e0)
+draw_grid(dm10, axes0)
+axes0.set_title(f"Deconvolved map: {it10} iterations")
+plt.colorbar(ax=axes0, fraction=0.035, pad=0.03, label=dm10.meta["PIXLUNIT"])
 
-axes1 = fig.add_subplot(gs[0, 1], projection=sub_dm50)
-sub_dm50.plot(axes=axes1, vmin=1e0)
-draw_grid(sub_dm50, axes1)
+axes1 = fig.add_subplot(gs[0, 1], projection=sub_dm10)
+sub_dm10.plot(axes=axes1, vmin=1e0)
+draw_grid(sub_dm10, axes1)
 axes1.set_title("Approximately valid deconvolved region")
-plt.colorbar(ax=axes1, fraction=0.035, pad=0.03, label=dm50.meta["PIXLUNIT"])
+plt.colorbar(ax=axes1, fraction=0.035, pad=0.03, label=dm10.meta["PIXLUNIT"])
 
 plt.tight_layout()
 plt.show()
@@ -344,4 +344,4 @@ plt.show()
 # observatories.
 #
 # It also becomes obvious to the eye when you start resolving noise so
-# what out for that.
+# watch out for that.
