@@ -150,6 +150,8 @@ plt.show()
 # Another useful image technique is deconvolvution. Two functions exist
 # for this ``deconvolve_with_file`` and ``deconvolve_with_array``. Let's
 # look at the former.
+#
+# See the specific `deconvolving example <https://krisun95.github.io/jdhsrpy/auto_examples/plot_nustar_oa_and_source.html>`__ for a sounder science approach.
 
 dm = deconvolve_with_file(m, filename_psf)
 

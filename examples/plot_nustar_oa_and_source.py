@@ -30,7 +30,7 @@ from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.general_filters import by_value_range
 from jdhsrpy.image_filters import deconvolve_with_file
 from jdhsrpy.list_filters import by_time
-from jdhsrpy.nustar_core import NustarEvt, draw_grid, optical_axis_array
+from jdhsrpy.nustar_core import NustarEvt, draw_grid, get_submap, optical_axis_array
 from jdhsrpy.visualize import optical_axis_plot, time_profile_plot
 
 # %%
@@ -122,7 +122,7 @@ fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
 draw_grid(m, ax)
-ax.plot_coord(SkyCoord(sol_x, sol_y, frame=m.coordinate_frame))
+ax.plot_coord(SkyCoord(sol_x, sol_y, frame=m.coordinate_frame), color="grey")
 plt.show()
 
 # %%
@@ -157,19 +157,31 @@ tf_sol_y = by_value_range(
 )
 
 # %%
+# Find source location
+# --------------------
+#
 # After choosing the time we want, we can then get a source position
 # which we can do using this `Sunpy example <https://docs.sunpy.org/en/stable/generated/gallery/map/brightness_pixel_location.html>`__.
+#
+# We can just assume the source will be the brightest pixel in the
+# image.
 
 pixel_pos = np.argwhere(mt.data == mt.data.max()) * u.pixel
 hpc_max = mt.wcs.pixel_to_world(pixel_pos[0, 1], pixel_pos[0, 0])
 
 # %%
+# Mean optical axis location
+# --------------------------
+#
 # We will also want the mean optical axis position.
 
 mean_tf_sol_x = np.mean(tf_sol_x)
 mean_tf_sol_y = np.mean(tf_sol_y)
 
 # %%
+# Get source location w.r.t. optical axis
+# ---------------------------------------
+#
 # Now we can use maths or, for you Americans, math to get the angles we
 # need for deconvolution.
 
@@ -178,6 +190,9 @@ oa_to_source = np.sqrt((deltax) ** 2 + (deltay) ** 2) << u.arcmin
 hor_to_source = (-np.arctan(deltay / deltax) * 180 / np.pi).value << u.deg
 
 # %%
+# Plot the result
+# ---------------
+#
 # Plot all this together.
 
 fig = plt.figure(figsize=(11, 5))
@@ -232,11 +247,24 @@ plt.show()
 dm = deconvolve_with_file(
     mt, filename_psf, oa_to_source=oa_to_source, hor_to_source=hor_to_source
 )
+sub_dm = get_submap(
+    dm, bottom_left=[-500, 150] << u.arcsec, top_right=[-350, 300] << u.arcsec
+)
 
-fig = plt.figure()
-ax = fig.add_subplot(projection=m)
-dm.plot(axes=ax, vmin=1e0)
-draw_grid(m, ax)
-plt.title("Deconvolved map")
-plt.colorbar(fraction=0.035, pad=0.03, label=dm.meta["PIXLUNIT"])
+fig = plt.figure(figsize=(11, 6))
+gs = gridspec.GridSpec(1, 2)
+
+axes0 = fig.add_subplot(gs[0, 0], projection=dm)
+dm.plot(axes=axes0, vmin=1e0)
+draw_grid(dm, axes0)
+axes0.set_title("Deconvolved map")
+plt.colorbar(ax=axes0, fraction=0.035, pad=0.03, label=dm.meta["PIXLUNIT"])
+
+axes1 = fig.add_subplot(gs[0, 1], projection=sub_dm)
+sub_dm.plot(axes=axes1, vmin=1e0)
+draw_grid(sub_dm, axes1)
+axes1.set_title("Approximately valid deconvolved region")
+plt.colorbar(ax=axes1, fraction=0.035, pad=0.03, label=dm.meta["PIXLUNIT"])
+
+plt.tight_layout()
 plt.show()
