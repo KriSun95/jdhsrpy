@@ -77,3 +77,5 @@ sphinx_gallery_conf = {
     "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
     "default_thumb_file": os.path.join(this_folder, html_favicon),
 }
+
+myst_heading_anchors = 5

@@ -80,15 +80,20 @@ plt.show()
 dir_171 = os.path.join(file_directory, "171angstrom")
 dir_211 = os.path.join(file_directory, "211angstrom")
 dir_fe18 = os.path.join(file_directory, "fe18")
-create_iron18(dir_094, dir_171, dir_211, outdir=dir_fe18, needing_prepped=False)
+create_iron18(
+    dir_094, dir_171, dir_211, outdir=dir_fe18, overwrite=True, needing_prepped=False
+)
 
 # %%
-# The ``needing_prepped`` input should likely be set to ``True`` for a
-# user as this will prep the AIA file data before creating the Fe18
-# proxy channel files.
+# .. note::
 #
-# However, to avoid downloading SDO/AIA calibration data during the
-# documentation build, let's just set it to ``False`` here.
+#     The ``needing_prepped`` input should likely be set to ``True`` for
+#     a user as the file downloaded using Sunpy will not be prepped.
+#     This will prep the AIA file data before creating the Fe18 proxy
+#     channel files.
+#
+#     However, to avoid downloading SDO/AIA calibration data during the
+#     documentation build, let's just set it to ``False`` here.
 
 # %%
 # Can plot the result

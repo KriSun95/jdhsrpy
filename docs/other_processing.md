@@ -8,7 +8,7 @@ Many solar observations are subject to pulse pileup and require an additional pr
 **Not applying this correction will result in erroneous removal of piled-up counts for any image-based product, *including spatially-filtered spectra*.**
 
 Applying the correction is simple.
-You need the following two `pixpos` files, obtainable from [here]():
+You need the following two `pixpos` files, [which are obtainable](https://foxsi.space.umn.edu/JDHSR/test_nustar_data/):
 
 ```bash
 nuApixpos20100101v007_pileup.fits
@@ -26,6 +26,6 @@ fpmb_pixposfile=/path/to/nuBpixpos20100101v007_pileup.fits \
 <<other parameters>>
 ```
 
-(see ["Get useable science files" section from here](setting_up_nustar_data.md#get-useable-science-files) for an example of a full `nupipeline` call)
+(see ["Get useable science files" section from here](./setting_up_nustar_data.md#get-useable-science-files) for an example of a full `nupipeline` call)
 
 ## Fe 6.7 keV complex gain shift

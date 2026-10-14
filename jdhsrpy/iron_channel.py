@@ -26,19 +26,28 @@ def get_unprepped_file_time(filename_time):
     return Time.strptime(filename_time, "%Y_%m_%dT%H_%M_%S.%fZ")
 
 
-def create_iron18(dir_094, dir_171, dir_211, outdir, needing_prepped=False, table=None):
+def create_iron18(
+    dir_094, dir_171, dir_211, outdir, needing_prepped=False, table=None, **kwargs
+):
     """Takes the 94, 171, 211 channels from SDO/AIA to create an iron18 emission proxy (Del Zanna 2013).
 
     Parameters
     ----------
     dir_*** : str
-            The string of the directory with the 94A (dir_094), 171A (dir_171), and 211A (dir_211) files.
+        The string of the directory with the 94A (dir_094), 171A (dir_171), and 211A (dir_211) files.
 
     outdir : str
-            Directory for the output iron18 files.
+        Directory for the output iron18 files.
 
     needing_prepped : bool
-            Is the AIA data in dir_*** needing prepped?
+        Is the AIA data in dir_*** needing prepped?
+
+    table :
+        An option for a pointing table for prepping. If None, then Aiapy
+        will be used to get the correct table.
+
+    **kwargs :
+        Passed to the ``fits.save`` method.
 
     Returns
     -------
@@ -198,7 +207,9 @@ def create_iron18(dir_094, dir_171, dir_211, outdir, needing_prepped=False, tabl
         header = aia_map_094.meta
         header["wavelnth"] = "18"
         aia_map_fe18 = sunpy.map.Map(iron_18, aia_map_094.meta)
-        aia_map_fe18.save(os.path.join(outdir, "fe18".join(f094.split("94A"))))
+        aia_map_fe18.save(
+            os.path.join(outdir, "fe18".join(f094.split("94A"))), **kwargs
+        )
 
         del aia_map_094
         del aia_map_171

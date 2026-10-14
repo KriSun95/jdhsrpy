@@ -564,7 +564,7 @@ def get_submap(sunpy_map_obj, bottom_left: u.Quantity, top_right: u.Quantity):
 
     Parameters
     ----------
-    sunpy_map_obj : ``
+    sunpy_map_obj : `~sunpy.map.Map`
         The map object.
 
     bottom_left : `~astropy.units.Quantity`
