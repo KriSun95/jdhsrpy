@@ -8,7 +8,9 @@ The Jessie Duncan HSR Project documentation! |:fox:|
 
 Welcome! This is the online documentation for the `jdhsrpy <https://github.com/KriSun95/jdhsrpy>`__ code repository.
 
-The NuSTAR data analysis to accompany this project can be found in the `jdhsrpy-analysis <https://github.com/KriSun95/jdhsrpy-analysis>`__ repository.
+The NuSTAR solar data analysis to accompany this project can be found in the `jdhsrpy-analysis <https://github.com/KriSun95/jdhsrpy-analysis>`__ repository.
+
+Note that this code-base is for NuSTAR solar data analysis, not for astrophysical purposes.
 
 .. toctree::
    :maxdepth: 2

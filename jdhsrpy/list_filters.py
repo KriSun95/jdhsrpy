@@ -8,6 +8,7 @@ __all__ = [
     "by_detector",
     "by_energy",
     "by_good_pix",
+    "by_grade",
     "by_gradezero",
     "by_region",
     "by_time",

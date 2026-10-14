@@ -13,9 +13,17 @@ import urllib.request
 import astropy.units as u
 import matplotlib.pyplot as plt
 from astropy.visualization import time_support
+from matplotlib import gridspec
 
 from jdhsrpy import TEST_DATA_LOCATION
-from jdhsrpy.list_filters import by_detector, by_energy, by_region, by_time
+from jdhsrpy.list_filters import (
+    by_detector,
+    by_energy,
+    by_good_pix,
+    by_grade,
+    by_region,
+    by_time,
+)
 from jdhsrpy.nustar_core import NustarEvt, draw_grid
 from jdhsrpy.visualize import time_profile_plot
 
@@ -254,4 +262,87 @@ m.plot(axes=ax, cmap="Greys")
 mr.plot(axes=ax)
 draw_grid(m, ax)
 plt.title(f"Region: {bottom_left}-{top_right}")
+plt.show()
+
+# %%
+# Filter by grade
+# ---------------
+#
+# Let's create a time profile from the counts in a few grades.
+#
+# Information on NuSTAR grades can be found in the `NuSTAR Dat Analysis Guide <https://heasarc.gsfc.nasa.gov/docs/nustar/analysis/nustar_swguide.pdf>`__
+# in Figure 2.
+#
+# Note that we are filtering the ``evt_data`` list instead of the
+# ``cleaned_evt_data`` list like in the previous examples.
+#
+# Therefore, we would like to still remove the bad pixels and really
+# low-energy, not-trusted counts. Let's produce a new event list.
+
+all_grade_but_filtered_list = by_energy(
+    by_good_pix(nustar_object.evt_data, nustar_object.fpm),
+    energy_low=2.5,
+    energy_high=80,
+)
+
+# %%
+# The ``all_grade_but_filtered_list`` event list is now the same as the
+# ``cleaned_evt_data`` list that was used previously except we've kept
+# in all grades instead o filtering out those >0.
+
+# choose 3 grades
+grades = [0, 1, 2]
+
+time_support(format="unix_tai")
+plt.figure()
+for g in grades:
+    timesg, ctg = nustar_object.count_time_profile_array(
+        event_data=by_grade(all_grade_but_filtered_list, g)
+    )
+    axes = time_profile_plot(timesg, ctg, label=f"Grade {g}")
+plt.title(f"FPM{nustar_object.fpm} grade time profiles")
+plt.xticks(rotation=30, ha="right")
+plt.ylabel("Counts")
+plt.xlabel("Time")
+plt.yscale("log")
+plt.legend()
+plt.show()
+
+# %%
+# Let's show off the ``nustar_map`` map method while filtering those
+# grades.
+
+bottom_left = [-1100, -700] << u.arcsec
+top_right = [250, 650] << u.arcsec
+
+# obtain a Sunpy map object of the NuSTAR observation
+mg0 = nustar_object.nustar_map(
+    bottom_left, top_right, event_data=by_grade(all_grade_but_filtered_list, grades[0])
+)
+mg1 = nustar_object.nustar_map(
+    bottom_left, top_right, event_data=by_grade(all_grade_but_filtered_list, grades[1])
+)
+mg2 = nustar_object.nustar_map(
+    bottom_left, top_right, event_data=by_grade(all_grade_but_filtered_list, grades[2])
+)
+# now use it in plotting, this is now just Sunpy API stuff
+fig = plt.figure(figsize=(16, 5))
+gs = gridspec.GridSpec(1, 3)
+
+axes0 = fig.add_subplot(gs[0, 0], projection=mg0)
+mg0.plot(axes=axes0)
+draw_grid(mg0, axes0)
+axes0.set_title(f"Grade {grades[0]}")
+
+axes1 = fig.add_subplot(gs[0, 1], projection=mg1)
+mg1.plot(axes=axes1)
+draw_grid(mg1, axes1)
+axes1.set_title(f"Grade {grades[1]}")
+
+axes2 = fig.add_subplot(gs[0, 2], projection=mg2)
+mg2.plot(axes=axes2)
+draw_grid(mg2, axes2)
+axes2.set_title(f"Grade {grades[2]}")
+
+plt.tight_layout()
 plt.show()

@@ -1,5 +1,7 @@
 # Downloading and Processing NuSTAR Data
 
+This workflow is for NuSTAR solar data analysis.
+
 A repository that might help is another I own called [heasoft-test-base](https://github.com/KriSun95/heasoft-test-base). I will heavily pull from information there as it's purpose is to describe how to get NuSTAR data then process it for spectral fitting using terminal commands and Python.
 
 Some steps below will obviously need to be performed before others, e.g., you'll likely need to download the data to be able to do anything else. However, most steps can be done in a variety of orders depending on wehat you require first.
