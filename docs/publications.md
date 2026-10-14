@@ -15,7 +15,7 @@ A non-exhaustive list and description of NuSTAR publications that might be relev
 11. [Cooper et al,. 2020, ApJL, 893, L40, NuSTAR Observation of a Minuscule Microflare in a Solar Active Region](https://iopscience.iop.org/article/10.3847/2041-8213/ab873e)
 12. [Duncan et al., 2021, ApJ, 908, 29, NuSTAR Observation of Energy Release in 11 Solar Microflares](https://iopscience.iop.org/article/10.3847/1538-4357/abca3d)
 
-    - First descriptions of a pile-up correction.(./other_processing.md)
+    - [First descriptions of a pile-up correction.](./other_processing.md)
 
 13. [Cooper et al., 2021, MNRAS, 507, 3, NuSTAR Observations of a Repeatedly Microflaring Active Region](https://academic.oup.com/mnras/article/507/3/3936/6354806?login=true)
 14. [Paterson et al., 2023, SolPhys, 298, 47, The First Survey of Quiet Sun Features Observed in Hard X-Rays with NuSTAR](https://link.springer.com/article/10.1007/s11207-023-02135-4)
