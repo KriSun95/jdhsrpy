@@ -8,6 +8,8 @@ The Jessie Duncan HSR Project documentation! |:fox:|
 
 Welcome! This is the online documentation for the `jdhsrpy <https://github.com/KriSun95/jdhsrpy>`__ code repository.
 
+The NuSTAR data analysis to accompany this project can be found in the `jdhsrpy-analysis <https://github.com/KriSun95/jdhsrpy-analysis>`__ repository.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
