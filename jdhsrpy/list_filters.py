@@ -1,8 +1,10 @@
+import astropy.units as u
 import numpy as np
 from astropy.time import Time
+from shapely import points
 
 from jdhsrpy import NUSTAR_EPOCH
-from jdhsrpy.utils import pixel_coords_to_solar_coords
+from jdhsrpy.utils import arcsec_points_to_shape, pixel_coords_to_solar_coords
 
 __all__ = [
     "by_detector",
@@ -10,7 +12,8 @@ __all__ = [
     "by_good_pix",
     "by_grade",
     "by_gradezero",
-    "by_region",
+    "by_general_region",
+    "by_basic_rectangle_region",
     "by_time",
     "event_filter",
 ]
@@ -216,8 +219,29 @@ def by_detector(event_data, detector):
     return event_data[event_data["DET_ID"] == detector]
 
 
-def by_region(event_data, bottom_left, top_right):
-    """Filter and return event list filtered for a square region."""
+def by_basic_rectangle_region(event_data, bottom_left, top_right):
+    """Filter and return event list filtered for a rectangle region.
+    
+    This existed before the use of the ``shapely`` module where the 
+    region selection just simply checks the count location against the
+    X and Y bounds of the box.
+
+    This function is kept for legacy reasons and can serve as a nice 
+    check for the other region event list filters.
+
+    Parameters
+    ----------
+    event_data: FITS data structure
+        This should be an hdu.data structure from a NuSTAR FITS file.
+    
+    bottom_left : `~astropy.units.Quantity`
+        The bottom left corner (X, Y) of the desired box. Should be to 
+        arcseconds.
+    
+    top_right : `~astropy.units.Quantity`
+        The top right corner (X, Y) of the desired box. Should be to 
+        arcseconds.
+    """
     sol_x_arc = pixel_coords_to_solar_coords(event_data["X"])
     sol_y_arc = pixel_coords_to_solar_coords(event_data["Y"])
     reg_filter = (
@@ -228,3 +252,50 @@ def by_region(event_data, bottom_left, top_right):
     )
     inds = (reg_filter).nonzero()[0]
     return event_data[inds]
+
+
+def by_general_region(event_data, shape):
+    """Filter and return event list filtered for a general region.
+    
+    Parameters
+    ----------
+    event_data: FITS data structure
+        This should be an hdu.data structure from a NuSTAR FITS file.
+
+    shape : `~shapely.geometry.polygon.Polygon`
+    """
+    # enforce everything in arcseconds before operations
+    sol_x_arc = pixel_coords_to_solar_coords(event_data["X"]) << u.arcsec
+    sol_y_arc = pixel_coords_to_solar_coords(event_data["Y"]) << u.arcsec
+
+    map_points = points(np.vstack((sol_x_arc.value, sol_y_arc.value)).T)
+    in_shape = np.array([(mp.within(shape) or mp.touches(shape)) for mp in map_points])
+    return event_data[in_shape]
+
+
+def by_rectangle_region(event_data, bottom_left, top_right):
+    """Filter and return event list filtered for a rectangle region.
+    
+    Is identical to the ``by_basic_rectangle_region`` function but uses
+    the far more powerful ``shapely`` Python package.
+
+    Parameters
+    ----------
+    event_data: FITS data structure
+        This should be an hdu.data structure from a NuSTAR FITS file.
+    
+    bottom_left : `~astropy.units.Quantity`
+        The bottom left corner (X, Y) of the desired box. Should be to 
+        arcseconds.
+    
+    top_right : `~astropy.units.Quantity`
+        The top right corner (X, Y) of the desired box. Should be to 
+        arcseconds.
+    """
+    vertices = [bottom_left<<u.arcsec, 
+                [bottom_left[0], top_right[1]]<<u.arcsec, 
+                top_right<<u.arcsec,
+                [top_right[0], bottom_left[1]]<<u.arcsec
+                ]
+    shape = arcsec_points_to_shape(vertices)
+    return by_general_region(event_data, shape)

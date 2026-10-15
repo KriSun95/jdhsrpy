@@ -2,10 +2,12 @@ import re
 
 import astropy.units as u
 import numpy as np
+from shapely.geometry.polygon import Polygon
 
 from jdhsrpy import IMAGE_COLORMAP, IMAGE_RES, IMAGE_SCALE
 
 __all__ = [
+    "arcsec_points_to_shape",
     "assign_plot_settings",
     "only_numbers",
     "pixel_coords_to_solar_coords",
@@ -132,3 +134,21 @@ def pixel_coords_to_solar_coords(pixel_coords):
     pix_map_centre = 1500
     sol_x_pix = (pixel_coords - pix_map_centre) << u.pixel
     return sol_x_pix * IMAGE_RES
+
+def arcsec_points_to_shape(*args):
+    """A function to turn a list of (x, y) points into a polygon.
+    
+    The coordinates will be the vertices of the desired shape and passed 
+    to ``shapely.geometry.polygon.Polygon``
+
+    Parameters
+    ----------
+    *args :
+        The vertices of the polygon and should be in or convertable to 
+        ``~atropy.units.Quantity``.
+    """
+    # make sure arcsecond
+    # need to index [0] as it weirdly becomes a list in a list for some reason
+    unit_check_list = [a<<u.arcsec for a in args][0]
+    unitless_for_poly = [ucl.value for ucl in unit_check_list]
+    return Polygon(unitless_for_poly)

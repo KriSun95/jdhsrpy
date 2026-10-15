@@ -3,7 +3,7 @@
 Using Event Filters
 ===================
 
-This example shows tusing the event list filters found in ``jdhsrpy.list_filters``.
+This example shows using the event list filters found in ``jdhsrpy.list_filters``.
 """
 
 import ntpath
@@ -21,7 +21,7 @@ from jdhsrpy.list_filters import (
     by_energy,
     by_good_pix,
     by_grade,
-    by_region,
+    by_basic_rectangle_region,
     by_time,
 )
 from jdhsrpy.nustar_core import NustarEvt, draw_grid
@@ -79,7 +79,7 @@ nustar_object = NustarEvt(evt_filename=filename)
 #    top_right = [-350, 300] << u.arcsec
 #
 #    new_event_data = by_time(
-#                             by_region(
+#                             by_basic_rectangle_region(
 #                                       nustar_object.cleaned_evt_data,
 #                                       bottom_left,
 #                                       top_right
@@ -192,9 +192,7 @@ time1 = "2021-11-20T02:25:30"
 
 time_support(format="unix_tai")
 plt.figure()
-times, ct = nustar_object.count_time_profile_array(
-    event_data=nustar_object.cleaned_evt_data
-)
+times, ct = nustar_object.count_time_profile_array()
 timest, ctt = nustar_object.count_time_profile_array(
     event_data=by_time(nustar_object.cleaned_evt_data, time0, time1),
     time_bins=times,  # we can make sure the same time bins are used between profiles
@@ -235,7 +233,7 @@ top_right = [-350, 300] << u.arcsec
 time_support(format="unix_tai")
 plt.figure()
 timesr, ctr = nustar_object.count_time_profile_array(
-    event_data=by_region(nustar_object.cleaned_evt_data, bottom_left, top_right)
+    event_data=by_basic_rectangle_region(nustar_object.cleaned_evt_data, bottom_left, top_right)
 )
 axes = time_profile_plot(times, ct, label="Full observed area")
 axes = time_profile_plot(timesr, ctr, label=f"{bottom_left}-{top_right}", axes=axes)
@@ -253,7 +251,7 @@ plt.show()
 # obtain a Sunpy map object of the NuSTAR observation
 m = nustar_object.field_of_view_map()
 mr = nustar_object.field_of_view_map(
-    event_data=by_region(nustar_object.cleaned_evt_data, bottom_left, top_right)
+    event_data=by_basic_rectangle_region(nustar_object.cleaned_evt_data, bottom_left, top_right)
 )
 # now use it in plotting, this is now just Sunpy API stuff
 fig = plt.figure()
