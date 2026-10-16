@@ -17,11 +17,11 @@ from matplotlib import gridspec
 
 from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.list_filters import (
+    by_basic_rectangle_region,
     by_detector,
     by_energy,
     by_good_pix,
     by_grade,
-    by_basic_rectangle_region,
     by_time,
 )
 from jdhsrpy.nustar_core import NustarEvt, draw_grid
@@ -233,7 +233,9 @@ top_right = [-350, 300] << u.arcsec
 time_support(format="unix_tai")
 plt.figure()
 timesr, ctr = nustar_object.count_time_profile_array(
-    event_data=by_basic_rectangle_region(nustar_object.cleaned_evt_data, bottom_left, top_right)
+    event_data=by_basic_rectangle_region(
+        nustar_object.cleaned_evt_data, bottom_left, top_right
+    )
 )
 axes = time_profile_plot(times, ct, label="Full observed area")
 axes = time_profile_plot(timesr, ctr, label=f"{bottom_left}-{top_right}", axes=axes)
@@ -251,7 +253,9 @@ plt.show()
 # obtain a Sunpy map object of the NuSTAR observation
 m = nustar_object.field_of_view_map()
 mr = nustar_object.field_of_view_map(
-    event_data=by_basic_rectangle_region(nustar_object.cleaned_evt_data, bottom_left, top_right)
+    event_data=by_basic_rectangle_region(
+        nustar_object.cleaned_evt_data, bottom_left, top_right
+    )
 )
 # now use it in plotting, this is now just Sunpy API stuff
 fig = plt.figure()

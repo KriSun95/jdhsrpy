@@ -1,8 +1,13 @@
 from datetime import datetime
 
+import astropy.units as u
 import matplotlib.pyplot as plt
+import numpy as np
+from astropy.coordinates import SkyCoord
 from astropy.time import Time
 from astropy.visualization import time_support
+from shapely.geometry.multipolygon import MultiPolygon
+from shapely.geometry.polygon import Polygon
 
 __all__ = [
     "chu_plot",
@@ -25,6 +30,10 @@ def time_profile_plot(times, ydata, axes=None, **kwargs):
     ydata : `list`|`~numpy.ndarray`
         The data varying with time. Length will be one less the `times`.
         length.
+
+    axes : axis object
+        The axis to be plotted on. If None then ``plt.gca()`` is used.
+        Default: None
 
     Returns
     -------
@@ -54,6 +63,10 @@ def vertical_line_of_time(time: str | Time | datetime, axes=None, **kwargs):
     time : `str`|`astropy.time.core.Time`|`datetime`
         If `str` then need ISOT format. E.g., 2021-11-20T02:25:30.
 
+    axes : axis object
+        The axis to be plotted on. If None then ``plt.gca()`` is used.
+        Default: None
+
     Returns
     -------
     Axes input.
@@ -80,6 +93,10 @@ def chu_plot(times, ydata, label_map, axes=None, **kwargs):
         The data varying with time. Length will be the same as `times`.
         length.
 
+    axes : axis object
+        The axis to be plotted on. If None then ``plt.gca()`` is used.
+        Default: None
+
     Returns
     -------
     Axes input.
@@ -104,6 +121,10 @@ def livetime_plot(times, ydata, axes=None, **kwargs):
         The data varying with time. Length will be the same as `times`.
         length.
 
+    axes : axis object
+        The axis to be plotted on. If None then ``plt.gca()`` is used.
+        Default: None
+
     Returns
     -------
     Axes input.
@@ -127,6 +148,10 @@ def spectrum_plot(energy_bins, ydata, ydata_err, axes=None, **kwargs):
 
     ydata :  `~astropy.unit.Quantity`
         The spectrum.
+
+    axes : axis object
+        The axis to be plotted on. If None then ``plt.gca()`` is used.
+        Default: None
 
     Returns
     -------
@@ -166,6 +191,10 @@ def optical_axis_plot(times, positions, axes=None, **kwargs):
     positions : `list`|`~numpy.ndarray`|`astropy.units.Quantity`
         The optical axis positions for either the X or Y axis.
 
+    axes : axis object
+        The axis to be plotted on. If None then ``plt.gca()`` is used.
+        Default: None
+
     Returns
     -------
     Axes input.
@@ -176,4 +205,67 @@ def optical_axis_plot(times, positions, axes=None, **kwargs):
     }
     _plot_settings = _defaults | kwargs
     plt.plot(to_plotting_datetimes(times), positions, **_plot_settings)
+    return axes
+
+
+def shape_plot(
+    shapely_polygon, coordinate_frame, axes=None, sky_coord_kwargs=None, **kwargs
+):
+    """Plot a ``shapely.geometry.polygon.Polygon``.
+
+    Parameters
+    ----------
+    shapely_polygon :  `shapely.geometry.polygon.Polygon` | `geometry.multipolygon.MultiPolygon`
+        Will assume ``shapely_polygon.exterior.coords`` is in arcseconds
+        by default (see `sky_coord_kwargs` for more). If ``geometry.multipolygon.MultiPolygon``
+        (say a symmetric different has been used, i.e. multiple separate
+        polygons exist) then these will be plotted with colours cycling
+        through Matplotib's color cycle. Although, passing a line
+        property such as ``c`` or ``color`` as a ``kwargs`` will apply
+        to all polygons.
+
+    coordinate_frame : Sunpy coordinate map frame
+
+    axes : axis object
+        The axis to be plotted on. If None then ``plt.gca()`` is used.
+        Default: None
+
+    sky_coord_kwargs : `dict` | `None
+        Passed to ``astropy.coordinates.SkyCoord`` If None then the
+        default unit for the ``shapely.geometry.polygon.Polygon`` will
+        be arcseconds.
+        Default: None
+
+    **kwargs :
+        Passed to ``plot_coord``.
+
+    Returns
+    -------
+    Axes input.
+    """
+    axes = plt.gca() if axes is None else axes
+    sky_coord_kwargs = {} if sky_coord_kwargs is None else sky_coord_kwargs
+    _sky_coord_kwargs = {"unit": u.arcsec} | sky_coord_kwargs
+
+    if isinstance(shapely_polygon, Polygon):
+        vertices = np.array(shapely_polygon.exterior.coords)
+        sc = SkyCoord(
+            vertices[:, 0], vertices[:, 1], frame=coordinate_frame, **_sky_coord_kwargs
+        )
+        axes.plot_coord(sc, **kwargs)
+
+    elif isinstance(shapely_polygon, MultiPolygon):
+        for shape in shapely_polygon.geoms:
+            vertices = np.array(shape.exterior.coords)
+            sc = SkyCoord(
+                vertices[:, 0],
+                vertices[:, 1],
+                frame=coordinate_frame,
+                **_sky_coord_kwargs,
+            )
+            axes.plot_coord(sc, **kwargs)
+    else:
+        raise TypeError(
+            "Input for ``shapely_polygon`` is not of type ``geometry.multipolygon.MultiPolygon`` or ``geometry.polygon.Polygon``. "
+        )
     return axes
