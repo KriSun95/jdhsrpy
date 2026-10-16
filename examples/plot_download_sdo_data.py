@@ -26,6 +26,9 @@ from jdhsrpy.iron_channel import create_iron18
 TIME_FORMAT = config.get("general", "time_format")
 
 # %%
+# Downloading SDO data
+# --------------------
+#
 # Download 30 second's worth of data for the 94 A SDO/AIA channel.
 
 wave_values = [94, 171, 211]
@@ -75,6 +78,9 @@ map_094.plot(clip_interval=(1, 99.99) * u.percent)
 plt.show()
 
 # %%
+# FeXVIII Proxy
+# -------------
+#
 # Create the Fe18 files.
 
 dir_171 = os.path.join(file_directory, "171angstrom")
