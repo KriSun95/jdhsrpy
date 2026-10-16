@@ -1,0 +1,232 @@
+:orphan:
+
+***********************
+JDHSRPY Example Gallery
+***********************
+
+This module contains examples for the spectral analysis.
+
+Additionally, here is a `link <https://github.com/KriSun95/jdhsrpy-analysis>`__ to specific observation scripts and analysis used.
+
+
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbnails">
+
+.. thumbnail-parent-div-open
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows the useulness of the ~jdhsrpy.nustar_core.NustarEvt class.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_nustar_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_nustar`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Using NuSTAREvt</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows a function in the package being used to download SDO data.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_download_sdo_data_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_download_sdo_data`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Downloading SDO Data and Creating Fe18 Proxy</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows making NuSTAR images and plotting them with AIA.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_multi_maps_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_multi_maps`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Plotting NuSTAR and AIA Images</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows the spectral fitting of NuSTAR data.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_nustar_spectral_fitting_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_nustar_spectral_fitting`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">NuSTAR Spectral Fitting</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows making NuSTAR images.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_nustar_images_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_nustar_images`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Plotting NuSTAR Images</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows plotting different NuSTAR time profiles.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_nustar_time_profiles_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_nustar_time_profiles`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Plotting NuSTAR Time Profiles</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows The full analysis pipeline.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_full_pipeline_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_full_pipeline`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Full Analysis Pipeline</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows using the event list filters found in jdhsrpy.list_filters.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_nustar_filters_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_nustar_filters`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Using Event Filters</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows how to obtain the optical axis information from the NuSTAR files.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_nustar_oa_and_source_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_nustar_oa_and_source`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">NuSTAR Optical Axis, Source Location, and Deconvolution</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="This example shows using more advanced features of the jdhsrpy.list_filters region filters.">
+
+.. only:: html
+
+  .. image:: /auto_examples/images/thumb/sphx_glr_plot_nustar_filter_any_region_thumb.png
+    :alt:
+
+  :doc:`/auto_examples/plot_nustar_filter_any_region`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Filter By Any Shape</div>
+    </div>
+
+
+.. thumbnail-parent-div-close
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/plot_nustar
+   /auto_examples/plot_download_sdo_data
+   /auto_examples/plot_multi_maps
+   /auto_examples/plot_nustar_spectral_fitting
+   /auto_examples/plot_nustar_images
+   /auto_examples/plot_nustar_time_profiles
+   /auto_examples/plot_full_pipeline
+   /auto_examples/plot_nustar_filters
+   /auto_examples/plot_nustar_oa_and_source
+   /auto_examples/plot_nustar_filter_any_region
+
+
+.. only:: html
+
+  .. container:: sphx-glr-footer sphx-glr-footer-gallery
+
+    .. container:: sphx-glr-download sphx-glr-download-python
+
+      :download:`Download all examples in Python source code: auto_examples_python.zip </auto_examples/auto_examples_python.zip>`
+
+    .. container:: sphx-glr-download sphx-glr-download-jupyter
+
+      :download:`Download all examples in Jupyter notebooks: auto_examples_jupyter.zip </auto_examples/auto_examples_jupyter.zip>`
+
+
+.. only:: html
+
+ .. rst-class:: sphx-glr-signature
+
+    `Gallery generated by Sphinx-Gallery <https://sphinx-gallery.github.io>`_
