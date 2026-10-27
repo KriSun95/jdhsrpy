@@ -285,9 +285,13 @@ if not os.path.isfile(filename_tf_evt):
 # Once the user is happy with their region, they can go to ``region``
 # and click on ``save``. They can choose where to save the region file.
 #
-# Note, there might be another window that pops up after you click save,
-# just make sure to click ``OK`` on this window too otherwise the file
-# will not save.
+# Note, there might be another window that pops up after you click save.
+# If the user wants to work with this file then make sure to change the
+# "Coordinate System" to ``"fk5"``, you may need to change it to "WCS"
+# first.
+#
+# Make sure to click ``OK`` on this window too otherwise the file will
+# not save.
 
 url = f"{TEST_DATA_LOCATION}/test_nustar_data/fpma.reg"
 filename_reg = os.path.join(os.getcwd(), ntpath.split(url)[1])

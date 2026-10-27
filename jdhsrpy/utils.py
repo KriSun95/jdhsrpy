@@ -2,15 +2,19 @@ import re
 
 import astropy.units as u
 import numpy as np
+from astropy.coordinates import SkyCoord
 from shapely.geometry.polygon import Polygon
+from sunpy.coordinates import frames
 
 from jdhsrpy import IMAGE_COLORMAP, IMAGE_RES, IMAGE_SCALE
 
 __all__ = [
     "arcsec_points_to_shape",
     "assign_plot_settings",
+    "deconstruct_degminsec",
     "only_numbers",
     "pixel_coords_to_solar_coords",
+    "radec_to_helioprojective",
     "regroup_any_array",
 ]
 
@@ -153,3 +157,46 @@ def arcsec_points_to_shape(*args):
     unit_check_list = next(a << u.arcsec for a in args)
     unitless_for_poly = [ucl.value for ucl in unit_check_list]
     return Polygon(unitless_for_poly)
+
+
+def radec_to_helioprojective(ra, dec, obstime):
+    """Code to...
+    obstime = astropy time
+    returns solar x and y
+    """
+    from nustar_pysolar.convert import _delta_solar_skyfield
+
+    ra <<= u.deg
+    dec <<= u.deg
+    sol_x, sol_y = _delta_solar_skyfield(
+        np.array([ra.value]) << ra.unit, np.array([dec.value]) << dec.unit, [obstime]
+    )
+    return sol_x << u.arcsec, sol_y << u.arcsec
+
+
+def helioprojective_to_radec(x, y, obstime):
+    """Code to...
+    obstime="2026-10-26T12:00:00"
+    print(f"ra: {coord_icrs.ra}, dec: {coord_icrs.dec}")
+    """
+    x <<= u.arcsec
+    y <<= u.arcsec
+    coord_icrs = SkyCoord(x, y, frame=frames.Helioprojective, obstime=obstime)
+    return coord_icrs.transform_to("icrs")
+
+
+def deconstruct_degminsec(degminsec_str):
+    """Will deconstruct and deg:min:sec string into just deg."""
+    degminsec = degminsec_str.split(":")
+    abs_deg_part = abs(int(degminsec[0]))
+    deg = (
+        (abs_deg_part << u.deg)
+        + (int(degminsec[1]) << u.arcmin)
+        + (float(degminsec[2]) << u.arcsec)
+    )
+    return deg * int(degminsec[0]) / abs_deg_part
+
+
+def deconstruct_hrminsec(hrminsec_str):
+    """Will deconstruct and hr:min:sec string into just deg."""
+    return deconstruct_degminsec(hrminsec_str) * 15

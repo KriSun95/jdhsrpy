@@ -67,7 +67,7 @@ def make_gti_file(gti_file, save_name, good_time_interval, **kwargs):
     saveName = "./new_gti.fits"
     goodTimeInterval = ['2018-09-09T09:13:36', '2018-09-09T09:17:00']
 
-    make_gti(gtiFile, saveName, goodTimeInterval, overwrite=True)
+    make_gti_file(gtiFile, saveName, goodTimeInterval, overwrite=True)
     """
 
     # custom GTI

@@ -249,23 +249,64 @@ def shape_plot(
 
     if isinstance(shapely_polygon, Polygon):
         vertices = np.array(shapely_polygon.exterior.coords)
-        sc = SkyCoord(
-            vertices[:, 0], vertices[:, 1], frame=coordinate_frame, **_sky_coord_kwargs
+        points_plot(
+            vertices[:, 0],
+            vertices[:, 1],
+            coordinate_frame,
+            axes=axes,
+            sky_coord_kwargs=_sky_coord_kwargs,
+            **kwargs,
         )
-        axes.plot_coord(sc, **kwargs)
 
     elif isinstance(shapely_polygon, MultiPolygon):
         for shape in shapely_polygon.geoms:
             vertices = np.array(shape.exterior.coords)
-            sc = SkyCoord(
+            points_plot(
                 vertices[:, 0],
                 vertices[:, 1],
-                frame=coordinate_frame,
-                **_sky_coord_kwargs,
+                coordinate_frame,
+                axes=axes,
+                sky_coord_kwargs=_sky_coord_kwargs,
+                **kwargs,
             )
-            axes.plot_coord(sc, **kwargs)
     else:
         raise TypeError(
             "Input for ``shapely_polygon`` is not of type ``geometry.multipolygon.MultiPolygon`` or ``geometry.polygon.Polygon``. "
         )
+    return axes
+
+
+def points_plot(x, y, coordinate_frame, axes=None, sky_coord_kwargs=None, **kwargs):
+    """Plot a set of coordinates.
+
+    Parameters
+    ----------
+    x, y :  `list` | array-like
+        The x and y coordinates to be plotted. Given in solar pixel
+        coordinates and plotted in helioprojective.
+
+    coordinate_frame : Sunpy coordinate map frame
+
+    axes : axis object
+        The axis to be plotted on. If None then ``plt.gca()`` is used.
+        Default: None
+
+    sky_coord_kwargs : `dict` | `None
+        Passed to ``astropy.coordinates.SkyCoord`` If None then the
+        default unit for the ``shapely.geometry.polygon.Polygon`` will
+        be arcseconds.
+        Default: None
+
+    **kwargs :
+        Passed to ``plot_coord``.
+
+    Returns
+    -------
+    Axes input.
+    """
+    axes = plt.gca() if axes is None else axes
+    sky_coord_kwargs = {} if sky_coord_kwargs is None else sky_coord_kwargs
+    _sky_coord_kwargs = {"unit": u.arcsec} | sky_coord_kwargs
+    sc = SkyCoord(x, y, frame=coordinate_frame, **_sky_coord_kwargs)
+    axes.plot_coord(sc, **kwargs)
     return axes

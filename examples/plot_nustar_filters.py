@@ -163,7 +163,7 @@ plt.show()
 # %%
 # As previously stated, the image methods can also accept a new event
 # list so let's try the ``field_of_view_map`` method and only look at
-# detector 0.
+# detector 0 and 2.
 
 # obtain a Sunpy map object of the NuSTAR observation
 md0 = nustar_object.field_of_view_map(
