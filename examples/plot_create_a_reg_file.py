@@ -19,13 +19,12 @@ import urllib.request
 import astropy.units as u
 import matplotlib.pyplot as plt
 import numpy as np
-from astropy.coordinates import SkyCoord
 
 from jdhsrpy import TEST_DATA_LOCATION
 from jdhsrpy.io import read_reg_file
 from jdhsrpy.nustar_core import NustarEvt, draw_grid, utc_from_nustar_time
 from jdhsrpy.shapes import circle_shape
-from jdhsrpy.utils import radec_to_helioprojective
+from jdhsrpy.utils import helioprojective_to_radec, radec_to_helioprojective
 from jdhsrpy.visualize import shape_plot
 
 # %%
@@ -50,8 +49,8 @@ if not os.path.isfile(filename_id):
 nustar_object = NustarEvt(evt_filename=filename)
 
 # %%
-# Load in a region file
-# ---------------------
+# Region file contents to solar-x/y
+# ---------------------------------
 #
 # To load in a region file, say, from SAOImageDS9, dirst a user needs to
 # make sure the file was save with either a WCS of FK5 or ICRS.
@@ -126,39 +125,35 @@ draw_grid(m, ax)
 plt.show()
 
 # %%
-# Astropy SkyCoord
-# ****************
+# Solar-x/y to RA-Dec
+# -------------------
 #
-# In order to do all of the coordinates natively in Python. I think the
-# following should work.
+# Something very useful will be to define a region in. solar-x/y and
+# then convert that to RA-Dec.
 #
-# This has not extensively been tested and does not have heritage like
-# the previous approaches that use ``nustar_pysolar`` under the hood.
+# This could then be used to create a REG file using Python and avoids
+# the need to move to another software in your workflow.
 #
-# Use with caution!
-#
-# The only coordinate system I've been able to get matching the file
-# location is the GCRS system.
+# To show how this works and that is works correctly, let's just assume
+# the solar-x/y coordinates we want to convert are those we know are
+# correct from the REG file conversion.
 
-e_rad = 6371 << u.km  # Earth's radius
-dist = 1 << u.au
-coord_gcrs = SkyCoord(
-    ra=ra_fs,
-    dec=dec_fs,
-    frame="gcrs",
-    distance=dist,
-    obstime=mid_time,
-    obsgeoloc=(e_rad.value, 0.0, e_rad.value) << e_rad.unit,
-    obsgeovel=(0.0, 0.0, 0.0) << (u.m / u.s),
-)
-gcrs = coord_gcrs.transform_to(m.coordinate_frame)
-circle_region_gcrs = circle_shape((gcrs.Tx, gcrs.Ty), radius_fs)
+ra_new, dec_new = helioprojective_to_radec(sun_x_fs, sun_y_fs, mid_time)
+print("Original REG file RA-Dec", ra_fs, dec_fs)
+print("New RA-Dec.             ", ra_new, dec_new)
+
+# %%
+# We can plot the results on top of another to visually show the
+# conversions are consistent as well.
+
+sun_x_new, sun_y_new = radec_to_helioprojective(ra_new, dec_new, mid_time)
+circle_region_new = circle_shape((sun_x_new, sun_y_new), radius_fs)
 
 fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
 shape_plot(circle_region_fs, m.coordinate_frame, color="tab:green")
-shape_plot(circle_region_gcrs, m.coordinate_frame, color="tab:purple", ls=":", lw=2)
+shape_plot(circle_region_new, m.coordinate_frame, color="tab:red", ls="--", lw=2)
 draw_grid(m, ax)
 plt.show()
 

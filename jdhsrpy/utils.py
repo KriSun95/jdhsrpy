@@ -2,9 +2,8 @@ import re
 
 import astropy.units as u
 import numpy as np
-from astropy.coordinates import SkyCoord
 from shapely.geometry.polygon import Polygon
-from sunpy.coordinates import frames
+from sunpy.coordinates import sun
 
 from jdhsrpy import IMAGE_COLORMAP, IMAGE_RES, IMAGE_SCALE
 
@@ -159,30 +158,107 @@ def arcsec_points_to_shape(*args):
     return Polygon(unitless_for_poly)
 
 
-def radec_to_helioprojective(ra, dec, obstime):
-    """Code to...
-    obstime = astropy time
-    returns solar x and y
+def radec_to_helioprojective(ra, dec, obstime, **kwargs):
+    """Convert RA-Dec to solar helioprojective coordinates for NuSTAR.
+
+    Parameters
+    ----------
+    ra : `astropy.units.Quantity`
+        The right ascension position in, or convertible to, degrees.
+
+    y : `astropy.units.Quantity`
+        The declination position in, or convertible to, degrees.
+
+    time : `astropy.time.Time`
+        The time corresponding to the (ra,dec) position.
+
+    **kwargs : Passed to ``nustar_pysolar.convert._delta_solar_skyfield``
+
+    Returns
+    -------
+    `tuple[astropy.units.Quantity]` :
+        The solar-x and -y in arcseconds.
     """
     from nustar_pysolar.convert import _delta_solar_skyfield
 
     ra <<= u.deg
     dec <<= u.deg
     sol_x, sol_y = _delta_solar_skyfield(
-        np.array([ra.value]) << ra.unit, np.array([dec.value]) << dec.unit, [obstime]
+        np.array([ra.value]) << ra.unit,
+        np.array([dec.value]) << dec.unit,
+        [obstime],
+        **kwargs,
     )
-    return sol_x << u.arcsec, sol_y << u.arcsec
+    return sol_x[0] << u.arcsec, sol_y[0] << u.arcsec
 
 
-def helioprojective_to_radec(x, y, obstime):
-    """Code to...
-    obstime="2026-10-26T12:00:00"
-    print(f"ra: {coord_icrs.ra}, dec: {coord_icrs.dec}")
+def helioprojective_to_radec(x, y, time, **kwargs):
+    """Convert solar helioprojective to RA-Dec coordinates for NuSTAR.
+
+    This function takes the place of ``get_skyfield_position`` and
+    ``get_sky_position`` from the ``nustar_pysolar.planning`` package
+    and module. No matter what I did, I could not get the correct values
+    from these functions so I (Kris) wrote the exact reverse of
+    ``nustar_pysolar.convert._delta_solar_skyfield`` which is used in
+    ``jdhsrpy.utils.radec_to_helioprojective``.
+
+    This was tested by confirming
+    ``nustar_pysolar.convert._delta_solar_skyfield`` correctly converted
+    RA-Dec into helioprojective using NuSTAR maps, SAOImageDS9, and
+    region REG files. Once RA-Dec -> Solar-X/Y was confirmed, these
+    coordinates were converted back into RA-Dec to compare to the
+    original SAOImageDS9 REG file coordinates.
+
+    Parameters
+    ----------
+    x : `astropy.units.Quantity`
+        The solar-x position in, or convertible to, arcseconds.
+
+    y : `astropy.units.Quantity`
+        The solar-y position in, or convertible to, arcseconds.
+
+    time : `astropy.time.Time`
+        The time corresponding to the (x,y) position.
+
+    **kwargs : Only used to pass ``load_path`` to
+        ``nustar_pysolar.utils.skyfield_ephem``
+
+    Returns
+    -------
+    `tuple[astropy.units.Quantity]` :
+        The Ra and Dec in degrees.
     """
+    from nustar_pysolar.utils import skyfield_ephem
+
+    load_path = kwargs.get("load_path", None)
+    observer, the_sun, ts = skyfield_ephem(
+        load_path=load_path, parallax_correction=True, utc=time
+    )
+
     x <<= u.arcsec
     y <<= u.arcsec
-    coord_icrs = SkyCoord(x, y, frame=frames.Helioprojective, obstime=obstime)
-    return coord_icrs.transform_to("icrs")
+    arcxy = np.array([x.value, y.value]) << u.arcsec
+
+    tcheck = ts.from_astropy(time)
+    astrometric = observer.at(tcheck).observe(the_sun)
+    this_ra, this_dec, _ = astrometric.radec()
+
+    sun_pos = np.array([this_ra.to(u.deg).value, this_dec.to(u.deg).value]) * u.deg
+    sun_np = sun.P(time)
+
+    # reverse East-West conversion
+    delta_offset = arcxy * [-1, 1]
+
+    # project off the Sun
+    rotation_matrix = np.array(
+        [[np.cos(sun_np), np.sin(sun_np)], [-np.sin(sun_np), np.cos(sun_np)]]
+    )
+    delta_offset <<= u.deg
+    offset = np.dot(delta_offset, np.linalg.inv(rotation_matrix))
+
+    position = offset + sun_pos
+
+    return position
 
 
 def deconstruct_degminsec(degminsec_str):
