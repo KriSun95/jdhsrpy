@@ -1,10 +1,10 @@
 """
-=========
-REG files
-=========
+============
+Region files
+============
 
-This example shows the useulness of the region file functions in
-``~jdhsrpy.screening``.
+This example shows the usefulness of the region file functions in
+``~jdhsrpy.io`` and ``~jdhsrpy.utils``.
 
 .. note::
 
@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from jdhsrpy import TEST_DATA_LOCATION
-from jdhsrpy.io import read_reg_file
+from jdhsrpy.io import read_region_file, write_region_file
 from jdhsrpy.nustar_core import NustarEvt, draw_grid, utc_from_nustar_time
 from jdhsrpy.shapes import circle_shape
 from jdhsrpy.utils import helioprojective_to_radec, radec_to_helioprojective
@@ -64,7 +64,7 @@ nustar_object = NustarEvt(evt_filename=filename)
 #
 # Let's look at a REG file saved using FK5 and in sexagesimal first.
 
-ra_fs, dec_fs, rad_fs = read_reg_file(filename_fs)
+ra_fs, dec_fs, rad_fs = read_region_file(filename_fs)
 
 # %%
 # Next, let's convert the RA and Dec values to solar X/Y.
@@ -99,8 +99,9 @@ m = nustar_object.nustar_map(bottom_left, top_right)
 fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
-shape_plot(circle_region_fs, m.coordinate_frame, color="tab:green")
+shape_plot(circle_region_fs, m.coordinate_frame, color="k")
 draw_grid(m, ax)
+plt.title("From FK5/Sexagesimal REG file")
 plt.show()
 
 # %%
@@ -110,7 +111,7 @@ plt.show()
 # We can see that the the WCS ICRS file that had the RA and Dec saved in
 # degrees from the same region in SAOImageDS9 give the same circle.
 
-ra_id, dec_id, rad_id = read_reg_file(filename_id)
+ra_id, dec_id, rad_id = read_region_file(filename_id)
 sun_x_id, sun_y_id = radec_to_helioprojective(ra_id, dec_id, mid_time)
 center_id = (sun_x_id, sun_y_id)
 radius_id = rad_id
@@ -119,9 +120,10 @@ circle_region_id = circle_shape(center_id, radius_id)
 fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
-shape_plot(circle_region_fs, m.coordinate_frame, color="tab:green")
+shape_plot(circle_region_fs, m.coordinate_frame, color="k")
 shape_plot(circle_region_id, m.coordinate_frame, color="tab:red", ls=":", lw=2)
 draw_grid(m, ax)
+plt.title("From ICRS/Degrees REG file")
 plt.show()
 
 # %%
@@ -139,8 +141,10 @@ plt.show()
 # correct from the REG file conversion.
 
 ra_new, dec_new = helioprojective_to_radec(sun_x_fs, sun_y_fs, mid_time)
-print("Original REG file RA-Dec", ra_fs, dec_fs)
-print("New RA-Dec.             ", ra_new, dec_new)
+print("Conversion comparison")
+print("---------------------")
+print("Original REG file RA-Dec:", ra_fs, dec_fs)
+print("New RA-Dec              :", ra_new, dec_new)
 
 # %%
 # We can plot the results on top of another to visually show the
@@ -152,11 +156,46 @@ circle_region_new = circle_shape((sun_x_new, sun_y_new), radius_fs)
 fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
-shape_plot(circle_region_fs, m.coordinate_frame, color="tab:green")
-shape_plot(circle_region_new, m.coordinate_frame, color="tab:red", ls="--", lw=2)
+shape_plot(circle_region_fs, m.coordinate_frame, color="k")
+shape_plot(circle_region_new, m.coordinate_frame, color="tab:purple", ls="--", lw=2)
 draw_grid(m, ax)
+plt.title("From FK5/Sexagesimal REG file\nand custom solar coordinates")
 plt.show()
 
 # %%
 # Create a region file
 # --------------------
+#
+# Using the above functionality, it is then trivial to create a REG file
+# that is suitable for the NuSTAR data analysis software.
+
+filename_reg = "./custom_reg.reg"
+write_region_file(ra_new, dec_new, radius_fs, filename_reg)
+
+# %%
+# To confirm everything has worked correctly, let's read the new region
+# file back in and compare it to the original coordinates.
+
+ra_custom, dec_custom, rad_custom = read_region_file(filename_reg)
+print("Custom region file comparison")
+print("-----------------------------")
+print("Original REG file RA-Dec & radius:", ra_new, dec_new, radius_fs)
+print("New RA-Dec & radius              :", ra_custom, dec_custom, rad_custom)
+
+# %%
+# Let's also compare by plotting both regions.
+
+sun_x_custom, sun_y_custom = radec_to_helioprojective(ra_custom, dec_custom, mid_time)
+circle_region_custom = circle_shape((sun_x_custom, sun_y_custom), rad_custom)
+
+fig = plt.figure()
+ax = fig.add_subplot(projection=m)
+m.plot(axes=ax)
+shape_plot(circle_region_custom, m.coordinate_frame, color="k")
+shape_plot(circle_region_new, m.coordinate_frame, color="tab:orange", ls="--", lw=2)
+draw_grid(m, ax)
+plt.title("From FK5/Sexagesimal REG file\nand custom created region file")
+plt.show()
+
+# %%
+# And we see, of course, that both of these are the same.

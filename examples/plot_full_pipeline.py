@@ -276,8 +276,12 @@ if not os.path.isfile(filename_tf_evt):
 # Region file
 # -----------
 #
-# To obtain a region file, take the new time filtered grade 0 file and
-# use FITS viewing software like `SAOImageDS9 <https://sites.google.com/cfa.harvard.edu/saoimageds9?pli=1&authuser=0>`__.
+# Now ``jdhsrpy`` now has this capability. Please see the
+# `Region file example <https://krisun95.github.io/jdhsrpy/auto_examples/plot_create_a_reg_file.html>`__
+# for more information.
+#
+# To obtain a region file via a FITS viewer like `SAOImageDS9 <https://sites.google.com/cfa.harvard.edu/saoimageds9?pli=1&authuser=0>`__,
+# take the new time filtered grade 0 file and use FITS viewing software like .
 #
 # In SAOImageDS9, a user can select ``edit`` in the GUI window, then
 # ``region``, then draw a region with their mouse.

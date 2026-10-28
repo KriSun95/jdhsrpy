@@ -28,10 +28,12 @@ import urllib.request
 import astropy.units as u
 import matplotlib.pyplot as plt
 import numpy as np
+from sunpy.coordinates import sun
 
 from jdhsrpy import CHIP_GAP, PIX_GRID, RAW_PIX_DIFF, TEST_DATA_LOCATION
+from jdhsrpy.io import read_filter_file
 from jdhsrpy.list_filters import by_detector, by_time
-from jdhsrpy.nustar_core import NustarEvt, draw_grid
+from jdhsrpy.nustar_core import NustarEvt, draw_grid, utc_from_nustar_time
 from jdhsrpy.utils import pixel_coords_to_solar_coords
 
 # %%
@@ -41,6 +43,12 @@ url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
 filename_evt = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename_evt):
     urllib.request.urlretrieve(url, filename_evt)
+# url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A.mkf"
+# filename_filter = os.path.join(os.getcwd(), ntpath.split(url)[1])
+# if not os.path.isfile(filename_filter):
+#     urllib.request.urlretrieve(url, filename_filter)
+filename_filter = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/event_cl/nu20619003001A.mkf"
+
 
 # %%
 #
@@ -414,7 +422,8 @@ def det_transition01(event_list, loop_over=None):
     for c, did in enumerate(event_list["DET_ID"][:-1]):
         if c == loop_over:
             break
-        print(f"\rCount {c + 1} of {loop_over}. ", end="")
+        if (c % (0.1 * loop_over) == 0) or (c == (loop_over - 1)):
+            print(f"\rCount {c + 1} of {loop_over}. ", end="")
         # make sure counts are correct det IDs and also on same axis
         if ((did == deta) and (event_list["DET_ID"][c + 1] == detb)) and (
             event_list[c]["RAWX"] == event_list[c + 1]["RAWY"]
@@ -571,4 +580,90 @@ def roll_from_solar_north(event_list):
     return (pix_angle - sol_pix_angle) / np.pi * 180
 
 
-print(roll_from_solar_north(event_data))
+# print(roll_from_solar_north(event_data))
+
+
+def get_nustar_solar_rotation(roll_time, nustar_roll):
+    """Field of view NuSTAR rotation in the helioprojective frame.
+
+    Adapted and reversed from
+    ``nustar_pysolar.planning.get_nustar_roll``.
+
+    Parameters
+    ----------
+    roll_time : `~astropy.time.Time`
+        The time associated with the given ``nustar_roll`` value.
+
+    nustar_roll : `~astropy.units.Quantity`
+        The NuSTAR roll angle in the RA-Dec frame in, or convertible to,
+        units of degrees.
+
+    Returns
+    -------
+    `~astropy.units.Quantity` : NuSTAR field of view rotation in solar
+        coordinates.
+    """
+    sun_np = sun.P(roll_time).deg * u.deg
+    nustar_roll <<= u.deg
+    angle = np.mod(nustar_roll - sun_np, 360 * u.deg)
+    return angle
+
+
+def get_nustar_solar_rotations(roll_times, nustar_rolls):
+    """Uses ``get_nustar_solar_rotation`` on multiple roll values."""
+    solar_rotations = list(map(get_nustar_solar_rotation, roll_times, nustar_rolls))
+    return (
+        np.array(solar_rotations << solar_rotations[0].unit) << solar_rotations[0].unit
+    )
+
+
+nustar_roll_times, nustar_roll = read_filter_file(filename_filter)
+roll_times = utc_from_nustar_time(nustar_roll_times)
+solar_rotations = get_nustar_solar_rotations(roll_times[:100], nustar_roll[:100])
+print(solar_rotations)
+
+from jdhsrpy.utils import rotate_coord
+
+
+def estimate_chip_gap(event_data, filename_filter, sample=None):
+    sample = 0 if sample is None else sample
+    nustar_roll_times, nustar_roll = read_filter_file(filename_filter)
+    # roll_times = utc_from_nustar_time(nustar_roll_times)
+    event_times = event_data["TIME"]
+
+    # use event_data to get the times we want from the roll angle
+    event_time_range = (event_data["TIME"] >= event_times[0]) & (
+        event_data["TIME"] <= event_times[-1]
+    )
+    inds = (event_time_range).nonzero()[0]
+    goodinds = inds[0]
+    sliced_nustar_roll_times = nustar_roll_times[goodinds]
+    sliced_nustar_roll = nustar_roll[goodinds]
+
+    solar_rotations = get_nustar_solar_rotations(
+        utc_from_nustar_time(sliced_nustar_roll_times), sliced_nustar_roll_times
+    )
+
+    event_rolls = np.interp(event_times, sliced_nustar_roll_times, solar_rotations)
+
+    # ind where the fov centres would be using the roll angle and the
+    #   resolution values from previous
+    rawx, rawy, det = event_data["RAWX"], event_data["RAWY"], event_data["DET_ID"]
+    delx_pix, dely_pix = raw_pixel_to_center(det, rawx, rawy)
+    translated_x, translated_y = rotate_coord(
+        [delx_pix, dely_pix], event_rolls, rotate="anticlockwise"
+    )
+
+    # use translated_x, translated_y to get the solar coord of the fov centre
+
+    # construct the "plus" shape of the chip-gap from that centre point
+
+
+def raw_pixel_to_center(det, rawx, rawy):
+    """Center translation of the self-define 64x64 grid from a given point.
+
+    Grid defined in ``universal_pixel_location``.
+    """
+    x, y = universal_pixel_location(det, rawx, rawy)
+    mid_coord_position = 63 / 2
+    return x - mid_coord_position, y - mid_coord_position

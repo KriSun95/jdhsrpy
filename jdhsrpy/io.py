@@ -7,9 +7,19 @@ import warnings
 import astropy.units as u
 from astropy.io import fits
 
-from jdhsrpy.utils import deconstruct_degminsec, deconstruct_hrminsec
+from jdhsrpy.utils import (
+    create_region_file_text,
+    deconstruct_degminsec,
+    deconstruct_hrminsec,
+)
 
-__all__ = ["read_heasarc_arf", "read_heasarc_rmf", "read_nustar_pha", "read_reg_file"]
+__all__ = [
+    "read_heasarc_arf",
+    "read_heasarc_rmf",
+    "read_nustar_pha",
+    "read_region_file",
+    "write_region_file",
+]
 
 
 def read_nustar_pha(file: str):
@@ -87,7 +97,22 @@ def read_heasarc_rmf(file: str):
     return channel_data, rmf_and_photon_data
 
 
-def read_reg_file(reg_file):
+def read_filter_file(file: str):
+    """Read the NuSTAR filter file (ext. MKF) and return the roool angle.
+
+    Times for each roll angle are also returned.
+
+    Parameters
+    ----------
+    file :  `str`, `file-like` or `pathlib.Path`
+        A `.mkf` file.
+    """
+    with fits.open(file) as hdul:
+        filter_data = hdul[1].data
+    return filter_data["TIME"] << u.s, filter_data["ROLL"] << u.deg
+
+
+def read_region_file(reg_file):
     """Get the RA, Dec, and radius of the circle region in the REG file.
 
     The REG file should have been saved using FK5 or ICRS as its WCS.
@@ -122,3 +147,41 @@ def read_reg_file(reg_file):
     rad_arcsec = float(_rad_arcsec[:-1]) << u.arcsec
 
     return ra, dec, rad_arcsec
+
+
+def write_region_file(ra, dec, radius, filename, frame="fk5"):
+    """Create the text to be saved in th region file.
+
+    The body of the text has been taken from an existing REG file from
+    SAOImageDS9 and then we replace the relevant sections with the input
+    values.
+
+    Parameters
+    ----------
+    ra : `astropy.units.Quantity`
+        The right ascension of circle centre in, or convertible to,
+        degrees.
+
+    dec : `astropy.units.Quantity`
+        The declination of circle centre in, or convertible to, degrees.
+
+    radius : `astropy.units.Quantity`
+        The radius of circle in, or convertible to, degrees.
+
+    filename : `str`
+        The name of the output region file. If it does not end in
+        \".reg\" then this will be appended.
+
+    frame : `str`
+        The coordinate frame. In the NuSTAR file header, it is stated
+        that the frame is FK5 so that is the default. However,
+        SAOImageDS9 can also output the frame as ICRS (I have not seen
+        the difference in RA, Dec, or radius values between them yet).
+        Therefore, the options here are \"fk5\" and \"icrs\" (note the
+        lower case).
+    """
+    filename = filename if filename.endswith(".reg") else f"{filename}.reg"
+    contents = create_region_file_text(ra, dec, radius, frame=frame)
+
+    with open(filename, "w") as f:
+        f.write(contents)

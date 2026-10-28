@@ -168,7 +168,7 @@ def by_time(event_data, start, end):
     tend_s = (tend - NUSTAR_EPOCH).sec
     tmrng = [tstart_s, tend_s]
 
-    time_filter = (event_data["TIME"] > tmrng[0]) & (event_data["TIME"] < tmrng[1])
+    time_filter = (event_data["TIME"] >= tmrng[0]) & (event_data["TIME"] < tmrng[1])
     inds = (time_filter).nonzero()
     goodinds = inds[0]
 

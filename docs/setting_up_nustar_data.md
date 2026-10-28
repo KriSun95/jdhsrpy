@@ -88,6 +88,8 @@ Once the above has run, you should now have PHA, ARF, and RMF files created from
 
 You can obtain a region file using FITS viewing software like [SAOImageDS9](https://sites.google.com/cfa.harvard.edu/saoimageds9?pli=1&authuser=0).
 
+However, hot off the presses, ``jdhsrpy`` now has this capability. Please see the [Region file example](https://krisun95.github.io/jdhsrpy/auto_examples/plot_create_a_reg_file.html) for more information.
+
 #### Getting a good time interval file
 
 You can use the function ``~jdhsrpy.screening.make_gti_file``.

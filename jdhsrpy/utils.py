@@ -1,4 +1,5 @@
 import re
+from textwrap import dedent
 
 import astropy.units as u
 import numpy as np
@@ -10,7 +11,10 @@ from jdhsrpy import IMAGE_COLORMAP, IMAGE_RES, IMAGE_SCALE
 __all__ = [
     "arcsec_points_to_shape",
     "assign_plot_settings",
+    "create_region_file_text",
     "deconstruct_degminsec",
+    "deconstruct_hrminsec",
+    "helioprojective_to_radec",
     "only_numbers",
     "pixel_coords_to_solar_coords",
     "radec_to_helioprojective",
@@ -166,7 +170,7 @@ def radec_to_helioprojective(ra, dec, obstime, **kwargs):
     ra : `astropy.units.Quantity`
         The right ascension position in, or convertible to, degrees.
 
-    y : `astropy.units.Quantity`
+    dec : `astropy.units.Quantity`
         The declination position in, or convertible to, degrees.
 
     time : `astropy.time.Time`
@@ -176,8 +180,7 @@ def radec_to_helioprojective(ra, dec, obstime, **kwargs):
 
     Returns
     -------
-    `tuple[astropy.units.Quantity]` :
-        The solar-x and -y in arcseconds.
+    `tuple[astropy.units.Quantity]` : The solar-x and -y in arcseconds.
     """
     from nustar_pysolar.convert import _delta_solar_skyfield
 
@@ -225,8 +228,7 @@ def helioprojective_to_radec(x, y, time, **kwargs):
 
     Returns
     -------
-    `tuple[astropy.units.Quantity]` :
-        The Ra and Dec in degrees.
+    `tuple[astropy.units.Quantity]` : The Ra and Dec in degrees.
     """
     from nustar_pysolar.utils import skyfield_ephem
 
@@ -250,15 +252,38 @@ def helioprojective_to_radec(x, y, time, **kwargs):
     delta_offset = arcxy * [-1, 1]
 
     # project off the Sun
-    rotation_matrix = np.array(
-        [[np.cos(sun_np), np.sin(sun_np)], [-np.sin(sun_np), np.cos(sun_np)]]
-    )
-    delta_offset <<= u.deg
-    offset = np.dot(delta_offset, np.linalg.inv(rotation_matrix))
+    offset = rotate_coord(delta_offset << u.deg, sun_np, rotate="clockwise")
 
     position = offset + sun_pos
 
     return position
+
+
+def rotate_coord(xy, theta, rotate="anticlockwise"):
+    """Rotate a coordinate around its origin.
+
+    Parameters
+    ----------
+    xy : `~numpy.ndarray`
+        The coordinate as (x, y) to be rotated.
+
+    theta : `~astropy.units.Quantity`
+        The angle in, or convertible to radians to rotate around the
+        origin.
+
+    rotate : `str`
+        A string to determine whether the rotation is \"clockwise\" or
+        \"anticlockwise\" (\"counter-clockwise\" works too).
+        Default: \"anticlockwise\"
+    """
+    theta <<= u.radian
+    rotation_matrix = np.array(
+        [[np.cos(theta), np.sin(theta)], [-np.sin(theta), np.cos(theta)]]
+    )
+    if rotate in ["anticlockwise", "counter-clockwise"]:
+        return np.dot(xy, rotation_matrix)
+    elif rotate in ["clockwise"]:
+        return np.dot(xy, np.linalg.inv(rotation_matrix))
 
 
 def deconstruct_degminsec(degminsec_str):
@@ -276,3 +301,44 @@ def deconstruct_degminsec(degminsec_str):
 def deconstruct_hrminsec(hrminsec_str):
     """Will deconstruct and hr:min:sec string into just deg."""
     return deconstruct_degminsec(hrminsec_str) * 15
+
+
+def create_region_file_text(ra, dec, radius, frame="fk5"):
+    """Create the text to be saved in th region file.
+
+    The body of the text has been taken from an existing REG file from
+    SAOImageDS9 and then we replace the relevant sections with the input
+    values.
+
+    Parameters
+    ----------
+    ra : `astropy.units.Quantity`
+        The right ascension of circle centre in, or convertible to,
+        degrees.
+
+    dec : `astropy.units.Quantity`
+        The declination of circle centre in, or convertible to, degrees.
+
+    radius : `astropy.units.Quantity`
+        The radius of circle in, or convertible to, degrees.
+
+    frame : `str`
+        The coordinate frame. In the NuSTAR file header, it is stated
+        that the frame is FK5 so that is the default. However,
+        SAOImageDS9 can also output the frame as ICRS (I have not seen
+        the difference in RA, Dec, or radius values between them yet).
+        Therefore, the options here are \"fk5\" and \"icrs\" (note the
+        lower case).
+    """
+    ra <<= u.degree
+    dec <<= u.degree
+    radius <<= u.arcsec
+    text = dedent(
+        f"""
+        # Region file format: DS9 version 4.1
+        global color=green dashlist=8 3 width=1 font="helvetica 10 normal roman" select=1 highlite=1 dash=0 fixed=0 edit=1 move=1 delete=1 include=1 source=1
+        {frame}
+        circle({ra.value},{dec.value},{radius.value}")
+        """
+    )
+    return text
