@@ -1,0 +1,958 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Obtaining NuSTAR Chip-gap Values &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="jdhsrpy" href="../modules.html" />
+    <link rel="prev" title="Filter By Any Shape" href="plot_nustar_filter_any_region.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_software.html">Additional NuSTAR Software and References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">JDHSRPY Example Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar.html">Using <code class="docutils literal notranslate"><span class="pre">NuSTAREvt</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_download_sdo_data.html">Downloading SDO Data and Creating Fe18 Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_multi_maps.html">Plotting NuSTAR and AIA Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_spectral_fitting.html">NuSTAR Spectral Fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_images.html">Plotting NuSTAR Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_time_profiles.html">Plotting NuSTAR Time Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_create_a_reg_file.html">Region files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_full_pipeline.html">Full Analysis Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_filters.html">Using Event Filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_oa_and_source.html">NuSTAR Optical Axis, Source Location, and Deconvolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_filter_any_region.html">Filter By Any Shape</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Obtaining NuSTAR Chip-gap Values</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#different-detectors">Different detectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#detector-resolution">Detector resolution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nustar-raw-pixel-coordinates">NuSTAR raw pixel coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#detector-orientation">Detector orientation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chip-gap-width">Chip-gap width</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">JDHSRPY Example Gallery</a></li>
+      <li class="breadcrumb-item active">Obtaining NuSTAR Chip-gap Values</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/auto_examples/plot_nustar_chip_gap_values.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-plot-nustar-chip-gap-values-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="obtaining-nustar-chip-gap-values">
+<span id="sphx-glr-auto-examples-plot-nustar-chip-gap-values-py"></span><h1>Obtaining NuSTAR Chip-gap Values<a class="headerlink" href="#obtaining-nustar-chip-gap-values" title="Link to this heading"></a></h1>
+<p>This example will be a little different to the others. This will show
+how certain hard-coded values were obtained rather than an example for
+an end-user to run.</p>
+<p>This example shows obtaining the NuSTAR chip-gap values; the values that
+will allow us to plot the gap between different detectors.</p>
+<p>Knowing the location of the chip-gap is important as we want to avoid
+any results coming from a region that the chip-gap runs through.</p>
+<p>We could probably do this in a more standard way but we’ll use this
+script to gain the raw pixel resolution in arcseconds and also obtain
+a good location for the chip-gap.</p>
+<p>We’ll then obtain hard coded values to create a lazy chip-gap locator
+function.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">ntpath</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">urllib</span><span class="nn">.</span><span class="nn">request</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">sunpy</span><span class="nn">.</span><span class="nn">coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">sun</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">CHIP_GAP</span><span class="p">,</span> <span class="n">PIX_GRID</span><span class="p">,</span> <span class="n">RAW_PIX_DIFF</span><span class="p">,</span> <span class="n">TEST_DATA_LOCATION</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_filter_file</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">list_filters</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_detector" title="jdhsrpy.list_filters.by_detector"><span class="n">by_detector</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_time" title="jdhsrpy.list_filters.by_time"><span class="n">by_time</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">nustar_core</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-class reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt" title="jdhsrpy.nustar_core.NustarEvt"><span class="n">NustarEvt</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.utc_from_nustar_time" title="jdhsrpy.nustar_core.utc_from_nustar_time"><span class="n">utc_from_nustar_time</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.arcsec_points_to_shape" title="jdhsrpy.utils.arcsec_points_to_shape"><span class="n">arcsec_points_to_shape</span></a><span class="p">,</span><span class="w">
+</span>    <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">,</span><span class="w">
+</span>    <span class="n">rotate_coord</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>Download an example “sunpos” NuSTAR EVT file.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_sunpos.evt</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_evt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_evt</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_evt</span><span class="p">)</span><span class="w">
+</span><span class="c1"># url = f&quot;{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A.mkf&quot;</span><span class="w">
+</span><span class="c1"># filename_filter = os.path.join(os.getcwd(), ntpath.split(url)[1])</span><span class="w">
+</span><span class="c1"># if not os.path.isfile(filename_filter):</span><span class="w">
+</span><span class="c1">#     urllib.request.urlretrieve(url, filename_filter)</span><span class="w">
+</span><span class="n">filename_filter</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/event_cl/nu20619003001A.mkf</span><span class="s2">&quot;</span><span class="w">
+</span></pre></div></div>
+<p>Use the class to load in and work with the file.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt" title="jdhsrpy.nustar_core.NustarEvt"><span class="n">nustar_object</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-class reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt" title="jdhsrpy.nustar_core.NustarEvt"><span class="n">NustarEvt</span></a><span class="p">(</span><span class="n">evt_filename</span><span class="o">=</span><span class="n">filename_evt</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<section id="different-detectors">
+<h2>Different detectors<a class="headerlink" href="#different-detectors" title="Link to this heading"></a></h2>
+<p>To get a look at the different detectors from the solar data, we
+should filter in time to avoid any effects from drift.</p>
+<p>However, let’s get as many counts in there as possible so let’s use
+the <code class="docutils literal notranslate"><span class="pre">evt_data</span></code> event list instead of the usual <code class="docutils literal notranslate"><span class="pre">cleaned_evt_data</span></code>.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">time0</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:20:00</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">time1</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:30:00</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">cut_time_list</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_time" title="jdhsrpy.list_filters.by_time"><span class="n">by_time</span></a><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt" title="jdhsrpy.nustar_core.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">evt_data</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">time1</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>Now it’s simple to get the images per detector.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">bottom_left</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1100</span><span class="p">,</span> <span class="o">-</span><span class="mi">700</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="n">top_right</span> <span class="o">=</span> <span class="p">[</span><span class="mi">250</span><span class="p">,</span> <span class="mi">650</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="n">det0_list</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_detector" title="jdhsrpy.list_filters.by_detector"><span class="n">by_detector</span></a><span class="p">(</span><span class="n">cut_time_list</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="w">
+</span><span class="n">md0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det0_list</span><span class="p">)</span><span class="w">
+</span><span class="n">det1_list</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_detector" title="jdhsrpy.list_filters.by_detector"><span class="n">by_detector</span></a><span class="p">(</span><span class="n">cut_time_list</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="w">
+</span><span class="n">md1</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det1_list</span><span class="p">)</span><span class="w">
+</span><span class="n">det2_list</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_detector" title="jdhsrpy.list_filters.by_detector"><span class="n">by_detector</span></a><span class="p">(</span><span class="n">cut_time_list</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="w">
+</span><span class="n">md2</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det2_list</span><span class="p">)</span><span class="w">
+</span><span class="n">det3_list</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_detector" title="jdhsrpy.list_filters.by_detector"><span class="n">by_detector</span></a><span class="p">(</span><span class="n">cut_time_list</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="w">
+</span><span class="n">md3</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det3_list</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>This can be easily plotted.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">d0_cmap</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">Blues</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">d1_cmap</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">Greens</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">d2_cmap</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">Reds</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">d3_cmap</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">Oranges</span><span class="s2">&quot;</span><span class="w">
+</span><span class="c1"># now use it in plotting, this is now just Sunpy API stuff</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">md0</span><span class="p">)</span><span class="w">
+</span><span class="n">md0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d0_cmap</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">md0</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">md0</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span><span class="w">
+</span><span class="n">md1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d1_cmap</span><span class="p">)</span><span class="w">
+</span><span class="n">md2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d2_cmap</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">md2</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">md2</span><span class="o">.</span><span class="n">data</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span><span class="w">
+</span><span class="n">md3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d3_cmap</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">md0</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="w">
+</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Different detectors with cmaps:</span><span class="se">\n</span><span class="s2">D0:</span><span class="si">{</span><span class="n">d0_cmap</span><span class="si">}</span><span class="s2">, D1:</span><span class="si">{</span><span class="n">d1_cmap</span><span class="si">}</span><span class="s2">, D2:</span><span class="si">{</span><span class="n">d2_cmap</span><span class="si">}</span><span class="s2">, D3:</span><span class="si">{</span><span class="n">d3_cmap</span><span class="si">}</span><span class="s2">&quot;</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_chip_gap_values_001.png" srcset="../_images/sphx_glr_plot_nustar_chip_gap_values_001.png" alt="Different detectors with cmaps: D0:Blues, D1:Greens, D2:Reds, D3:Oranges" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: Using mesh-based autoalignment [sunpy.map.mapbase]
+INFO: Using mesh-based autoalignment [sunpy.map.mapbase]
+INFO: Using mesh-based autoalignment [sunpy.map.mapbase]
+</pre></div>
+</div>
+<p>This is great but you can see it is a little difficult to tell the
+different detectors sometimes.</p>
+</section>
+<section id="detector-resolution">
+<h2>Detector resolution<a class="headerlink" href="#detector-resolution" title="Link to this heading"></a></h2>
+<p>Let’s look at the event list and get a list of <code class="docutils literal notranslate"><span class="pre">True</span></code> and <code class="docutils literal notranslate"><span class="pre">False</span></code>
+that we could use to split the event list into different detectors.</p>
+<p>Since all four detectors are identical, let’s just use detector 0.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">event_data</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt" title="jdhsrpy.nustar_core.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">evt_data</span><span class="w">
+</span><span class="n">det0_loc</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="w">
+</span></pre></div></div>
+<p>Now we’ll use it to select counts that are contiguous in time per
+detector too which will give us two counts that occurred incredibly
+close together on the same detector.</p>
+<p>We can take the mean of the different between these points to get a
+good estimate on the distance between pixels in arcseconds.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">find_pairs</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an array to index contiguous ``True`` values in ``array``.&quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">iarray</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="k">if</span> <span class="p">(</span><span class="n">v</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>            <span class="n">iarray</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">iarray</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="n">contig_det0</span> <span class="o">=</span> <span class="n">find_pairs</span><span class="p">(</span><span class="n">det0_loc</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>We can now use <code class="docutils literal notranslate"><span class="pre">contig_det0</span></code> to get pixel separation in arcseconds.</p>
+<p>There is always some drift associated with a NuSTAR dwell so let’s take
+the median.</p>
+<p>For speed and the fact this example will run on Github every time the
+repository is edited, let’s just loop over the first 100 contiguous
+pixels.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">arcsec_diff</span><span class="p">(</span><span class="n">event_list</span><span class="p">,</span> <span class="n">contiguous_array</span><span class="p">,</span> <span class="n">loop_over</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Find the arcsecond distance between count locations.&quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">diff_array</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span><span class="w">
+</span>    <span class="n">loop_over</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">contiguous_array</span><span class="p">)</span> <span class="k">if</span> <span class="n">loop_over</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">loop_over</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">ca</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">contiguous_array</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">loop_over</span><span class="p">:</span><span class="w">
+</span>            <span class="k">break</span><span class="w">
+</span>        <span class="n">point0</span> <span class="o">=</span> <span class="n">event_list</span><span class="p">[</span><span class="n">ca</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">]</span><span class="w">
+</span>        <span class="n">point1</span> <span class="o">=</span> <span class="n">event_list</span><span class="p">[</span><span class="n">ca</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">]</span><span class="w">
+</span>        <span class="n">pix_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="w">
+</span>            <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="p">)</span> <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="w">
+</span>            <span class="o">+</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="p">)</span> <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="w">
+</span>        <span class="p">)</span><span class="w">
+</span>        <span class="n">arc_diff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="w">
+</span>            <span class="p">(</span><span class="w">
+</span>                <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">(</span><span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">X</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>                <span class="o">-</span> <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">X</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="w">
+</span>            <span class="o">+</span> <span class="p">(</span><span class="w">
+</span>                <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">(</span><span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Y</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>                <span class="o">-</span> <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Y</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="w">
+</span>        <span class="p">)</span><span class="w">
+</span>        <span class="k">if</span> <span class="n">pix_diff</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span><span class="w">
+</span>            <span class="n">diff_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="w">
+</span>                <span class="p">(</span><span class="n">arc_diff</span> <span class="o">/</span> <span class="n">pix_diff</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="w">
+</span>            <span class="p">)</span>  <span class="c1"># arcseconds per single pixel</span><span class="w">
+</span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">Count </span><span class="si">{</span><span class="n">c</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">loop_over</span><span class="si">}</span><span class="s2">. </span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Done.</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">diff_array</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="n">loop_over</span> <span class="o">=</span> <span class="mi">100</span><span class="w">
+</span><span class="n">diff</span> <span class="o">=</span> <span class="n">arcsec_diff</span><span class="p">(</span><span class="n">event_data</span><span class="p">,</span> <span class="n">contig_det0</span><span class="p">,</span> <span class="n">loop_over</span><span class="o">=</span><span class="n">loop_over</span><span class="p">)</span><span class="w">
+</span><span class="n">arcsecond_resolution</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">/</span> <span class="n">u</span><span class="o">.</span><span class="n">pixel</span><span class="w">
+</span></pre></div></div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Count 1 of 100.
+Count 2 of 100.
+Count 3 of 100.
+Count 4 of 100.
+Count 5 of 100.
+Count 6 of 100.
+Count 7 of 100.
+Count 8 of 100.
+Count 9 of 100.
+Count 10 of 100.
+Count 11 of 100.
+Count 12 of 100.
+Count 13 of 100.
+Count 14 of 100.
+Count 15 of 100.
+Count 16 of 100.
+Count 17 of 100.
+Count 18 of 100.
+Count 19 of 100.
+Count 20 of 100.
+Count 21 of 100.
+Count 22 of 100.
+Count 23 of 100.
+Count 24 of 100.
+Count 25 of 100.
+Count 26 of 100.
+Count 27 of 100.
+Count 28 of 100.
+Count 29 of 100.
+Count 30 of 100.
+Count 31 of 100.
+Count 32 of 100.
+Count 33 of 100.
+Count 34 of 100.
+Count 35 of 100.
+Count 36 of 100.
+Count 37 of 100.
+Count 38 of 100.
+Count 39 of 100.
+Count 40 of 100.
+Count 41 of 100.
+Count 42 of 100.
+Count 43 of 100.
+Count 44 of 100.
+Count 45 of 100.
+Count 46 of 100.
+Count 47 of 100.
+Count 48 of 100.
+Count 49 of 100.
+Count 50 of 100.
+Count 51 of 100.
+Count 52 of 100.
+Count 53 of 100.
+Count 54 of 100.
+Count 55 of 100.
+Count 56 of 100.
+Count 57 of 100.
+Count 58 of 100.
+Count 59 of 100.
+Count 60 of 100.
+Count 61 of 100.
+Count 62 of 100.
+Count 63 of 100.
+Count 64 of 100.
+Count 65 of 100.
+Count 66 of 100.
+Count 67 of 100.
+Count 68 of 100.
+Count 69 of 100.
+Count 70 of 100.
+Count 71 of 100.
+Count 72 of 100.
+Count 73 of 100.
+Count 74 of 100.
+Count 75 of 100.
+Count 76 of 100.
+Count 77 of 100.
+Count 78 of 100.
+Count 79 of 100.
+Count 80 of 100.
+Count 81 of 100.
+Count 82 of 100.
+Count 83 of 100.
+Count 84 of 100.
+Count 85 of 100.
+Count 86 of 100.
+Count 87 of 100.
+Count 88 of 100.
+Count 89 of 100.
+Count 90 of 100.
+Count 91 of 100.
+Count 92 of 100.
+Count 93 of 100.
+Count 94 of 100.
+Count 95 of 100.
+Count 96 of 100.
+Count 97 of 100.
+Count 98 of 100.
+Count 99 of 100.
+Count 100 of 100. Done.
+</pre></div>
+</div>
+<p>Running this on the total event list, we get a median difference of
+<code class="docutils literal notranslate"><span class="pre">12.646031412008877</span> <span class="pre">arcsec/pixel</span></code>, so we can see we get close from
+just the first 100 entries.</p>
+<p>The value obtained from the full event list can now be found using
+<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">jdhsrpy</span> <span class="pre">import</span> <span class="pre">RAW_PIX_DIFF</span></code>.</p>
+<p>Let’s plot the result.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ar_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">ar_bins</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="w">
+</span>    <span class="n">x</span><span class="o">=</span><span class="n">arcsecond_resolution</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">grey</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">From </span><span class="si">{</span><span class="n">loop_over</span><span class="si">}</span><span class="s2"> entries</span><span class="s2">&quot;</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">RAW_PIX_DIFF</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">k</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">From full event list</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Distance between counts [arcsecond]</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Number of count differences</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="w">
+</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Median distance over </span><span class="si">{</span><span class="n">loop_over</span><span class="si">}</span><span class="s2"> entries: </span><span class="si">{</span><span class="n">arcsecond_resolution</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="se">\n</span><span class="s2">Median distance over all entries: </span><span class="si">{</span><span class="n">RAW_PIX_DIFF</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="s2">&quot;</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="p">[</span><span class="n">ar_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">ar_bins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_chip_gap_values_002.png" srcset="../_images/sphx_glr_plot_nustar_chip_gap_values_002.png" alt="Median distance over 100 entries: $12.835028 \; \mathrm{\frac{{}^{\prime\prime}}{pix}}$ Median distance over all entries: $12.646031 \; \mathrm{\frac{{}^{\prime\prime}}{pix}}$" class = "sphx-glr-single-img"/><p>Having the resolution like this would mean that we could plot the
+detector bounds as long as we had at least one count in each detector.</p>
+<p>But what if we only have a couple of counts?</p>
+<p>We can do a similar process with two counts contiguous in time but
+from different detectors. Then, knowing that each detector is a grid
+of 32x32 pixels, we can work out where the chip-gap should be from a
+two counts at any time.</p>
+<p>We still need at least two counts to determie the rotation</p>
+</section>
+<section id="nustar-raw-pixel-coordinates">
+<h2>NuSTAR raw pixel coordinates<a class="headerlink" href="#nustar-raw-pixel-coordinates" title="Link to this heading"></a></h2>
+<p>One question I had was to see how the raw pixel coordinates we related
+from detector to detector.</p>
+<p>We should be able to find this out easily by just plotting events with
+the same <code class="docutils literal notranslate"><span class="pre">RAWX</span></code> value, say, since each detector defines its own
+32x32 grid.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">rawx_val</span> <span class="o">=</span> <span class="mi">20</span><span class="w">
+</span><span class="n">rawx_list</span> <span class="o">=</span> <span class="n">cut_time_list</span><span class="p">[</span><span class="n">cut_time_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">rawx_val</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="n">mrx</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">rawx_list</span><span class="p">)</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">mrx</span><span class="p">)</span><span class="w">
+</span><span class="n">mrx</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">mrx</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">All events with RAWX == </span><span class="si">{</span><span class="n">rawx_val</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_chip_gap_values_003.png" srcset="../_images/sphx_glr_plot_nustar_chip_gap_values_003.png" alt="All events with RAWX == 20" class = "sphx-glr-single-img"/><p>Here we can see that the <code class="docutils literal notranslate"><span class="pre">RAWX</span></code> axis is rotated as we go around the
+detectors.</p>
+<p>Therefore, to compare detector 0 and 1, we want to look for events of
+value <code class="docutils literal notranslate"><span class="pre">A</span></code> along detectors 0’s <code class="docutils literal notranslate"><span class="pre">RAWX</span></code> and a value of <code class="docutils literal notranslate"><span class="pre">B</span></code> along
+detectors 1’s <code class="docutils literal notranslate"><span class="pre">RAWY</span></code>.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">det0_rawx_list</span> <span class="o">=</span> <span class="n">det0_list</span><span class="p">[</span><span class="n">det0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">rawx_val</span><span class="p">]</span><span class="w">
+</span><span class="n">rawy_val</span> <span class="o">=</span> <span class="n">rawx_val</span><span class="w">
+</span><span class="n">det1_rawy_list</span> <span class="o">=</span> <span class="n">det1_list</span><span class="p">[</span><span class="n">det1_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">rawy_val</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="n">m0rx</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det0_rawx_list</span><span class="p">)</span><span class="w">
+</span><span class="n">m1ry</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det1_rawy_list</span><span class="p">)</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">m0rx</span><span class="p">)</span><span class="w">
+</span><span class="n">m0rx</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">m1ry</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">m0rx</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Det0 events with RAWX == </span><span class="si">{</span><span class="n">rawx_val</span><span class="si">}</span><span class="se">\n</span><span class="s2">Det1 events with RAWY == </span><span class="si">{</span><span class="n">rawy_val</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_chip_gap_values_004.png" srcset="../_images/sphx_glr_plot_nustar_chip_gap_values_004.png" alt="Det0 events with RAWX == 20 Det1 events with RAWY == 20" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: Using mesh-based autoalignment [sunpy.map.mapbase]
+</pre></div>
+</div>
+<p>Now it is clear the x-axis for detector 0 is continued in the y-axis
+for detector 1.</p>
+<p>The only question that remains is where <code class="docutils literal notranslate"><span class="pre">0</span></code> is for box axes.</p>
+<p>Let’s only plot the first half of each detector’s row to find
+out.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">mid_pix</span> <span class="o">=</span> <span class="mi">16</span><span class="w">
+</span><span class="n">det0_rawx_list_cut</span> <span class="o">=</span> <span class="n">det0_rawx_list</span><span class="p">[</span><span class="n">det0_rawx_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mid_pix</span><span class="p">]</span><span class="w">
+</span><span class="n">det1_rawy_list_cut</span> <span class="o">=</span> <span class="n">det1_rawy_list</span><span class="p">[</span><span class="n">det1_rawy_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mid_pix</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="n">m0rxc</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det0_rawx_list_cut</span><span class="p">)</span><span class="w">
+</span><span class="n">m1ryc</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det1_rawy_list_cut</span><span class="p">)</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">m0rxc</span><span class="p">)</span><span class="w">
+</span><span class="n">m0rxc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">m1ryc</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">m0rxc</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="w">
+</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Det0 events with RAWX == </span><span class="si">{</span><span class="n">rawx_val</span><span class="si">}</span><span class="s2"> &amp; RAWY &lt; </span><span class="si">{</span><span class="n">mid_pix</span><span class="si">}</span><span class="se">\n</span><span class="s2">Det1 events with RAWY == </span><span class="si">{</span><span class="n">rawy_val</span><span class="si">}</span><span class="s2"> &amp; RAWX &lt; </span><span class="si">{</span><span class="n">mid_pix</span><span class="si">}</span><span class="s2">&quot;</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_chip_gap_values_005.png" srcset="../_images/sphx_glr_plot_nustar_chip_gap_values_005.png" alt="Det0 events with RAWX == 20 & RAWY < 16 Det1 events with RAWY == 20 & RAWX < 16" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: Using mesh-based autoalignment [sunpy.map.mapbase]
+</pre></div>
+</div>
+<p>Therefore, we see that the <code class="docutils literal notranslate"><span class="pre">0</span></code> point for both detector axes start at
+the chip-gap and count their way out.</p>
+<p>This is important as we’re going to work out the number of pixels
+between two counts in the different detectors and their actual
+distance. This difference between these two values must be the
+chip-gap.</p>
+</section>
+<section id="detector-orientation">
+<h2>Detector orientation<a class="headerlink" href="#detector-orientation" title="Link to this heading"></a></h2>
+<p>While we’re at it, let’s look at all the x/y axes for all detectors.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># let's just look at where (0,0) is but looking at row/column 1</span><span class="w">
+</span><span class="c1"># row/column 1 also separates the boundaries a little better than using 0</span><span class="w">
+</span><span class="n">det0_rawx0_list</span> <span class="o">=</span> <span class="n">det0_list</span><span class="p">[</span><span class="n">det0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="w">
+</span><span class="n">det0_rawy0_list</span> <span class="o">=</span> <span class="n">det0_list</span><span class="p">[</span><span class="n">det0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="w">
+</span><span class="n">det1_rawx0_list</span> <span class="o">=</span> <span class="n">det1_list</span><span class="p">[</span><span class="n">det1_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="w">
+</span><span class="n">det1_rawy0_list</span> <span class="o">=</span> <span class="n">det1_list</span><span class="p">[</span><span class="n">det1_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="w">
+</span><span class="n">det2_rawx0_list</span> <span class="o">=</span> <span class="n">det2_list</span><span class="p">[</span><span class="n">det2_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="w">
+</span><span class="n">det2_rawy0_list</span> <span class="o">=</span> <span class="n">det2_list</span><span class="p">[</span><span class="n">det2_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="w">
+</span><span class="n">det3_rawx0_list</span> <span class="o">=</span> <span class="n">det3_list</span><span class="p">[</span><span class="n">det3_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="w">
+</span><span class="n">det3_rawy0_list</span> <span class="o">=</span> <span class="n">det3_list</span><span class="p">[</span><span class="n">det3_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># to get an idea of direction, look at the first half of the row</span><span class="w">
+</span><span class="n">det0_rawx0_list_cut</span> <span class="o">=</span> <span class="n">det0_rawx0_list</span><span class="p">[</span><span class="n">det0_rawx0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mid_pix</span><span class="p">]</span><span class="w">
+</span><span class="n">det0_rawy0_list_cut</span> <span class="o">=</span> <span class="n">det0_rawy0_list</span><span class="p">[</span><span class="n">det0_rawy0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mid_pix</span><span class="p">]</span><span class="w">
+</span><span class="n">det1_rawx0_list_cut</span> <span class="o">=</span> <span class="n">det1_rawx0_list</span><span class="p">[</span><span class="n">det1_rawx0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mid_pix</span><span class="p">]</span><span class="w">
+</span><span class="n">det1_rawy0_list_cut</span> <span class="o">=</span> <span class="n">det1_rawy0_list</span><span class="p">[</span><span class="n">det1_rawy0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mid_pix</span><span class="p">]</span><span class="w">
+</span><span class="n">det2_rawx0_list_cut</span> <span class="o">=</span> <span class="n">det2_rawx0_list</span><span class="p">[</span><span class="n">det2_rawx0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mid_pix</span><span class="p">]</span><span class="w">
+</span><span class="n">det2_rawy0_list_cut</span> <span class="o">=</span> <span class="n">det2_rawy0_list</span><span class="p">[</span><span class="n">det2_rawy0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mid_pix</span><span class="p">]</span><span class="w">
+</span><span class="n">det3_rawx0_list_cut</span> <span class="o">=</span> <span class="n">det3_rawx0_list</span><span class="p">[</span><span class="n">det3_rawx0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mid_pix</span><span class="p">]</span><span class="w">
+</span><span class="n">det3_rawy0_list_cut</span> <span class="o">=</span> <span class="n">det3_rawy0_list</span><span class="p">[</span><span class="n">det3_rawy0_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">mid_pix</span><span class="p">]</span><span class="w">
+</span></pre></div></div>
+<p>Now we have the filtered event list, let’s zoom into the centre of all
+four detectors and also  use Sunpy to resample the maps to see colours
+a bit easier.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">bottom_left_axes</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">695</span><span class="p">,</span> <span class="o">-</span><span class="mi">300</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="n">top_right_axes</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">120</span><span class="p">,</span> <span class="mi">170</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="n">superpixel_size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">pixel</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># create the map for each detector and axis</span><span class="w">
+</span><span class="n">m0rx0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">bottom_left_axes</span><span class="p">,</span> <span class="n">top_right_axes</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det0_rawx0_list_cut</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">superpixel</span><span class="p">(</span><span class="n">superpixel_size</span><span class="p">)</span><span class="w">
+</span><span class="n">m0ry0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">bottom_left_axes</span><span class="p">,</span> <span class="n">top_right_axes</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det0_rawy0_list_cut</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">superpixel</span><span class="p">(</span><span class="n">superpixel_size</span><span class="p">)</span><span class="w">
+</span><span class="n">m1rx0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">bottom_left_axes</span><span class="p">,</span> <span class="n">top_right_axes</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det1_rawx0_list_cut</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">superpixel</span><span class="p">(</span><span class="n">superpixel_size</span><span class="p">)</span><span class="w">
+</span><span class="n">m1ry0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">bottom_left_axes</span><span class="p">,</span> <span class="n">top_right_axes</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det1_rawy0_list_cut</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">superpixel</span><span class="p">(</span><span class="n">superpixel_size</span><span class="p">)</span><span class="w">
+</span><span class="n">m2rx0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">bottom_left_axes</span><span class="p">,</span> <span class="n">top_right_axes</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det2_rawx0_list_cut</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">superpixel</span><span class="p">(</span><span class="n">superpixel_size</span><span class="p">)</span><span class="w">
+</span><span class="n">m2ry0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">bottom_left_axes</span><span class="p">,</span> <span class="n">top_right_axes</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det2_rawy0_list_cut</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">superpixel</span><span class="p">(</span><span class="n">superpixel_size</span><span class="p">)</span><span class="w">
+</span><span class="n">m3rx0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">bottom_left_axes</span><span class="p">,</span> <span class="n">top_right_axes</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det3_rawx0_list_cut</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">superpixel</span><span class="p">(</span><span class="n">superpixel_size</span><span class="p">)</span><span class="w">
+</span><span class="n">m3ry0</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">bottom_left_axes</span><span class="p">,</span> <span class="n">top_right_axes</span><span class="p">,</span> <span class="n">event_data</span><span class="o">=</span><span class="n">det3_rawy0_list_cut</span><span class="w">
+</span><span class="p">)</span><span class="o">.</span><span class="n">superpixel</span><span class="p">(</span><span class="n">superpixel_size</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">d4_cmap</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">Purples</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">d5_cmap</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">cool_r</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">d6_cmap</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">Greys</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">d7_cmap</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">spring_r</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">m0rx0</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">m0rx0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d0_cmap</span><span class="p">)</span><span class="w">
+</span><span class="n">m0ry0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d3_cmap</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">m1rx0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d1_cmap</span><span class="p">)</span><span class="w">
+</span><span class="n">m1ry0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d2_cmap</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">m2rx0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d4_cmap</span><span class="p">)</span><span class="w">
+</span><span class="n">m2ry0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d5_cmap</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">m3rx0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d6_cmap</span><span class="p">)</span><span class="w">
+</span><span class="n">m3ry0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">d7_cmap</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">m0rx0</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="w">
+</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Det0: X-</span><span class="si">{</span><span class="n">d0_cmap</span><span class="si">}</span><span class="s2">,Y-</span><span class="si">{</span><span class="n">d3_cmap</span><span class="si">}</span><span class="se">\n</span><span class="s2">Det1: X-</span><span class="si">{</span><span class="n">d1_cmap</span><span class="si">}</span><span class="s2">,Y-</span><span class="si">{</span><span class="n">d2_cmap</span><span class="si">}</span><span class="se">\n</span><span class="s2">Det2: X-</span><span class="si">{</span><span class="n">d4_cmap</span><span class="si">}</span><span class="s2">,Y-</span><span class="si">{</span><span class="n">d5_cmap</span><span class="si">}</span><span class="s2"> (blue/pink)</span><span class="se">\n</span><span class="s2">Det3: X-</span><span class="si">{</span><span class="n">d6_cmap</span><span class="si">}</span><span class="s2">,Y-</span><span class="si">{</span><span class="n">d7_cmap</span><span class="si">}</span><span class="s2"> (pink/yellow)</span><span class="s2">&quot;</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_chip_gap_values_006.png" srcset="../_images/sphx_glr_plot_nustar_chip_gap_values_006.png" alt="Det0: X-Blues,Y-Oranges Det1: X-Greens,Y-Reds Det2: X-Purples,Y-cool_r (blue/pink) Det3: X-Greys,Y-spring_r (pink/yellow)" class = "sphx-glr-single-img"/><div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>INFO: Using mesh-based autoalignment [sunpy.map.mapbase]
+INFO: Using image-based autoalignment [sunpy.map.mapbase]
+INFO: Using image-based autoalignment [sunpy.map.mapbase]
+INFO: Using mesh-based autoalignment [sunpy.map.mapbase]
+INFO: Using image-based autoalignment [sunpy.map.mapbase]
+INFO: Using mesh-based autoalignment [sunpy.map.mapbase]
+INFO: Using mesh-based autoalignment [sunpy.map.mapbase]
+</pre></div>
+</div>
+<p>This will let us easily create a coordinate frame for all four
+detectors and easily convert positions between them.</p>
+</section>
+<section id="chip-gap-width">
+<h2>Chip-gap width<a class="headerlink" href="#chip-gap-width" title="Link to this heading"></a></h2>
+<p>Since the chip-gap is the same between all detectors, let’s just focus
+on the gap between detector 0 and 1.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">det_transition01</span><span class="p">(</span><span class="n">event_list</span><span class="p">,</span> <span class="n">loop_over</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a list of pairs of counts that transition from detector 0 to 1.
+
+    For the chip-gap, only interested in the RAWX for det 0 and RAWY for
+    det 1.
+
+    Add these values and +1 as if both are 0 then that spans 1 raw
+    pixel, and so on.
+    &quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">deta</span> <span class="o">=</span> <span class="mi">0</span><span class="w">
+</span>    <span class="n">detb</span> <span class="o">=</span> <span class="mi">1</span><span class="w">
+</span>    <span class="n">transition_counts</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span><span class="w">
+</span>    <span class="n">loop_over</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">loop_over</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">loop_over</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">did</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">[</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">loop_over</span><span class="p">:</span><span class="w">
+</span>            <span class="k">break</span><span class="w">
+</span>        <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">%</span> <span class="p">(</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">loop_over</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="p">(</span><span class="n">loop_over</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">Count </span><span class="si">{</span><span class="n">c</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> of </span><span class="si">{</span><span class="n">loop_over</span><span class="si">}</span><span class="s2">. </span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>        <span class="c1"># make sure counts are correct det IDs and also on same axis</span><span class="w">
+</span>        <span class="k">if</span> <span class="p">(</span><span class="p">(</span><span class="n">did</span> <span class="o">==</span> <span class="n">deta</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">[</span><span class="n">c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">detb</span><span class="p">)</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="w">
+</span>            <span class="n">event_list</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">event_list</span><span class="p">[</span><span class="n">c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span>        <span class="p">)</span><span class="p">:</span><span class="w">
+</span>            <span class="n">num_pix</span> <span class="o">=</span> <span class="p">(</span><span class="w">
+</span>                <span class="nb">float</span><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="n">c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="w">
+</span>            <span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">pixel</span><span class="w">
+</span>        <span class="k">elif</span> <span class="p">(</span><span class="p">(</span><span class="n">did</span> <span class="o">==</span> <span class="n">detb</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">[</span><span class="n">c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">deta</span><span class="p">)</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="w">
+</span>            <span class="n">event_list</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">event_list</span><span class="p">[</span><span class="n">c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span>        <span class="p">)</span><span class="p">:</span><span class="w">
+</span>            <span class="n">num_pix</span> <span class="o">=</span> <span class="p">(</span><span class="w">
+</span>                <span class="nb">float</span><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="n">c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="w">
+</span>            <span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">pixel</span><span class="w">
+</span>        <span class="k">else</span><span class="p">:</span><span class="w">
+</span>            <span class="k">continue</span><span class="w">
+</span>        <span class="n">pix_dist</span> <span class="o">=</span> <span class="n">num_pix</span> <span class="o">*</span> <span class="n">RAW_PIX_DIFF</span><span class="w">
+</span>        <span class="n">actual_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="w">
+</span>            <span class="p">(</span><span class="w">
+</span>                <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">X</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>                <span class="o">-</span> <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="n">c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">X</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="w">
+</span>            <span class="o">+</span> <span class="p">(</span><span class="w">
+</span>                <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Y</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>                <span class="o">-</span> <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="n">c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Y</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="w">
+</span>        <span class="p">)</span><span class="w">
+</span>        <span class="n">transition_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="p">(</span><span class="n">actual_dist</span> <span class="o">-</span> <span class="n">pix_dist</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Done.</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">transition_counts</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="n">loop_over</span> <span class="o">=</span> <span class="mi">300_000</span><span class="w">
+</span><span class="n">chip_gap_sizes</span> <span class="o">=</span> <span class="n">det_transition01</span><span class="p">(</span><span class="n">event_data</span><span class="p">,</span> <span class="n">loop_over</span><span class="o">=</span><span class="n">loop_over</span><span class="p">)</span><span class="w">
+</span><span class="n">chip_gap_size</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">chip_gap_sizes</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span></pre></div></div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Count 1 of 300000.
+Count 30001 of 300000.
+Count 60001 of 300000.
+Count 90001 of 300000.
+Count 120001 of 300000.
+Count 150001 of 300000.
+Count 180001 of 300000.
+Count 210001 of 300000.
+Count 240001 of 300000.
+Count 270001 of 300000.
+Count 300000 of 300000. Done.
+</pre></div>
+</div>
+<p>Running this on the total event list, we get a median chip-gap of
+<code class="docutils literal notranslate"><span class="pre">15.77588557692691</span> <span class="pre">arcsec</span></code>.</p>
+<p>The value obtained from the full event list can now be found using
+<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">jdhsrpy</span> <span class="pre">import</span> <span class="pre">CHIP_GAP</span></code>.</p>
+<p>Let’s plot the result.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ar_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">chip_gap_sizes</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">ar_bins</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">chip_gap_size</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">grey</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">From </span><span class="si">{</span><span class="n">loop_over</span><span class="si">}</span><span class="s2"> entries</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">CHIP_GAP</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">k</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">:</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">From full event list</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Chip-gap distance [arcsecond]</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Number of counts</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="w">
+</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Median distance over </span><span class="si">{</span><span class="n">loop_over</span><span class="si">}</span><span class="s2"> entries: </span><span class="si">{</span><span class="n">chip_gap_size</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="se">\n</span><span class="s2">Median distance over all entries: </span><span class="si">{</span><span class="n">CHIP_GAP</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="s2">&quot;</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="p">[</span><span class="n">ar_bins</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">ar_bins</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_chip_gap_values_007.png" srcset="../_images/sphx_glr_plot_nustar_chip_gap_values_007.png" alt="Median distance over 300000 entries: $14.148267\mathrm{{}^{\prime\prime}}$ Median distance over all entries: $15.775886\mathrm{{}^{\prime\prime}}$" class = "sphx-glr-single-img"/></section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading"></a></h2>
+<p>With the <code class="docutils literal notranslate"><span class="pre">CHIP_GAP</span></code> and <code class="docutils literal notranslate"><span class="pre">RAW_PIX_DIFF</span></code> in <code class="docutils literal notranslate"><span class="pre">jdhsrpy</span></code>, it it
+trivial to create a simple function that can be used to plot the chip
+gap based on a given event list.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="k">def</span><span class="w"> </span><span class="nf">universal_pixel_location</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="n">rawx</span><span class="p">,</span> <span class="n">rawy</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a detector coordinate to one on a 64x64 \'pixel\' grid.
+
+    Origin is (31, 31) with axes (-x, -y) of detector 0.
+
+    I.e., new grid (0,0) is opposite corner from the field of view
+    centre over detector 0, x-axis goes from there to detector 1 and
+    y-axis goes towards detector 3.
+    &quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">det_grid_coordx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">PIX_GRID</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="w">
+</span>    <span class="n">det_grid_coordy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">PIX_GRID</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="w">
+</span>    <span class="n">rawx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rawx</span><span class="p">)</span><span class="w">
+</span>    <span class="n">rawy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">rawy</span><span class="p">)</span><span class="w">
+</span>    <span class="k">if</span> <span class="n">det</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span><span class="w">
+</span>        <span class="k">return</span> <span class="n">det_grid_coordx</span> <span class="o">-</span> <span class="n">rawx</span><span class="p">,</span> <span class="n">det_grid_coordy</span> <span class="o">-</span> <span class="n">rawy</span><span class="w">
+</span>    <span class="k">elif</span> <span class="n">det</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span><span class="w">
+</span>        <span class="k">return</span> <span class="n">det_grid_coordx</span> <span class="o">+</span> <span class="n">rawy</span><span class="p">,</span> <span class="n">det_grid_coordy</span> <span class="o">-</span> <span class="n">rawx</span><span class="w">
+</span>    <span class="k">elif</span> <span class="n">det</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span><span class="w">
+</span>        <span class="k">return</span> <span class="n">det_grid_coordx</span> <span class="o">+</span> <span class="n">rawx</span><span class="p">,</span> <span class="n">det_grid_coordy</span> <span class="o">+</span> <span class="n">rawy</span><span class="w">
+</span>    <span class="k">elif</span> <span class="n">det</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span><span class="w">
+</span>        <span class="k">return</span> <span class="n">det_grid_coordx</span> <span class="o">-</span> <span class="n">rawy</span><span class="p">,</span> <span class="n">det_grid_coordy</span> <span class="o">+</span> <span class="n">rawx</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">roll_from_solar_north</span><span class="p">(</span><span class="n">event_list</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Uses two time-contiguous counts to work out rotation angle.
+
+    UNDER CONSTRUCTION
+    &quot;&quot;&quot;</span><span class="w">
+</span>    <span class="c1"># find the next point in the list and make sure it's a different pixel</span><span class="w">
+</span>    <span class="n">_dist</span> <span class="o">=</span> <span class="mi">0</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">event_list</span><span class="p">[</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">_pointa</span> <span class="o">=</span> <span class="n">e</span><span class="w">
+</span>        <span class="n">next_event</span> <span class="o">=</span> <span class="n">event_list</span><span class="p">[</span><span class="n">c</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="w">
+</span>        <span class="k">if</span> <span class="n">next_event</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">_pointa</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">:</span><span class="w">
+</span>            <span class="c1"># if we have one in a different detector then count that good enough</span><span class="w">
+</span>            <span class="n">pointa</span> <span class="o">=</span> <span class="n">e</span><span class="w">
+</span>            <span class="n">pointb</span> <span class="o">=</span> <span class="n">next_event</span><span class="w">
+</span>            <span class="k">break</span><span class="w">
+</span>        <span class="k">elif</span> <span class="p">(</span><span class="n">next_event</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">_pointa</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="w">
+</span>            <span class="n">next_event</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">_pointa</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span>        <span class="p">)</span><span class="p">:</span><span class="w">
+</span>            <span class="c1"># if same detector, just try and get the two counts furthest apart</span><span class="w">
+</span>            <span class="n">_new_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="w">
+</span>                <span class="p">(</span><span class="n">_pointa</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">next_event</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="w">
+</span>                <span class="o">+</span> <span class="p">(</span><span class="n">_pointa</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">next_event</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="w">
+</span>            <span class="p">)</span><span class="w">
+</span>            <span class="k">if</span> <span class="n">_new_dist</span> <span class="o">&gt;</span> <span class="n">_dist</span><span class="p">:</span><span class="w">
+</span>                <span class="n">pointa</span> <span class="o">=</span> <span class="n">e</span><span class="w">
+</span>                <span class="n">pointb</span> <span class="o">=</span> <span class="n">next_event</span><span class="w">
+</span>                <span class="n">_dist</span> <span class="o">=</span> <span class="n">_new_dist</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># make sure that point0 is always on the left of point1 for orientation</span><span class="w">
+</span>    <span class="n">_diff_rawx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pointa</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">pointb</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">point0</span><span class="p">,</span> <span class="n">point1</span> <span class="o">=</span> <span class="p">(</span><span class="n">pointa</span><span class="p">,</span> <span class="n">pointb</span><span class="p">)</span> <span class="k">if</span> <span class="n">_diff_rawx</span> <span class="o">&lt;</span><span class="o">=</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="n">pointb</span><span class="p">,</span> <span class="n">pointa</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="n">up_vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="c1"># get angle in pixel space between counts and -y</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">big_grid0</span> <span class="o">=</span> <span class="n">universal_pixel_location</span><span class="p">(</span><span class="w">
+</span>        <span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span>    <span class="n">big_grid1</span> <span class="o">=</span> <span class="n">universal_pixel_location</span><span class="p">(</span><span class="w">
+</span>        <span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span>    <span class="n">len01</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="w">
+</span>        <span class="p">(</span><span class="n">big_grid0</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">big_grid1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span> <span class="o">*</span><span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">big_grid0</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">big_grid1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span> <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span>    <span class="n">vec01</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">big_grid0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">big_grid1</span><span class="p">)</span><span class="w">
+</span>    <span class="n">pix_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec01</span><span class="p">,</span> <span class="n">up_vector</span><span class="p">)</span> <span class="o">/</span> <span class="n">len01</span><span class="p">)</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="n">big_grid0</span><span class="p">,</span> <span class="n">big_grid1</span><span class="p">,</span> <span class="n">vec01</span><span class="p">)</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="n">pix_angle</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">180</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># get angle in solar pix now (this y-axis is defined the opposite way)</span><span class="w">
+</span>    <span class="n">vec01_sol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="w">
+</span>        <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">X</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">X</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">point1</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Y</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span> <span class="o">-</span> <span class="n">point0</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Y</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="p">]</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span>    <span class="n">_dx</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">vec01_sol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">_dy</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">vec01_sol</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">len01_sol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="p">(</span><span class="n">_dx</span><span class="p">)</span> <span class="o">*</span><span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">_dy</span><span class="p">)</span> <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="p">)</span><span class="w">
+</span>    <span class="n">sol_pix_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec01_sol</span><span class="p">,</span> <span class="n">up_vector</span><span class="p">)</span> <span class="o">/</span> <span class="n">len01_sol</span><span class="p">)</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="n">vec01_sol</span><span class="p">)</span><span class="w">
+</span>    <span class="nb">print</span><span class="p">(</span><span class="n">sol_pix_angle</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">180</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">return</span> <span class="p">(</span><span class="n">pix_angle</span> <span class="o">-</span> <span class="n">sol_pix_angle</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">180</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># print(roll_from_solar_north(event_data))</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">get_nustar_solar_rotation</span><span class="p">(</span><span class="n">roll_time</span><span class="p">,</span> <span class="n">nustar_roll</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Field of view NuSTAR rotation in the helioprojective frame.
+
+    Adapted and reversed from
+    ``nustar_pysolar.planning.get_nustar_roll``.
+
+    Parameters
+    ----------
+    roll_time : `~astropy.time.Time`
+        The time associated with the given ``nustar_roll`` value.
+
+    nustar_roll : `~astropy.units.Quantity`
+        The NuSTAR roll angle in the RA-Dec frame in, or convertible to,
+        units of degrees.
+
+    Returns
+    -------
+    `~astropy.units.Quantity` : NuSTAR field of view rotation in solar
+        coordinates.
+    &quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">sun_np</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="n">P</span><span class="p">(</span><span class="n">roll_time</span><span class="p">)</span><span class="o">.</span><span class="n">deg</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="w">
+</span>    <span class="n">nustar_roll</span> <span class="o">&lt;&lt;</span><span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="w">
+</span>    <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">nustar_roll</span> <span class="o">-</span> <span class="n">sun_np</span><span class="p">,</span> <span class="mi">360</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">angle</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">get_nustar_solar_rotations</span><span class="p">(</span><span class="n">roll_times</span><span class="p">,</span> <span class="n">nustar_rolls</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Uses ``get_nustar_solar_rotation`` on multiple roll values.&quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">solar_rotations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">get_nustar_solar_rotation</span><span class="p">,</span> <span class="n">roll_times</span><span class="p">,</span> <span class="n">nustar_rolls</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span>    <span class="k">return</span> <span class="p">(</span><span class="w">
+</span>        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">solar_rotations</span> <span class="o">&lt;&lt;</span> <span class="n">solar_rotations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">solar_rotations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">unit</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># nustar_roll_times, nustar_roll = read_filter_file(filename_filter)</span><span class="w">
+</span><span class="c1"># roll_times = utc_from_nustar_time(nustar_roll_times)</span><span class="w">
+</span><span class="c1"># solar_rotations = get_nustar_solar_rotations(roll_times[:100], nustar_roll[:100])</span><span class="w">
+</span><span class="c1"># print(solar_rotations)</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">add_legs_to_chip_gap_plus</span><span class="p">(</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Delta coordinates from centre to vertices of plus shape.&quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">half_cg</span> <span class="o">=</span> <span class="n">CHIP_GAP</span> <span class="o">/</span> <span class="mi">2</span><span class="w">
+</span>    <span class="n">to_edges_from_centre</span> <span class="o">=</span> <span class="n">PIX_GRID</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">RAW_PIX_DIFF</span> <span class="o">+</span> <span class="n">half_cg</span><span class="w">
+</span><span class="w">
+</span>    <span class="n">top_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="o">-</span><span class="n">half_cg</span><span class="p">,</span> <span class="n">to_edges_from_centre</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">top_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="n">half_cg</span><span class="p">,</span> <span class="n">to_edges_from_centre</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">top_right_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="n">to_edges_from_centre</span><span class="p">,</span> <span class="n">to_edges_from_centre</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">right_top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="n">to_edges_from_centre</span><span class="p">,</span> <span class="n">half_cg</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">right_bottom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="n">to_edges_from_centre</span><span class="p">,</span> <span class="o">-</span><span class="n">half_cg</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">bottom_right_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="n">to_edges_from_centre</span><span class="p">,</span> <span class="o">-</span><span class="n">to_edges_from_centre</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">bottom_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="o">-</span><span class="n">half_cg</span><span class="p">,</span> <span class="o">-</span><span class="n">to_edges_from_centre</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">bottom_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="n">half_cg</span><span class="p">,</span> <span class="o">-</span><span class="n">to_edges_from_centre</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">bottom_left_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="o">-</span><span class="n">to_edges_from_centre</span><span class="p">,</span> <span class="o">-</span><span class="n">to_edges_from_centre</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">left_top</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="o">-</span><span class="n">to_edges_from_centre</span><span class="p">,</span> <span class="n">half_cg</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">left_bottom</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="o">-</span><span class="n">to_edges_from_centre</span><span class="p">,</span> <span class="o">-</span><span class="n">half_cg</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span>    <span class="n">top_left_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="p">[</span><span class="o">-</span><span class="n">to_edges_from_centre</span><span class="p">,</span> <span class="n">to_edges_from_centre</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="w">
+</span>        <span class="p">[</span><span class="w">
+</span>            <span class="n">top_left</span><span class="p">,</span><span class="w">
+</span>            <span class="n">top_right</span><span class="p">,</span><span class="w">
+</span>            <span class="n">top_right_center</span><span class="p">,</span><span class="w">
+</span>            <span class="n">right_top</span><span class="p">,</span><span class="w">
+</span>            <span class="n">right_bottom</span><span class="p">,</span><span class="w">
+</span>            <span class="n">bottom_right_center</span><span class="p">,</span><span class="w">
+</span>            <span class="n">bottom_left</span><span class="p">,</span><span class="w">
+</span>            <span class="n">bottom_right</span><span class="p">,</span><span class="w">
+</span>            <span class="n">bottom_left_center</span><span class="p">,</span><span class="w">
+</span>            <span class="n">left_top</span><span class="p">,</span><span class="w">
+</span>            <span class="n">left_bottom</span><span class="p">,</span><span class="w">
+</span>            <span class="n">top_left_center</span><span class="p">,</span><span class="w">
+</span>        <span class="p">]</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">raw_pixel_to_center</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="n">rawx</span><span class="p">,</span> <span class="n">rawy</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Center translation of the self-define 64x64 grid from a given point.
+
+    Grid defined in ``universal_pixel_location``.
+    &quot;&quot;&quot;</span><span class="w">
+</span>    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">universal_pixel_location</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="n">rawx</span><span class="p">,</span> <span class="n">rawy</span><span class="p">)</span><span class="w">
+</span>    <span class="n">mid_coord_position_x</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">PIX_GRID</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="w">
+</span>    <span class="n">mid_coord_position_y</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">PIX_GRID</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">x</span> <span class="o">-</span> <span class="n">mid_coord_position_x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">mid_coord_position_y</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="k">def</span><span class="w"> </span><span class="nf">estimate_chip_gap</span><span class="p">(</span><span class="n">event_data</span><span class="p">,</span> <span class="n">filename_filter</span><span class="p">,</span> <span class="n">sample</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">sample</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">sample</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">sample</span><span class="w">
+</span>    <span class="n">nustar_roll_times</span><span class="p">,</span> <span class="n">nustar_roll</span> <span class="o">=</span> <span class="n">read_filter_file</span><span class="p">(</span><span class="n">filename_filter</span><span class="p">)</span><span class="w">
+</span>    <span class="n">event_times</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">TIME</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># use event_data to get the times we want from the roll angle</span><span class="w">
+</span>    <span class="n">roll_times_in_event_range</span> <span class="o">=</span> <span class="p">(</span><span class="n">nustar_roll_times</span> <span class="o">&gt;</span><span class="o">=</span> <span class="n">event_times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="w">
+</span>        <span class="n">nustar_roll_times</span> <span class="o">&lt;</span><span class="o">=</span> <span class="n">event_times</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span>    <span class="n">inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">roll_times_in_event_range</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="p">)</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w">
+</span>    <span class="n">sliced_nustar_roll_times</span> <span class="o">=</span> <span class="n">nustar_roll_times</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span><span class="w">
+</span>    <span class="n">sliced_nustar_roll</span> <span class="o">=</span> <span class="n">nustar_roll</span><span class="p">[</span><span class="n">inds</span><span class="p">]</span><span class="w">
+</span><span class="w">
+</span>    <span class="n">solar_rotations</span> <span class="o">=</span> <span class="n">get_nustar_solar_rotations</span><span class="p">(</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.utc_from_nustar_time" title="jdhsrpy.nustar_core.utc_from_nustar_time"><span class="n">utc_from_nustar_time</span></a><span class="p">(</span><span class="n">sliced_nustar_roll_times</span><span class="p">)</span><span class="p">,</span> <span class="n">sliced_nustar_roll</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="n">event_rolls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">event_times</span><span class="p">,</span> <span class="n">sliced_nustar_roll_times</span><span class="p">,</span> <span class="n">solar_rotations</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># ind where the fov centres would be using the roll angle and the</span><span class="w">
+</span>    <span class="c1">#   resolution values from previous</span><span class="w">
+</span>    <span class="n">rawx</span><span class="p">,</span> <span class="n">rawy</span><span class="p">,</span> <span class="n">det</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWX</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">event_data</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">RAWY</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">,</span> <span class="n">event_data</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">DET_ID</span><span class="s2">&quot;</span><span class="p">]</span><span class="w">
+</span>    <span class="n">delx_pix</span><span class="p">,</span> <span class="n">dely_pix</span> <span class="o">=</span> <span class="n">raw_pixel_to_center</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="n">rawx</span><span class="p">,</span> <span class="n">rawy</span><span class="p">)</span><span class="w">
+</span>    <span class="n">translated_x</span><span class="p">,</span> <span class="n">translated_y</span> <span class="o">=</span> <span class="n">rotate_coord</span><span class="p">(</span><span class="w">
+</span>        <span class="p">[</span><span class="n">delx_pix</span><span class="p">,</span> <span class="n">dely_pix</span><span class="p">]</span><span class="p">,</span> <span class="n">event_rolls</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">anticlockwise</span><span class="s2">&quot;</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># use translated_x, translated_y to get the solar coord of the fov centre</span><span class="w">
+</span>    <span class="n">count_x</span><span class="p">,</span> <span class="n">count_y</span> <span class="o">=</span> <span class="p">(</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">(</span><span class="n">event_data</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">X</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>        <a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords" title="jdhsrpy.utils.pixel_coords_to_solar_coords"><span class="n">pixel_coords_to_solar_coords</span></a><span class="p">(</span><span class="n">event_data</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">Y</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span>    <span class="n">sol_fov_cx</span> <span class="o">=</span> <span class="n">count_x</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">translated_x</span><span class="p">)</span> <span class="o">*</span> <span class="n">RAW_PIX_DIFF</span> <span class="o">+</span> <span class="n">CHIP_GAP</span><span class="p">)</span><span class="w">
+</span>    <span class="n">sol_fov_cy</span> <span class="o">=</span> <span class="n">count_y</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">translated_y</span><span class="p">)</span> <span class="o">*</span> <span class="n">RAW_PIX_DIFF</span> <span class="o">+</span> <span class="n">CHIP_GAP</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="c1"># construct the &quot;plus&quot; shape of the chip-gap from that centre point</span><span class="w">
+</span>    <span class="n">tanslated_legs</span> <span class="o">=</span> <span class="n">rotate_coord</span><span class="p">(</span><span class="w">
+</span>        <span class="n">add_legs_to_chip_gap_plus</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">event_rolls</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">clockwise</span><span class="s2">&quot;</span><span class="w">
+</span>    <span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="n">chip_gaps</span> <span class="o">=</span> <span class="p">[</span><span class="p">]</span><span class="w">
+</span>    <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">xy</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sol_fov_cx</span><span class="p">,</span> <span class="n">sol_fov_cy</span><span class="p">)</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>        <span class="n">chip_gaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-utils sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.utils.arcsec_points_to_shape" title="jdhsrpy.utils.arcsec_points_to_shape"><span class="n">arcsec_points_to_shape</span></a><span class="p">(</span><span class="n">xy</span> <span class="o">+</span> <span class="n">tanslated_legs</span><span class="p">[</span><span class="n">c</span><span class="p">]</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span>    <span class="k">return</span> <span class="n">chip_gaps</span><span class="w">
+</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># circle_region_custom = estimate_chip_gap(event_data, filename_filter, sample=None)</span><span class="w">
+</span><span class="c1"># bottom_left = [-1000, -500] &lt;&lt; u.arcsec</span><span class="w">
+</span><span class="c1"># top_right = [100, 425] &lt;&lt; u.arcsec</span><span class="w">
+</span><span class="c1"># m = nustar_object.nustar_map(bottom_left, top_right)</span><span class="w">
+</span><span class="w">
+</span><span class="c1"># from jdhsrpy.visualize import shape_plot</span><span class="w">
+</span><span class="c1"># fig = plt.figure()</span><span class="w">
+</span><span class="c1"># ax = fig.add_subplot(projection=m)</span><span class="w">
+</span><span class="c1"># m.plot(axes=ax)</span><span class="w">
+</span><span class="c1"># shape_plot(circle_region_custom, m.coordinate_frame, color=&quot;k&quot;)</span><span class="w">
+</span><span class="c1"># draw_grid(m, ax)</span><span class="w">
+</span><span class="c1"># plt.title(&quot;From FK5/Sexagesimal REG file\nand custom created region file&quot;)</span><span class="w">
+</span><span class="c1"># plt.show()</span><span class="w">
+</span></pre></div></div>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 16.364 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-nustar-chip-gap-values-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/2a1984512cecf2562554547fdfbdb4fa/plot_nustar_chip_gap_values.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_nustar_chip_gap_values.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/fe7eb34a7df7ea05a4704681d5040059/plot_nustar_chip_gap_values.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_nustar_chip_gap_values.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/170813951c26ddc32abb204d9b6e031d/plot_nustar_chip_gap_values.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_nustar_chip_gap_values.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plot_nustar_filter_any_region.html" class="btn btn-neutral float-left" title="Filter By Any Shape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../modules.html" class="btn btn-neutral float-right" title="jdhsrpy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

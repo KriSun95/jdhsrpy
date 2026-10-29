@@ -1,0 +1,463 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NuSTAR Optical Axis, Source Location, and Deconvolution &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Filter By Any Shape" href="plot_nustar_filter_any_region.html" />
+    <link rel="prev" title="Using Event Filters" href="plot_nustar_filters.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other_software.html">Additional NuSTAR Software and References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">JDHSRPY Example Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar.html">Using <code class="docutils literal notranslate"><span class="pre">NuSTAREvt</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_download_sdo_data.html">Downloading SDO Data and Creating Fe18 Proxy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_multi_maps.html">Plotting NuSTAR and AIA Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_spectral_fitting.html">NuSTAR Spectral Fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_images.html">Plotting NuSTAR Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_time_profiles.html">Plotting NuSTAR Time Profiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_create_a_reg_file.html">Region files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_full_pipeline.html">Full Analysis Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_filters.html">Using Event Filters</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">NuSTAR Optical Axis, Source Location, and Deconvolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#time-profiles">Time profiles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#image-with-optical-axis">Image with optical axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#choosing-a-time">Choosing a time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#find-source-location">Find source location</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mean-optical-axis-location">Mean optical axis location</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-source-location-w-r-t-optical-axis">Get source location w.r.t. optical axis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plot-the-result">Plot the result</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deconvolving">Deconvolving</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_filter_any_region.html">Filter By Any Shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_nustar_chip_gap_values.html">Obtaining NuSTAR Chip-gap Values</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">JDHSRPY Example Gallery</a></li>
+      <li class="breadcrumb-item active">NuSTAR Optical Axis, Source Location, and Deconvolution</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/auto_examples/plot_nustar_oa_and_source.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-examples-plot-nustar-oa-and-source-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="nustar-optical-axis-source-location-and-deconvolution">
+<span id="sphx-glr-auto-examples-plot-nustar-oa-and-source-py"></span><h1>NuSTAR Optical Axis, Source Location, and Deconvolution<a class="headerlink" href="#nustar-optical-axis-source-location-and-deconvolution" title="Link to this heading"></a></h1>
+<p>This example shows how to obtain the optical axis information from the
+NuSTAR files.</p>
+<p>This example will also show how to use the optical axis and source
+location to perform deconvolution correctly on a NuSTAR image.</p>
+<p>This is important as the NuSTAR PSF changes both in radius and
+azimuth from and around the optical axis location.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="kn">import</span><span class="w"> </span><span class="nn">ntpath</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">urllib</span><span class="nn">.</span><span class="nn">request</span><span class="w">
+</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mdates</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="nn">.</span><span class="nn">pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span><span class="w">
+</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">SkyCoord</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Time</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">astropy</span><span class="nn">.</span><span class="nn">visualization</span><span class="w"> </span><span class="kn">import</span> <span class="n">time_support</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">gridspec</span><span class="w">
+</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">TEST_DATA_LOCATION</span><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">general_filters</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-general_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.general_filters.by_value_range" title="jdhsrpy.general_filters.by_value_range"><span class="n">by_value_range</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">image_filters</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-image_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.image_filters.deconvolve_with_file" title="jdhsrpy.image_filters.deconvolve_with_file"><span class="n">deconvolve_with_file</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">list_filters</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_time" title="jdhsrpy.list_filters.by_time"><span class="n">by_time</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">nustar_core</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-class reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt" title="jdhsrpy.nustar_core.NustarEvt"><span class="n">NustarEvt</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.get_submap" title="jdhsrpy.nustar_core.get_submap"><span class="n">get_submap</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.optical_axis_array" title="jdhsrpy.nustar_core.optical_axis_array"><span class="n">optical_axis_array</span></a><span class="w">
+</span><span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="nn">.</span><span class="nn">visualize</span><span class="w"> </span><span class="kn">import</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.optical_axis_plot" title="jdhsrpy.visualize.optical_axis_plot"><span class="n">optical_axis_plot</span></a><span class="p">,</span> <a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="w">
+</span></pre></div></div>
+<p>Download an example “sunpos” NuSTAR EVT file.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl_sunpos.evt</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A_fpm.hk</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_lvt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_lvt</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_lvt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A06_cl.evt</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_original_evt</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_original_evt</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_original_evt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nu20619003001A_oa.fits</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_oa</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_oa</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_oa</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">TEST_DATA_LOCATION</span><span class="si">}</span><span class="s2">/test_nustar_data/nuA2dpsfen1_20100101v001.fits</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">filename_psf</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(</span><span class="p">)</span><span class="p">,</span> <span class="n">ntpath</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_psf</span><span class="p">)</span><span class="p">:</span><span class="w">
+</span>    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename_psf</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<p>Use the class to load in and work with the file.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt" title="jdhsrpy.nustar_core.NustarEvt"><span class="n">nustar_object</span></a> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-class reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt" title="jdhsrpy.nustar_core.NustarEvt"><span class="n">NustarEvt</span></a><span class="p">(</span><span class="n">evt_filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<section id="time-profiles">
+<h2>Time profiles<a class="headerlink" href="#time-profiles" title="Link to this heading"></a></h2>
+<p>Let’s plot some time profile information first.</p>
+<p>We can plot the optical axis locations and the livetime corrected
+count rate together.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">times_oa</span><span class="p">,</span> <span class="n">sol_x</span><span class="p">,</span> <span class="n">sol_y</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.optical_axis_array" title="jdhsrpy.nustar_core.optical_axis_array"><span class="n">optical_axis_array</span></a><span class="p">(</span><span class="n">filename_oa</span><span class="p">,</span> <span class="n">filename_original_evt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">times_evt</span><span class="p">,</span> <span class="n">cts</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.rate_time_profile_array" title="jdhsrpy.nustar_core.NustarEvt.rate_time_profile_array"><span class="n">nustar_object</span><span class="o">.</span><span class="n">rate_time_profile_array</span></a><span class="p">(</span><span class="n">filename_lvt</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">time_support</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">unix_tai</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.optical_axis_plot" title="jdhsrpy.visualize.optical_axis_plot"><span class="n">optical_axis_plot</span></a><span class="p">(</span><span class="n">times_oa</span><span class="p">,</span> <span class="n">sol_x</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">Solar-X</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes0</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.optical_axis_plot" title="jdhsrpy.visualize.optical_axis_plot"><span class="n">optical_axis_plot</span></a><span class="p">(</span><span class="n">times_oa</span><span class="p">,</span> <span class="n">sol_y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">Solar-Y</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes0</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Optical axis time profile</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Solar Position [</span><span class="si">{</span><span class="n">sol_x</span><span class="o">.</span><span class="n">unit</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="s2">]</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">right</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-visualize sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.visualize.time_profile_plot" title="jdhsrpy.visualize.time_profile_plot"><span class="n">time_profile_plot</span></a><span class="p">(</span><span class="n">times_evt</span><span class="p">,</span> <span class="n">cts</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Rate time profile</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Rate [</span><span class="si">{</span><span class="n">cts</span><span class="o">.</span><span class="n">unit</span><span class="si">:</span><span class="s2">latex</span><span class="si">}</span><span class="s2">]</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">right</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">fmt</span> <span class="o">=</span> <span class="n">mdates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">%</span><span class="s2">H:</span><span class="s2">%</span><span class="s2">M</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">[</span><span class="n">axes0</span><span class="p">,</span> <span class="n">axes1</span><span class="p">]</span><span class="p">:</span><span class="w">
+</span>    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Time</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span>    <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">FPM</span><span class="si">{</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt" title="jdhsrpy.nustar_core.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">fpm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_oa_and_source_001.png" srcset="../_images/sphx_glr_plot_nustar_oa_and_source_001.png" alt="FPMA, Optical axis time profile, Rate time profile" class = "sphx-glr-single-img"/></section>
+<section id="image-with-optical-axis">
+<h2>Image with optical axis<a class="headerlink" href="#image-with-optical-axis" title="Link to this heading"></a></h2>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">NustarEVT</span></code> class, we can plot the optical axis location
+easily.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="c1"># obtain a Sunpy map object of the NuSTAR observation</span><span class="w">
+</span><span class="n">bottom_left</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="o">-</span><span class="mi">700</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="n">top_right</span> <span class="o">=</span> <span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="mi">600</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="n">m</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.nustar_map" title="jdhsrpy.nustar_core.NustarEvt.nustar_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">nustar_map</span></a><span class="p">(</span><span class="n">bottom_left</span><span class="p">,</span> <span class="n">top_right</span><span class="p">)</span><span class="w">
+</span><span class="c1"># now use it in plotting, this is now just Sunpy API stuff</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">m</span><span class="p">)</span><span class="w">
+</span><span class="n">m</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span><span class="w">
+</span><span class="n">ax</span><span class="o">.</span><span class="n">plot_coord</span><span class="p">(</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">sol_x</span><span class="p">,</span> <span class="n">sol_y</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">coordinate_frame</span><span class="p">)</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">grey</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_oa_and_source_002.png" srcset="../_images/sphx_glr_plot_nustar_oa_and_source_002.png" alt="2021-11-20 01:50:34" class = "sphx-glr-single-img"/></section>
+<section id="choosing-a-time">
+<h2>Choosing a time<a class="headerlink" href="#choosing-a-time" title="Link to this heading"></a></h2>
+<p>Let’s choose a time range to work with and look at the optical axis
+location.</p>
+<p>We’ll be able to get a lot of information here, especially the
+information needed to select the appropriate NuSTAR PSF for a given
+source and deconvolve correctly.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">time0</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:22:10</span><span class="s2">&quot;</span><span class="w">
+</span><span class="n">time1</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s2">2021-11-20T02:25:30</span><span class="s2">&quot;</span><span class="w">
+</span><span class="w">
+</span><span class="n">mt</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-method reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt.field_of_view_map" title="jdhsrpy.nustar_core.NustarEvt.field_of_view_map"><span class="n">nustar_object</span><span class="o">.</span><span class="n">field_of_view_map</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">event_data</span><span class="o">=</span><a class="sphx-glr-backref-module-jdhsrpy-list_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.list_filters.by_time" title="jdhsrpy.list_filters.by_time"><span class="n">by_time</span></a><span class="p">(</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-class sphx-glr-backref-instance reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.NustarEvt" title="jdhsrpy.nustar_core.NustarEvt"><span class="n">nustar_object</span></a><span class="o">.</span><span class="n">cleaned_evt_data</span><span class="p">,</span> <span class="n">time0</span><span class="p">,</span> <span class="n">time1</span><span class="p">)</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">tf_sol_x</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-general_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.general_filters.by_value_range" title="jdhsrpy.general_filters.by_value_range"><span class="n">by_value_range</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">sol_x</span><span class="p">,</span><span class="w">
+</span>    <span class="n">Time</span><span class="p">(</span><span class="n">time0</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">isot</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">utc</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="n">Time</span><span class="p">(</span><span class="n">time1</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">isot</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">utc</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="n">array_to_filter_against</span><span class="o">=</span><span class="n">times_oa</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">tf_sol_y</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-general_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.general_filters.by_value_range" title="jdhsrpy.general_filters.by_value_range"><span class="n">by_value_range</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">sol_y</span><span class="p">,</span><span class="w">
+</span>    <span class="n">Time</span><span class="p">(</span><span class="n">time0</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">isot</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">utc</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="n">Time</span><span class="p">(</span><span class="n">time1</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">isot</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">utc</span><span class="s2">&quot;</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="n">array_to_filter_against</span><span class="o">=</span><span class="n">times_oa</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</section>
+<section id="find-source-location">
+<h2>Find source location<a class="headerlink" href="#find-source-location" title="Link to this heading"></a></h2>
+<p>After choosing the time we want, we can then get a source position
+which we can do using this <a class="reference external" href="https://docs.sunpy.org/en/stable/generated/gallery/map/brightness_pixel_location.html">Sunpy example</a>.</p>
+<p>We can just assume the source will be the brightest pixel in the
+image.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">pixel_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">mt</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="n">mt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="p">)</span><span class="p">)</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pixel</span><span class="w">
+</span><span class="n">hpc_max</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">pixel_to_world</span><span class="p">(</span><span class="n">pixel_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">pixel_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</section>
+<section id="mean-optical-axis-location">
+<h2>Mean optical axis location<a class="headerlink" href="#mean-optical-axis-location" title="Link to this heading"></a></h2>
+<p>We will also want the mean optical axis position.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">mean_tf_sol_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tf_sol_x</span><span class="p">)</span><span class="w">
+</span><span class="n">mean_tf_sol_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tf_sol_y</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+</section>
+<section id="get-source-location-w-r-t-optical-axis">
+<h2>Get source location w.r.t. optical axis<a class="headerlink" href="#get-source-location-w-r-t-optical-axis" title="Link to this heading"></a></h2>
+<p>Now we can use maths or, for you Americans, math to get the angles we
+need for deconvolution.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">deltax</span><span class="p">,</span> <span class="n">deltay</span> <span class="o">=</span> <span class="n">mean_tf_sol_x</span> <span class="o">-</span> <span class="n">hpc_max</span><span class="o">.</span><span class="n">Tx</span><span class="p">,</span> <span class="n">mean_tf_sol_y</span> <span class="o">-</span> <span class="n">hpc_max</span><span class="o">.</span><span class="n">Ty</span><span class="w">
+</span></pre></div></div>
+<p>We want the angular radial distance from the optical axis (OA) to the
+source. This is <code class="docutils literal notranslate"><span class="pre">oa_to_source</span></code>.</p>
+<p>This dictates what point-spread function (PSF) to use from the file;
+either the on-axis (&lt;0.5’) or which off-axis PSF to use (these change
+in 0.5’ incrememnts up to 8.5’).</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">oa_to_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="p">(</span><span class="n">deltax</span><span class="p">)</span> <span class="o">*</span><span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">deltay</span><span class="p">)</span> <span class="o">*</span><span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcmin</span><span class="w">
+</span></pre></div></div>
+<p>Finally, we want the azimuthal angle from the horizontal to the
+source. This is <code class="docutils literal notranslate"><span class="pre">hor_to_source</span></code>.</p>
+<p>This angle is used to rotate the PSF from the file so it is in the
+correct orientation for the desired source location.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">hor_to_source</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">deltay</span> <span class="o">/</span> <span class="n">deltax</span><span class="p">)</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="w">
+</span></pre></div></div>
+<p>A user will be able to see how crucial these values are, especially
+when inspecting the that NuSTAR’s PSF elongates with increasing
+off-axis angles.</p>
+<p>See Figure 1 of <a class="reference external" href="https://www.preprints.org/manuscript/202502.1249">preprint: Bhattacharya et al. 2025</a>
+for the off-axis changes to the PSF.</p>
+</section>
+<section id="plot-the-result">
+<h2>Plot the result<a class="headerlink" href="#plot-the-result" title="Link to this heading"></a></h2>
+<p>Plot all this together.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">mt</span><span class="p">)</span><span class="w">
+</span><span class="n">mt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">axes0</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="n">axes0</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Time range: </span><span class="si">{</span><span class="n">time0</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="n">time1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">mt</span><span class="p">)</span><span class="w">
+</span><span class="n">mt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">axes1</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="n">axes1</span><span class="p">)</span><span class="w">
+</span><span class="n">axes1</span><span class="o">.</span><span class="n">plot_coord</span><span class="p">(</span><span class="w">
+</span>    <span class="n">SkyCoord</span><span class="p">(</span><span class="w">
+</span>        <span class="p">[</span><span class="n">mean_tf_sol_x</span><span class="p">,</span> <span class="n">hpc_max</span><span class="o">.</span><span class="n">Tx</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>        <span class="p">[</span><span class="n">mean_tf_sol_y</span><span class="p">,</span> <span class="n">hpc_max</span><span class="o">.</span><span class="n">Ty</span><span class="p">]</span><span class="p">,</span><span class="w">
+</span>        <span class="n">frame</span><span class="o">=</span><span class="n">mt</span><span class="o">.</span><span class="n">coordinate_frame</span><span class="p">,</span><span class="w">
+</span>    <span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">black</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">--</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">axes1</span><span class="o">.</span><span class="n">plot_coord</span><span class="p">(</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">tf_sol_x</span><span class="p">,</span> <span class="n">tf_sol_y</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">mt</span><span class="o">.</span><span class="n">coordinate_frame</span><span class="p">)</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">grey</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes1</span><span class="o">.</span><span class="n">plot_coord</span><span class="p">(</span><span class="w">
+</span>    <span class="n">SkyCoord</span><span class="p">(</span><span class="n">mean_tf_sol_x</span><span class="p">,</span> <span class="n">mean_tf_sol_y</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">mt</span><span class="o">.</span><span class="n">coordinate_frame</span><span class="p">)</span><span class="p">,</span><span class="w">
+</span>    <span class="s2">&quot;</span><span class="s2">*</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">black</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">axes1</span><span class="o">.</span><span class="n">plot_coord</span><span class="p">(</span><span class="n">hpc_max</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s2">o</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">black</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span><span class="w">
+</span><span class="n">axes1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Time range with positions and angles</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">axes1</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="w">
+</span>    <span class="mi">5</span><span class="p">,</span><span class="w">
+</span>    <span class="mi">5</span><span class="p">,</span><span class="w">
+</span>    <span class="sa">f</span><span class="s2">&quot;</span><span class="s2">oa_to_source = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">oa_to_source</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">hor_to_source = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">hor_to_source</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span>    <span class="n">size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span><span class="w">
+</span>    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;</span><span class="s2">k</span><span class="s2">&quot;</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_oa_and_source_003.png" srcset="../_images/sphx_glr_plot_nustar_oa_and_source_003.png" alt="Time range: 2021-11-20T02:22:10-2021-11-20T02:25:30, Time range with positions and angles" class = "sphx-glr-single-img"/></section>
+<section id="deconvolving">
+<h2>Deconvolving<a class="headerlink" href="#deconvolving" title="Link to this heading"></a></h2>
+<p>Now we have the numbers require to deconvolve the NuSTAR image.</p>
+<p>Note that the full field-of-view should be considered during
+deconvolution as selecting too-small region will exclude counts that
+otherwise should be collected by the PSF into a smaller area.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">dm</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-image_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.image_filters.deconvolve_with_file" title="jdhsrpy.image_filters.deconvolve_with_file"><span class="n">deconvolve_with_file</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">mt</span><span class="p">,</span> <span class="n">filename_psf</span><span class="p">,</span> <span class="n">oa_to_source</span><span class="o">=</span><span class="n">oa_to_source</span><span class="p">,</span> <span class="n">hor_to_source</span><span class="o">=</span><span class="n">hor_to_source</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">sub_dm</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.get_submap" title="jdhsrpy.nustar_core.get_submap"><span class="n">get_submap</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">dm</span><span class="p">,</span> <span class="n">bottom_left</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">,</span> <span class="n">top_right</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">350</span><span class="p">,</span> <span class="mi">300</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">dm</span><span class="p">)</span><span class="w">
+</span><span class="n">dm</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">axes0</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">1e0</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">axes0</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Deconvolved map</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes0</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.035</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">dm</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">PIXLUNIT</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">sub_dm</span><span class="p">)</span><span class="w">
+</span><span class="n">sub_dm</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">axes1</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">1e0</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">sub_dm</span><span class="p">,</span> <span class="n">axes1</span><span class="p">)</span><span class="w">
+</span><span class="n">axes1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Approximately valid deconvolved region</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes1</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.035</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">dm</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">PIXLUNIT</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_oa_and_source_004.png" srcset="../_images/sphx_glr_plot_nustar_oa_and_source_004.png" alt="Deconvolved map, Approximately valid deconvolved region" class = "sphx-glr-single-img"/><p>By default, the number of deconvolution iterations is 100. This can be
+changed by passing <code class="docutils literal notranslate"><span class="pre">num_iter</span></code> to
+<code class="docutils literal notranslate"><span class="pre">~jdhsrpy.image_filters.deconvolve_with_file</span></code>.</p>
+<p>Let’s only try 10 iterations.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span class="n">it10</span> <span class="o">=</span> <span class="mi">10</span><span class="w">
+</span><span class="n">dm10</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-image_filters sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.image_filters.deconvolve_with_file" title="jdhsrpy.image_filters.deconvolve_with_file"><span class="n">deconvolve_with_file</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">mt</span><span class="p">,</span><span class="w">
+</span>    <span class="n">filename_psf</span><span class="p">,</span><span class="w">
+</span>    <span class="n">oa_to_source</span><span class="o">=</span><span class="n">oa_to_source</span><span class="p">,</span><span class="w">
+</span>    <span class="n">hor_to_source</span><span class="o">=</span><span class="n">hor_to_source</span><span class="p">,</span><span class="w">
+</span>    <span class="n">num_iter</span><span class="o">=</span><span class="n">it10</span><span class="p">,</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="n">sub_dm10</span> <span class="o">=</span> <a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.get_submap" title="jdhsrpy.nustar_core.get_submap"><span class="n">get_submap</span></a><span class="p">(</span><span class="w">
+</span>    <span class="n">dm10</span><span class="p">,</span> <span class="n">bottom_left</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">,</span> <span class="n">top_right</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">350</span><span class="p">,</span> <span class="mi">300</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="w">
+</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="p">)</span><span class="w">
+</span><span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">dm10</span><span class="p">)</span><span class="w">
+</span><span class="n">dm10</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">axes0</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">1e0</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">dm10</span><span class="p">,</span> <span class="n">axes0</span><span class="p">)</span><span class="w">
+</span><span class="n">axes0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="s2">Deconvolved map: </span><span class="si">{</span><span class="n">it10</span><span class="si">}</span><span class="s2"> iterations</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes0</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.035</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">dm10</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">PIXLUNIT</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">axes1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="n">sub_dm10</span><span class="p">)</span><span class="w">
+</span><span class="n">sub_dm10</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="n">axes1</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mf">1e0</span><span class="p">)</span><span class="w">
+</span><a class="sphx-glr-backref-module-jdhsrpy-nustar_core sphx-glr-backref-type-py-function reference internal" href="../jdhsrpy.html#jdhsrpy.nustar_core.draw_grid" title="jdhsrpy.nustar_core.draw_grid"><span class="n">draw_grid</span></a><span class="p">(</span><span class="n">sub_dm10</span><span class="p">,</span> <span class="n">axes1</span><span class="p">)</span><span class="w">
+</span><span class="n">axes1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;</span><span class="s2">Approximately valid deconvolved region</span><span class="s2">&quot;</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">axes1</span><span class="p">,</span> <span class="n">fraction</span><span class="o">=</span><span class="mf">0.035</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">dm10</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s2">&quot;</span><span class="s2">PIXLUNIT</span><span class="s2">&quot;</span><span class="p">]</span><span class="p">)</span><span class="w">
+</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="p">)</span><span class="w">
+</span></pre></div></div>
+<img src="../_images/sphx_glr_plot_nustar_oa_and_source_005.png" srcset="../_images/sphx_glr_plot_nustar_oa_and_source_005.png" alt="Deconvolved map: 10 iterations, Approximately valid deconvolved region" class = "sphx-glr-single-img"/><p>A good question to ask is “how many iterations should I use?” No one
+really knows the answer to this, and they’re lying if they say they
+do!</p>
+<p>The number of iterations does not have a solid answer but your choice
+should be justifiable.</p>
+<p>Personally, I would try a sample of iteration values and compare the
+results between both NuSTAR FPMs and what was seen by other
+observatories.</p>
+<p>It also becomes obvious to the eye when you start resolving noise so
+watch out for that.</p>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 40.587 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-examples-plot-nustar-oa-and-source-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/061b72cc7eae0307de752948a5ae4857/plot_nustar_oa_and_source.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_nustar_oa_and_source.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/e8c5cbcf9c1f9948886c6880a153b560/plot_nustar_oa_and_source.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_nustar_oa_and_source.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/9b33fbbd6c5e3e28e81795ec182c5fdb/plot_nustar_oa_and_source.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">plot_nustar_oa_and_source.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plot_nustar_filters.html" class="btn btn-neutral float-left" title="Using Event Filters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plot_nustar_filter_any_region.html" class="btn btn-neutral float-right" title="Filter By Any Shape" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

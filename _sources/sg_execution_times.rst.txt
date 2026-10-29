@@ -1,0 +1,70 @@
+
+:orphan:
+
+.. _sphx_glr_sg_execution_times:
+
+
+Computation times
+=================
+**03:38.361** total execution time for 12 files **from all galleries**:
+
+.. container::
+
+  .. raw:: html
+
+    <style scoped>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" class="init">
+    $(document).ready( function () {
+        $('table.sg-datatable').DataTable({order: [[1, 'desc']]});
+    } );
+    </script>
+
+  .. list-table::
+   :header-rows: 1
+   :class: table table-striped sg-datatable
+
+   * - Example
+     - Time
+     - Mem (MB)
+   * - :ref:`sphx_glr_auto_examples_plot_nustar_spectral_fitting.py` (``../examples/plot_nustar_spectral_fitting.py``)
+     - 01:20.684
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_nustar_oa_and_source.py` (``../examples/plot_nustar_oa_and_source.py``)
+     - 00:40.587
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_nustar_filter_any_region.py` (``../examples/plot_nustar_filter_any_region.py``)
+     - 00:22.176
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_nustar_chip_gap_values.py` (``../examples/plot_nustar_chip_gap_values.py``)
+     - 00:16.364
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_download_sdo_data.py` (``../examples/plot_download_sdo_data.py``)
+     - 00:11.592
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_nustar.py` (``../examples/plot_nustar.py``)
+     - 00:11.356
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_create_a_reg_file.py` (``../examples/plot_create_a_reg_file.py``)
+     - 00:11.121
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_nustar_filters.py` (``../examples/plot_nustar_filters.py``)
+     - 00:07.878
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_nustar_images.py` (``../examples/plot_nustar_images.py``)
+     - 00:07.060
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_full_pipeline.py` (``../examples/plot_full_pipeline.py``)
+     - 00:06.112
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_multi_maps.py` (``../examples/plot_multi_maps.py``)
+     - 00:02.517
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_plot_nustar_time_profiles.py` (``../examples/plot_nustar_time_profiles.py``)
+     - 00:00.913
+     - 0.0

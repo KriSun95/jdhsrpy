@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jdhsrpy.utils &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_software.html">Additional NuSTAR Software and References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">JDHSRPY Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jdhsrpy.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jdhsrpy.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">textwrap</span><span class="w"> </span><span class="kn">import</span> <span class="n">dedent</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shapely.geometry.polygon</span><span class="w"> </span><span class="kn">import</span> <span class="n">Polygon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sunpy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">sun</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">IMAGE_COLORMAP</span><span class="p">,</span> <span class="n">IMAGE_RES</span><span class="p">,</span> <span class="n">IMAGE_SCALE</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"arcsec_points_to_shape"</span><span class="p">,</span>
+    <span class="s2">"assign_plot_settings"</span><span class="p">,</span>
+    <span class="s2">"create_region_file_text"</span><span class="p">,</span>
+    <span class="s2">"deconstruct_degminsec"</span><span class="p">,</span>
+    <span class="s2">"deconstruct_hrminsec"</span><span class="p">,</span>
+    <span class="s2">"helioprojective_to_radec"</span><span class="p">,</span>
+    <span class="s2">"only_numbers"</span><span class="p">,</span>
+    <span class="s2">"pixel_coords_to_solar_coords"</span><span class="p">,</span>
+    <span class="s2">"radec_to_helioprojective"</span><span class="p">,</span>
+    <span class="s2">"regroup_any_array"</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="only_numbers">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.utils.only_numbers">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">only_numbers</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Remove all non-numeric characters from a string.</span>
+
+<span class="sd">    For example, \"1a2H 3;\" becomes \"123\".</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\D"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="regroup_any_array">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.utils.regroup_any_array">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">regroup_any_array</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+    <span class="n">old_bins</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+    <span class="n">new_bins</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span>
+    <span class="n">combine_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Takes any array of data in old_bins space and rebins along data</span>
+<span class="sd">    array axis==0 to have new_bins.</span>
+
+<span class="sd">    Can specify how the bins are combined: [\"sum\", \"mean\", \"quadrature\"].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data, old_bins, new_bins : `~numpy.ndarray` | `~astropy.units.Quantity`</span>
+<span class="sd">            Array of the data, current bins for the data, and new bins</span>
+<span class="sd">            for the data. Shape of the bin arrays should be `(N, 2)`</span>
+<span class="sd">            where `N` is the length of `data`.</span>
+
+<span class="sd">    combine_by : string</span>
+<span class="sd">            Defines how to combine multiple bins along axis 0. E.g., \"sum\"</span>
+<span class="sd">            adds the data, \"mean\" averages the data, and \"quadrature\"</span>
+<span class="sd">            sums the data in quadrature. If `None`, then \"sum\" is used.</span>
+<span class="sd">            Default: None</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The grouped data array.</span>
+<span class="sd">    """</span>
+    <span class="c1"># sanatise inputs</span>
+    <span class="n">combine_by</span> <span class="o">=</span> <span class="s2">"sum"</span> <span class="k">if</span> <span class="n">combine_by</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">combine_by</span>
+    <span class="n">data</span><span class="p">,</span> <span class="n">du</span> <span class="o">=</span> <span class="n">_get_val_and_unit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">old_bins</span><span class="p">,</span> <span class="n">obu</span> <span class="o">=</span> <span class="n">_get_val_and_unit</span><span class="p">(</span><span class="n">old_bins</span><span class="p">)</span>
+    <span class="n">new_bins</span><span class="p">,</span> <span class="n">nbu</span> <span class="o">=</span> <span class="n">_get_val_and_unit</span><span class="p">(</span><span class="n">new_bins</span><span class="p">)</span>
+    <span class="n">old_bins</span> <span class="o">=</span> <span class="n">_convert_old_value_to_new_unit_values</span><span class="p">(</span><span class="n">old_bins</span><span class="p">,</span> <span class="n">obu</span><span class="p">,</span> <span class="n">nbu</span><span class="p">)</span>
+
+    <span class="n">new_binned_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">nb</span> <span class="ow">in</span> <span class="n">new_bins</span><span class="p">:</span>
+        <span class="c1"># just loop through new bins and bin data from between new_bin_lower&lt;=old_bin_lowers and old_bin_highers&lt;new_bin_higher</span>
+        <span class="k">if</span> <span class="n">combine_by</span> <span class="o">==</span> <span class="s2">"sum"</span><span class="p">:</span>
+            <span class="n">new_binned_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                    <span class="n">data</span><span class="p">[</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span>
+                            <span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">old_bins</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">old_bins</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="p">)</span>
+                    <span class="p">],</span>
+                    <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">combine_by</span> <span class="o">==</span> <span class="s2">"mean"</span><span class="p">:</span>
+            <span class="n">new_binned_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+                    <span class="n">data</span><span class="p">[</span>
+                        <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span>
+                            <span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">old_bins</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">old_bins</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="p">)</span>
+                    <span class="p">],</span>
+                    <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">combine_by</span> <span class="o">==</span> <span class="s2">"quadrature"</span><span class="p">:</span>
+            <span class="n">new_binned_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+                        <span class="n">data</span><span class="p">[</span>
+                            <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span>
+                                <span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">old_bins</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">nb</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">old_bins</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                            <span class="p">)</span>
+                        <span class="p">]</span>
+                        <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
+                        <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_binned_data</span><span class="p">)</span> <span class="k">if</span> <span class="n">du</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_binned_data</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">du</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_val_and_unit</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span> <span class="o">|</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Return the value of an object and unit if possible.</span>
+
+<span class="sd">    Returns value and `None` if no unit.</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_convert_old_value_to_new_unit_values</span><span class="p">(</span>
+    <span class="n">old_value</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">old_unit</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">PrefixUnit</span> <span class="o">|</span> <span class="n">u</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CompositeUnit</span><span class="p">,</span>
+    <span class="n">new_unit</span><span class="p">:</span> <span class="n">u</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">PrefixUnit</span> <span class="o">|</span> <span class="n">u</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">CompositeUnit</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert the old value to new units, return old value if no units.</span>
+
+<span class="sd">    Returns unitless value.</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">old_unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">new_unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">old_value</span> <span class="o">&lt;&lt;</span> <span class="n">old_unit</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">new_unit</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">return</span> <span class="n">old_value</span>
+
+
+<div class="viewcode-block" id="assign_plot_settings">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.utils.assign_plot_settings">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">assign_plot_settings</span><span class="p">(</span><span class="n">nustar_map</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Function to set plot settings that are multiple lines."""</span>
+    <span class="n">nustar_map</span><span class="o">.</span><span class="n">plot_settings</span><span class="p">[</span><span class="s2">"norm"</span><span class="p">]</span> <span class="o">=</span> <span class="n">IMAGE_SCALE</span>
+    <span class="n">nustar_map</span><span class="o">.</span><span class="n">plot_settings</span><span class="p">[</span><span class="s2">"cmap"</span><span class="p">]</span> <span class="o">=</span> <span class="n">IMAGE_COLORMAP</span>
+    <span class="k">return</span> <span class="n">nustar_map</span></div>
+
+
+
+<div class="viewcode-block" id="pixel_coords_to_solar_coords">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.utils.pixel_coords_to_solar_coords">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">pixel_coords_to_solar_coords</span><span class="p">(</span><span class="n">pixel_coords</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert solar pixel coordinates to solar heliographic coordinates."""</span>
+    <span class="n">pix_map_centre</span> <span class="o">=</span> <span class="mi">1500</span>
+    <span class="n">sol_x_pix</span> <span class="o">=</span> <span class="p">(</span><span class="n">pixel_coords</span> <span class="o">-</span> <span class="n">pix_map_centre</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">pixel</span>
+    <span class="k">return</span> <span class="n">sol_x_pix</span> <span class="o">*</span> <span class="n">IMAGE_RES</span></div>
+
+
+
+<div class="viewcode-block" id="arcsec_points_to_shape">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.utils.arcsec_points_to_shape">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">arcsec_points_to_shape</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A function to turn a list of (x, y) points into a polygon.</span>
+
+<span class="sd">    The coordinates will be the vertices of the desired shape and passed</span>
+<span class="sd">    to ``shapely.geometry.polygon.Polygon``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    *args :</span>
+<span class="sd">        The vertices of the polygon and should be in or convertible to</span>
+<span class="sd">        ``~atropy.units.Quantity``.</span>
+<span class="sd">    """</span>
+    <span class="c1"># make sure arcsecond</span>
+    <span class="c1"># need to index [0] as it weirdly becomes a list in a list for some reason</span>
+    <span class="n">unit_check_list</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
+    <span class="n">unitless_for_poly</span> <span class="o">=</span> <span class="p">[</span><span class="n">ucl</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">ucl</span> <span class="ow">in</span> <span class="n">unit_check_list</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">Polygon</span><span class="p">(</span><span class="n">unitless_for_poly</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="radec_to_helioprojective">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.utils.radec_to_helioprojective">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">radec_to_helioprojective</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">obstime</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert RA-Dec to solar helioprojective coordinates for NuSTAR.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ra : `astropy.units.Quantity`</span>
+<span class="sd">        The right ascension position in, or convertible to, degrees.</span>
+
+<span class="sd">    dec : `astropy.units.Quantity`</span>
+<span class="sd">        The declination position in, or convertible to, degrees.</span>
+
+<span class="sd">    time : `astropy.time.Time`</span>
+<span class="sd">        The time corresponding to the (ra,dec) position.</span>
+
+<span class="sd">    **kwargs : Passed to ``nustar_pysolar.convert._delta_solar_skyfield``</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    `tuple[astropy.units.Quantity]` : The solar-x and -y in arcseconds.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nustar_pysolar.convert</span><span class="w"> </span><span class="kn">import</span> <span class="n">_delta_solar_skyfield</span>
+
+    <span class="n">ra</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">dec</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">sol_x</span><span class="p">,</span> <span class="n">sol_y</span> <span class="o">=</span> <span class="n">_delta_solar_skyfield</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ra</span><span class="o">.</span><span class="n">value</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">ra</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">dec</span><span class="o">.</span><span class="n">value</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">dec</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">obstime</span><span class="p">],</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">sol_x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">,</span> <span class="n">sol_y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span></div>
+
+
+
+<div class="viewcode-block" id="helioprojective_to_radec">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.utils.helioprojective_to_radec">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">helioprojective_to_radec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Convert solar helioprojective to RA-Dec coordinates for NuSTAR.</span>
+
+<span class="sd">    This function takes the place of ``get_skyfield_position`` and</span>
+<span class="sd">    ``get_sky_position`` from the ``nustar_pysolar.planning`` package</span>
+<span class="sd">    and module. No matter what I did, I could not get the correct values</span>
+<span class="sd">    from these functions so I (Kris) wrote the exact reverse of</span>
+<span class="sd">    ``nustar_pysolar.convert._delta_solar_skyfield`` which is used in</span>
+<span class="sd">    ``jdhsrpy.utils.radec_to_helioprojective``.</span>
+
+<span class="sd">    This was tested by confirming</span>
+<span class="sd">    ``nustar_pysolar.convert._delta_solar_skyfield`` correctly converted</span>
+<span class="sd">    RA-Dec into helioprojective using NuSTAR maps, SAOImageDS9, and</span>
+<span class="sd">    region REG files. Once RA-Dec -&gt; Solar-X/Y was confirmed, these</span>
+<span class="sd">    coordinates were converted back into RA-Dec to compare to the</span>
+<span class="sd">    original SAOImageDS9 REG file coordinates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : `astropy.units.Quantity`</span>
+<span class="sd">        The solar-x position in, or convertible to, arcseconds.</span>
+
+<span class="sd">    y : `astropy.units.Quantity`</span>
+<span class="sd">        The solar-y position in, or convertible to, arcseconds.</span>
+
+<span class="sd">    time : `astropy.time.Time`</span>
+<span class="sd">        The time corresponding to the (x,y) position.</span>
+
+<span class="sd">    **kwargs : Only used to pass ``load_path`` to</span>
+<span class="sd">        ``nustar_pysolar.utils.skyfield_ephem``</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    `tuple[astropy.units.Quantity]` : The Ra and Dec in degrees.</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nustar_pysolar.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">skyfield_ephem</span>
+
+    <span class="n">load_path</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"load_path"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">observer</span><span class="p">,</span> <span class="n">the_sun</span><span class="p">,</span> <span class="n">ts</span> <span class="o">=</span> <span class="n">skyfield_ephem</span><span class="p">(</span>
+        <span class="n">load_path</span><span class="o">=</span><span class="n">load_path</span><span class="p">,</span> <span class="n">parallax_correction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">utc</span><span class="o">=</span><span class="n">time</span>
+    <span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="n">y</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="n">arcxy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">value</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+
+    <span class="n">tcheck</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">from_astropy</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+    <span class="n">astrometric</span> <span class="o">=</span> <span class="n">observer</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="n">tcheck</span><span class="p">)</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">the_sun</span><span class="p">)</span>
+    <span class="n">this_ra</span><span class="p">,</span> <span class="n">this_dec</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">astrometric</span><span class="o">.</span><span class="n">radec</span><span class="p">()</span>
+
+    <span class="n">sun_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">this_ra</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">this_dec</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">])</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">sun_np</span> <span class="o">=</span> <span class="n">sun</span><span class="o">.</span><span class="n">P</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+
+    <span class="c1"># reverse East-West conversion</span>
+    <span class="n">delta_offset</span> <span class="o">=</span> <span class="n">arcxy</span> <span class="o">*</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># project off the Sun</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="n">rotate_coord</span><span class="p">(</span><span class="n">delta_offset</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">sun_np</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="s2">"clockwise"</span><span class="p">)</span>
+
+    <span class="n">position</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">sun_pos</span>
+
+    <span class="k">return</span> <span class="n">position</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">rotate_coord</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="s2">"anticlockwise"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Rotate a coordinate around its origin.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xy : `~numpy.ndarray`</span>
+<span class="sd">        The coordinate as (x, y) to be rotated.</span>
+
+<span class="sd">    theta : `~astropy.units.Quantity`</span>
+<span class="sd">        The angle in, or convertible to radians to rotate around the</span>
+<span class="sd">        origin.</span>
+
+<span class="sd">    rotate : `str`</span>
+<span class="sd">        A string to determine whether the rotation is \"clockwise\" or</span>
+<span class="sd">        \"anticlockwise\" (\"counter-clockwise\" works too).</span>
+<span class="sd">        Default: \"anticlockwise\"</span>
+<span class="sd">    """</span>
+    <span class="n">theta</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">radian</span>
+    <span class="n">rotation_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)],</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)]]</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">rotate</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"anticlockwise"</span><span class="p">,</span> <span class="s2">"counter-clockwise"</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">rotation_matrix</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">rotate</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"clockwise"</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xy</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">rotation_matrix</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="deconstruct_degminsec">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.utils.deconstruct_degminsec">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">deconstruct_degminsec</span><span class="p">(</span><span class="n">degminsec_str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Will deconstruct and deg:min:sec string into just deg."""</span>
+    <span class="n">degminsec</span> <span class="o">=</span> <span class="n">degminsec_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>
+    <span class="n">abs_deg_part</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">degminsec</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">deg</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">abs_deg_part</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
+        <span class="o">+</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">degminsec</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcmin</span><span class="p">)</span>
+        <span class="o">+</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">degminsec</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">deg</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">degminsec</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">abs_deg_part</span></div>
+
+
+
+<div class="viewcode-block" id="deconstruct_hrminsec">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.utils.deconstruct_hrminsec">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">deconstruct_hrminsec</span><span class="p">(</span><span class="n">hrminsec_str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Will deconstruct and hr:min:sec string into just deg."""</span>
+    <span class="k">return</span> <span class="n">deconstruct_degminsec</span><span class="p">(</span><span class="n">hrminsec_str</span><span class="p">)</span> <span class="o">*</span> <span class="mi">15</span></div>
+
+
+
+<div class="viewcode-block" id="create_region_file_text">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.utils.create_region_file_text">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_region_file_text</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">"fk5"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Create the text to be saved in th region file.</span>
+
+<span class="sd">    The body of the text has been taken from an existing REG file from</span>
+<span class="sd">    SAOImageDS9 and then we replace the relevant sections with the input</span>
+<span class="sd">    values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ra : `astropy.units.Quantity`</span>
+<span class="sd">        The right ascension of circle centre in, or convertible to,</span>
+<span class="sd">        degrees.</span>
+
+<span class="sd">    dec : `astropy.units.Quantity`</span>
+<span class="sd">        The declination of circle centre in, or convertible to, degrees.</span>
+
+<span class="sd">    radius : `astropy.units.Quantity`</span>
+<span class="sd">        The radius of circle in, or convertible to, degrees.</span>
+
+<span class="sd">    frame : `str`</span>
+<span class="sd">        The coordinate frame. In the NuSTAR file header, it is stated</span>
+<span class="sd">        that the frame is FK5 so that is the default. However,</span>
+<span class="sd">        SAOImageDS9 can also output the frame as ICRS (I have not seen</span>
+<span class="sd">        the difference in RA, Dec, or radius values between them yet).</span>
+<span class="sd">        Therefore, the options here are \"fk5\" and \"icrs\" (note the</span>
+<span class="sd">        lower case).</span>
+<span class="sd">    """</span>
+    <span class="n">ra</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">degree</span>
+    <span class="n">dec</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">degree</span>
+    <span class="n">radius</span> <span class="o">&lt;&lt;=</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"""</span>
+<span class="s2">        # Region file format: DS9 version 4.1</span>
+<span class="s2">        global color=green dashlist=8 3 width=1 font="helvetica 10 normal roman" select=1 highlite=1 dash=0 fixed=0 edit=1 move=1 delete=1 include=1 source=1</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">frame</span><span class="si">}</span>
+<span class="s2">        circle(</span><span class="si">{</span><span class="n">ra</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">dec</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">radius</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">")</span>
+<span class="s2">        """</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">text</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

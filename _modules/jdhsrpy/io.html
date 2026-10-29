@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>jdhsrpy.io &mdash; jdhsrpy 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery.css?v=c83e6b79" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-binder.css?v=f4aeca0c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+      <link rel="stylesheet" type="text/css" href="/home/runner/work/jdhsrpy/jdhsrpy/docs/styles/svg_width_style.css?v=4fc4a161" />
+
+  
+    <link rel="shortcut icon" href="../../_static/nustarbranding_1280_lq_model.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/sg-tags.js?v=d80f6fa4"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            jdhsrpy
+              <img src="../../_static/nustarbranding_1280_lq.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../setting_up_nustar_data.html">Downloading and Processing NuSTAR Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_processing.html">Additional Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other_software.html">Additional NuSTAR Software and References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../publications.html">NuSTAR Publications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">JDHSRPY Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">jdhsrpy</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">jdhsrpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">jdhsrpy.io</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for jdhsrpy.io</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Module containing functions that load HEASARC compliant files.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">fits</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">jdhsrpy.utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">create_region_file_text</span><span class="p">,</span>
+    <span class="n">deconstruct_degminsec</span><span class="p">,</span>
+    <span class="n">deconstruct_hrminsec</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"read_heasarc_arf"</span><span class="p">,</span>
+    <span class="s2">"read_heasarc_rmf"</span><span class="p">,</span>
+    <span class="s2">"read_nustar_pha"</span><span class="p">,</span>
+    <span class="s2">"read_region_file"</span><span class="p">,</span>
+    <span class="s2">"write_region_file"</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="read_nustar_pha">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.io.read_nustar_pha">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_nustar_pha</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Read a `.pha` file and extract data ande header information.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file : `str`, `file-like` or `pathlib.Path`</span>
+<span class="sd">        A `.pha` file (see `~astropy.fits.io.open` for details).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The counts and channel data component and the livetime header</span>
+<span class="sd">    component.</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span>
+
+    <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">header</span></div>
+
+
+
+<div class="viewcode-block" id="read_heasarc_arf">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.io.read_heasarc_arf">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_heasarc_arf</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Read a HEASARC compliant `.arf` file and extract useful information.</span>
+
+<span class="sd">    [1] https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/docs/memos/cal_gen_92_002/cal_gen_92_002.html</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file :  `str`, `file-like` or `pathlib.Path`</span>
+<span class="sd">        A `.arf` file (see `~astropy.fits.io.open` for details ).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The effective area data component from the file.</span>
+<span class="sd">    """</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">hdu</span> <span class="ow">in</span> <span class="n">hdul</span><span class="p">:</span>
+            <span class="n">hdu_contents</span> <span class="o">=</span> <span class="n">hdu</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"HDUCLAS2"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">hdu_contents</span> <span class="o">==</span> <span class="s2">"SPECRESP"</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">hdu</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+
+<div class="viewcode-block" id="read_heasarc_rmf">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.io.read_heasarc_rmf">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_heasarc_rmf</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Read a HEASARC compliant `.rmf` file and extract useful information.</span>
+
+<span class="sd">    [1] https://heasarc.gsfc.nasa.gov/docs/heasarc/caldb/docs/memos/cal_gen_92_002/cal_gen_92_002.html</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file :  `str`, `file-like` or `pathlib.Path`</span>
+<span class="sd">        A `.rmf` file (see `~astropy.fits.io.open` for details).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The channel bin data mapping (channel number to energy for the</span>
+<span class="sd">    corresponding PHA file) and the RMF &amp; photon channel data.</span>
+<span class="sd">    """</span>
+    <span class="n">channel_data</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">rmf_and_photon_data</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">hdu</span> <span class="ow">in</span> <span class="n">hdul</span><span class="p">:</span>
+            <span class="n">hdu_contents</span> <span class="o">=</span> <span class="n">hdu</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"HDUCLAS2"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">hdu_contents</span> <span class="o">==</span> <span class="s2">"EBOUNDS"</span><span class="p">:</span>
+                <span class="n">channel_data</span> <span class="o">=</span> <span class="n">hdu</span><span class="o">.</span><span class="n">data</span>
+            <span class="k">elif</span> <span class="n">hdu_contents</span> <span class="o">==</span> <span class="s2">"RSP_MATRIX"</span><span class="p">:</span>
+                <span class="n">rmf_and_photon_data</span> <span class="o">=</span> <span class="n">hdu</span><span class="o">.</span><span class="n">data</span>
+
+    <span class="k">return</span> <span class="n">channel_data</span><span class="p">,</span> <span class="n">rmf_and_photon_data</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">read_filter_file</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Read the NuSTAR filter file (ext. MKF) and return the roool angle.</span>
+
+<span class="sd">    Times for each roll angle are also returned.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file :  `str`, `file-like` or `pathlib.Path`</span>
+<span class="sd">        A `.mkf` file.</span>
+<span class="sd">    """</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdul</span><span class="p">:</span>
+        <span class="n">filter_data</span> <span class="o">=</span> <span class="n">hdul</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+    <span class="k">return</span> <span class="n">filter_data</span><span class="p">[</span><span class="s2">"TIME"</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="p">,</span> <span class="n">filter_data</span><span class="p">[</span><span class="s2">"ROLL"</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+
+
+<div class="viewcode-block" id="read_region_file">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.io.read_region_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_region_file</span><span class="p">(</span><span class="n">reg_file</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Get the RA, Dec, and radius of the circle region in the REG file.</span>
+
+<span class="sd">    The REG file should have been saved using FK5 or ICRS as its WCS.</span>
+
+<span class="sd">    The circle center (ra, dec) can be in degrees or sexagesimal.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    reg_file : str</span>
+<span class="sd">        A region file to be read. For NuSTAR, this should be a file with</span>
+<span class="sd">        something like \'circle(ra, dec, rad)\' in it somewhere.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    The RA, Dec, and redius of the circle region.</span>
+<span class="sd">    """</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">reg_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="s2">"fk5"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">"icrs"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"The region file is not in FK5 or ICRS coordinates."</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">_ra</span><span class="p">,</span> <span class="n">_dec</span><span class="p">,</span> <span class="n">_rad_arcsec</span> <span class="o">=</span> <span class="n">contents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"("</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">")"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">","</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">":"</span> <span class="ow">in</span> <span class="n">_ra</span><span class="p">:</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="n">deconstruct_hrminsec</span><span class="p">(</span><span class="n">_ra</span><span class="p">)</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="n">deconstruct_degminsec</span><span class="p">(</span><span class="n">_dec</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_ra</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_dec</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+    <span class="n">rad_arcsec</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_rad_arcsec</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="n">u</span><span class="o">.</span><span class="n">arcsec</span>
+
+    <span class="k">return</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">rad_arcsec</span></div>
+
+
+
+<div class="viewcode-block" id="write_region_file">
+<a class="viewcode-back" href="../../jdhsrpy.html#jdhsrpy.io.write_region_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_region_file</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">"fk5"</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Create the text to be saved in th region file.</span>
+
+<span class="sd">    The body of the text has been taken from an existing REG file from</span>
+<span class="sd">    SAOImageDS9 and then we replace the relevant sections with the input</span>
+<span class="sd">    values.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ra : `astropy.units.Quantity`</span>
+<span class="sd">        The right ascension of circle centre in, or convertible to,</span>
+<span class="sd">        degrees.</span>
+
+<span class="sd">    dec : `astropy.units.Quantity`</span>
+<span class="sd">        The declination of circle centre in, or convertible to, degrees.</span>
+
+<span class="sd">    radius : `astropy.units.Quantity`</span>
+<span class="sd">        The radius of circle in, or convertible to, degrees.</span>
+
+<span class="sd">    filename : `str`</span>
+<span class="sd">        The name of the output region file. If it does not end in</span>
+<span class="sd">        \".reg\" then this will be appended.</span>
+
+<span class="sd">    frame : `str`</span>
+<span class="sd">        The coordinate frame. In the NuSTAR file header, it is stated</span>
+<span class="sd">        that the frame is FK5 so that is the default. However,</span>
+<span class="sd">        SAOImageDS9 can also output the frame as ICRS (I have not seen</span>
+<span class="sd">        the difference in RA, Dec, or radius values between them yet).</span>
+<span class="sd">        Therefore, the options here are \"fk5\" and \"icrs\" (note the</span>
+<span class="sd">        lower case).</span>
+<span class="sd">    """</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".reg"</span><span class="p">)</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">.reg"</span>
+    <span class="n">contents</span> <span class="o">=</span> <span class="n">create_region_file_text</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Kris Cooper as part of the Jessie Duncan HSR Collaboration.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
