@@ -34,7 +34,11 @@ from jdhsrpy import CHIP_GAP, PIX_GRID, RAW_PIX_DIFF, TEST_DATA_LOCATION
 from jdhsrpy.io import read_filter_file
 from jdhsrpy.list_filters import by_detector, by_time
 from jdhsrpy.nustar_core import NustarEvt, draw_grid, utc_from_nustar_time
-from jdhsrpy.utils import pixel_coords_to_solar_coords
+from jdhsrpy.utils import (
+    arcsec_points_to_shape,
+    pixel_coords_to_solar_coords,
+    rotate_coord,
+)
 
 # %%
 # Download an example "sunpos" NuSTAR EVT file.
@@ -617,31 +621,74 @@ def get_nustar_solar_rotations(roll_times, nustar_rolls):
     )
 
 
-nustar_roll_times, nustar_roll = read_filter_file(filename_filter)
-roll_times = utc_from_nustar_time(nustar_roll_times)
-solar_rotations = get_nustar_solar_rotations(roll_times[:100], nustar_roll[:100])
-print(solar_rotations)
+# nustar_roll_times, nustar_roll = read_filter_file(filename_filter)
+# roll_times = utc_from_nustar_time(nustar_roll_times)
+# solar_rotations = get_nustar_solar_rotations(roll_times[:100], nustar_roll[:100])
+# print(solar_rotations)
 
-from jdhsrpy.utils import rotate_coord
+
+def add_legs_to_chip_gap_plus():
+    """Delta coordinates from centre to vertices of plus shape."""
+    half_cg = CHIP_GAP / 2
+    to_edges_from_centre = PIX_GRID[0] * RAW_PIX_DIFF + half_cg
+
+    top_left = np.array([-half_cg, to_edges_from_centre])
+    top_right = np.array([half_cg, to_edges_from_centre])
+    top_right_center = np.array([to_edges_from_centre, to_edges_from_centre])
+    right_top = np.array([to_edges_from_centre, half_cg])
+    right_bottom = np.array([to_edges_from_centre, -half_cg])
+    bottom_right_center = np.array([to_edges_from_centre, -to_edges_from_centre])
+    bottom_left = np.array([-half_cg, -to_edges_from_centre])
+    bottom_right = np.array([half_cg, -to_edges_from_centre])
+    bottom_left_center = np.array([-to_edges_from_centre, -to_edges_from_centre])
+    left_top = np.array([-to_edges_from_centre, half_cg])
+    left_bottom = np.array([-to_edges_from_centre, -half_cg])
+    top_left_center = np.array([-to_edges_from_centre, to_edges_from_centre])
+
+    return np.array(
+        [
+            top_left,
+            top_right,
+            top_right_center,
+            right_top,
+            right_bottom,
+            bottom_right_center,
+            bottom_left,
+            bottom_right,
+            bottom_left_center,
+            left_top,
+            left_bottom,
+            top_left_center,
+        ]
+    )
+
+
+def raw_pixel_to_center(det, rawx, rawy):
+    """Center translation of the self-define 64x64 grid from a given point.
+
+    Grid defined in ``universal_pixel_location``.
+    """
+    x, y = universal_pixel_location(det, rawx, rawy)
+    mid_coord_position_x = (2 * PIX_GRID[0] - 1) / 2
+    mid_coord_position_y = (2 * PIX_GRID[1] - 1) / 2
+    return x - mid_coord_position_x, y - mid_coord_position_y
 
 
 def estimate_chip_gap(event_data, filename_filter, sample=None):
     sample = 0 if sample is None else sample
     nustar_roll_times, nustar_roll = read_filter_file(filename_filter)
-    # roll_times = utc_from_nustar_time(nustar_roll_times)
-    event_times = event_data["TIME"]
+    event_times = event_data["TIME"] << u.s
 
     # use event_data to get the times we want from the roll angle
-    event_time_range = (event_data["TIME"] >= event_times[0]) & (
-        event_data["TIME"] <= event_times[-1]
+    roll_times_in_event_range = (nustar_roll_times >= event_times[0]) & (
+        nustar_roll_times <= event_times[-1]
     )
-    inds = (event_time_range).nonzero()[0]
-    goodinds = inds[0]
-    sliced_nustar_roll_times = nustar_roll_times[goodinds]
-    sliced_nustar_roll = nustar_roll[goodinds]
+    inds = (roll_times_in_event_range).nonzero()[0]
+    sliced_nustar_roll_times = nustar_roll_times[inds]
+    sliced_nustar_roll = nustar_roll[inds]
 
     solar_rotations = get_nustar_solar_rotations(
-        utc_from_nustar_time(sliced_nustar_roll_times), sliced_nustar_roll_times
+        utc_from_nustar_time(sliced_nustar_roll_times), sliced_nustar_roll
     )
 
     event_rolls = np.interp(event_times, sliced_nustar_roll_times, solar_rotations)
@@ -655,15 +702,35 @@ def estimate_chip_gap(event_data, filename_filter, sample=None):
     )
 
     # use translated_x, translated_y to get the solar coord of the fov centre
+    count_x, count_y = (
+        pixel_coords_to_solar_coords(event_data["X"]),
+        pixel_coords_to_solar_coords(event_data["Y"]),
+    )
+    sol_fov_cx = count_x + (np.floor(translated_x) * RAW_PIX_DIFF + CHIP_GAP)
+    sol_fov_cy = count_y + (np.floor(translated_y) * RAW_PIX_DIFF + CHIP_GAP)
 
     # construct the "plus" shape of the chip-gap from that centre point
+    tanslated_legs = rotate_coord(
+        add_legs_to_chip_gap_plus(), event_rolls, rotate="clockwise"
+    )
+
+    chip_gaps = []
+    for c, xy in enumerate(zip(sol_fov_cx, sol_fov_cy)):
+        chip_gaps.append(arcsec_points_to_shape(xy + tanslated_legs[c]))
+
+    return chip_gaps
 
 
-def raw_pixel_to_center(det, rawx, rawy):
-    """Center translation of the self-define 64x64 grid from a given point.
+# circle_region_custom = estimate_chip_gap(event_data, filename_filter, sample=None)
+# bottom_left = [-1000, -500] << u.arcsec
+# top_right = [100, 425] << u.arcsec
+# m = nustar_object.nustar_map(bottom_left, top_right)
 
-    Grid defined in ``universal_pixel_location``.
-    """
-    x, y = universal_pixel_location(det, rawx, rawy)
-    mid_coord_position = 63 / 2
-    return x - mid_coord_position, y - mid_coord_position
+# from jdhsrpy.visualize import shape_plot
+# fig = plt.figure()
+# ax = fig.add_subplot(projection=m)
+# m.plot(axes=ax)
+# shape_plot(circle_region_custom, m.coordinate_frame, color="k")
+# draw_grid(m, ax)
+# plt.title("From FK5/Sexagesimal REG file\nand custom created region file")
+# plt.show()

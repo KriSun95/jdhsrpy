@@ -15,4 +15,4 @@ IMAGE_COLORMAP = "Spectral_r"
 IMAGE_SCALE = matplotlib.colors.LogNorm()
 RAW_PIX_DIFF = 12.646031412008877 << u.arcsec / u.pixel
 CHIP_GAP = 15.77588557692691 << u.arcsec
-PIX_GRID = (32, 32)
+PIX_GRID = (32, 32) << u.pixel
