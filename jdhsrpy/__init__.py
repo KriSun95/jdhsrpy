@@ -9,10 +9,14 @@ NUSTAR_EPOCH_MJD = ((55197 << u.day) - (5 << u.second)).to(u.day)
 NUSTAR_EPOCH = Time(NUSTAR_EPOCH_MJD, format="mjd").utc
 NUSTAR_EPOCH.format = "isot"
 PIXELUNIT = "arcsec"
-IMAGE_RES = 2.45810736 << u.arcsec / u.pixel
+IMAGE_RES = 2.45810736 << u.Unit(PIXELUNIT) / u.pixel
 FWHM_ARCSEC = 18 << u.Unit(PIXELUNIT)
 IMAGE_COLORMAP = "Spectral_r"
 IMAGE_SCALE = matplotlib.colors.LogNorm()
-RAW_PIX_DIFF = 12.646031412008877 << u.arcsec / u.pixel
-CHIP_GAP = 15.77588557692691 << u.arcsec
+# RAW_PIX_DIFF = 12.646031412008877 << u.Unit(PIXELUNIT) / u.pixel
+PIX_SIZE = 0.6 << u.mm
+RAW_PIX_DIFF = 12.3 << u.Unit(PIXELUNIT) / u.pixel
+# CHIP_GAP = 15.77588557692691 << u.Unit(PIXELUNIT)
+CHIP_GAP_SIZE = 0.5 << u.mm
+CHIP_GAP = (RAW_PIX_DIFF * (CHIP_GAP_SIZE/PIX_SIZE)).value << u.Unit(PIXELUNIT)
 PIX_GRID = (32, 32) << u.pixel

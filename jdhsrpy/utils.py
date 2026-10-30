@@ -180,7 +180,7 @@ def radec_to_helioprojective(ra, dec, obstime, **kwargs):
 
     Returns
     -------
-    `tuple[astropy.units.Quantity]` : The solar-x and -y in arcseconds.
+    The solar-x and -y in arcseconds. : `tuple[astropy.units.Quantity]`
     """
     from nustar_pysolar.convert import _delta_solar_skyfield
 
@@ -228,7 +228,7 @@ def helioprojective_to_radec(x, y, time, **kwargs):
 
     Returns
     -------
-    `tuple[astropy.units.Quantity]` : The Ra and Dec in degrees.
+    The Ra and Dec in degrees. : `tuple[astropy.units.Quantity]` 
     """
     from nustar_pysolar.utils import skyfield_ephem
 
@@ -287,7 +287,7 @@ def rotate_coord(xy, theta, rotate="anticlockwise"):
 
 
 def deconstruct_degminsec(degminsec_str):
-    """Will deconstruct and deg:min:sec string into just deg."""
+    """Will deconstruct and deg:arcmin:arcsec string into just deg."""
     degminsec = degminsec_str.split(":")
     abs_deg_part = abs(int(degminsec[0]))
     deg = (

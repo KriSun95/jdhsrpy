@@ -104,7 +104,7 @@ def read_filter_file(file: str):
 
     Parameters
     ----------
-    file :  `str`, `file-like` or `pathlib.Path`
+    file : `str`, `file-like` or `pathlib.Path`
         A `.mkf` file.
     """
     with fits.open(file) as hdul:
@@ -121,7 +121,7 @@ def read_region_file(reg_file):
 
     Parameters
     ----------
-    reg_file : str
+    reg_file : `str`, `file-like` or `pathlib.Path`
         A region file to be read. For NuSTAR, this should be a file with
         something like \'circle(ra, dec, rad)\' in it somewhere.
 

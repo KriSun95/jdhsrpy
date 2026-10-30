@@ -3,6 +3,20 @@
 Obtaining NuSTAR Chip-gap Values
 ================================
 
+.. note::
+
+    This example shows getting the detector values for the chip-gap and
+    pixels. Even though the final values stored in 
+    ``jdhsrpy.RAW_PIX_DIFF`` and ``jdhsrpy.CHIP_GAP`` are derived from 
+    published values we obtain good estimates from the EVT file.
+
+    However, for some reason, I could not get the translation from a 
+    coordinate from a count to the detector center to work quickly so
+    
+    This example falls short at the minute but there might be useful 
+    workings in it with detector orientations and such so it will be 
+    kept.
+
 This example will be a little different to the others. This will show
 how certain hard-coded values were obtained rather than an example for
 an end-user to run.
@@ -24,10 +38,12 @@ function.
 import ntpath
 import os
 import urllib.request
+import warnings
 
 import astropy.units as u
 import matplotlib.pyplot as plt
 import numpy as np
+from astropy.table import Table
 from sunpy.coordinates import sun
 
 from jdhsrpy import CHIP_GAP, PIX_GRID, RAW_PIX_DIFF, TEST_DATA_LOCATION
@@ -39,6 +55,7 @@ from jdhsrpy.utils import (
     pixel_coords_to_solar_coords,
     rotate_coord,
 )
+from jdhsrpy.visualize import shape_plot
 
 # %%
 # Download an example "sunpos" NuSTAR EVT file.
@@ -209,7 +226,7 @@ plt.hist(diff, bins=ar_bins)
 plt.axvline(
     x=arcsecond_resolution.value, c="grey", ls=":", label=f"From {loop_over} entries"
 )
-plt.axvline(x=RAW_PIX_DIFF.value, c="k", ls=":", label="From full event list")
+plt.axvline(x=RAW_PIX_DIFF.value, c="k", ls=":", label="jdhsrpy.RAW_PIX_DIFF")
 plt.xlabel("Distance between counts [arcsecond]")
 plt.ylabel("Number of count differences")
 plt.title(
@@ -478,7 +495,7 @@ plt.figure()
 ar_bins = np.arange(-5, 40, 1)
 plt.hist(chip_gap_sizes, bins=ar_bins)
 plt.axvline(x=chip_gap_size.value, c="grey", ls=":", label=f"From {loop_over} entries")
-plt.axvline(x=CHIP_GAP.value, c="k", ls=":", label="From full event list")
+plt.axvline(x=CHIP_GAP.value, c="k", ls=":", label="jdhsrpy.CHIP_GAP")
 plt.xlabel("Chip-gap distance [arcsecond]")
 plt.ylabel("Number of counts")
 plt.title(
@@ -506,8 +523,8 @@ def universal_pixel_location(det, rawx, rawy):
     centre over detector 0, x-axis goes from there to detector 1 and
     y-axis goes towards detector 3.
     """
-    det_grid_coordx = float(PIX_GRID[0] - 1)
-    det_grid_coordy = float(PIX_GRID[1] - 1)
+    det_grid_coordx = float(PIX_GRID[0].value - 1)
+    det_grid_coordy = float(PIX_GRID[1].value - 1)
     rawx = float(rawx)
     rawy = float(rawy)
     if det == 0:
@@ -518,73 +535,6 @@ def universal_pixel_location(det, rawx, rawy):
         return det_grid_coordx + rawx, det_grid_coordy + rawy
     elif det == 3:
         return det_grid_coordx - rawy, det_grid_coordy + rawx
-
-
-def roll_from_solar_north(event_list):
-    """Uses two time-contiguous counts to work out rotation angle.
-
-    UNDER CONSTRUCTION
-    """
-    # find the next point in the list and make sure it's a different pixel
-    _dist = 0
-    for c, e in enumerate(event_list[:-1]):
-        _pointa = e
-        next_event = event_list[c + 1]
-        if next_event["DET_ID"] != _pointa["DET_ID"]:
-            # if we have one in a different detector then count that good enough
-            pointa = e
-            pointb = next_event
-            break
-        elif (next_event["RAWX"] != _pointa["RAWX"]) or (
-            next_event["RAWY"] != _pointa["RAWY"]
-        ):
-            # if same detector, just try and get the two counts furthest apart
-            _new_dist = np.sqrt(
-                (_pointa["RAWX"] - next_event["RAWX"]) ** 2
-                + (_pointa["RAWY"] - next_event["RAWY"]) ** 2
-            )
-            if _new_dist > _dist:
-                pointa = e
-                pointb = next_event
-                _dist = _new_dist
-
-    # make sure that point0 is always on the left of point1 for orientation
-    _diff_rawx = float(pointa["RAWX"]) - float(pointb["RAWX"])
-    point0, point1 = (pointa, pointb) if _diff_rawx <= 0 else (pointb, pointa)
-
-    up_vector = np.array([0, 1])
-    # get angle in pixel space between counts and -y
-    print(point0["DET_ID"], point0["RAWX"], point0["RAWY"])
-    print(point1["DET_ID"], point1["RAWX"], point1["RAWY"])
-    big_grid0 = universal_pixel_location(
-        point0["DET_ID"], point0["RAWX"], point0["RAWY"]
-    )
-    big_grid1 = universal_pixel_location(
-        point1["DET_ID"], point1["RAWX"], point1["RAWY"]
-    )
-    len01 = np.sqrt(
-        (big_grid0[0] - big_grid1[0]) ** 2 + (big_grid0[1] - big_grid1[1]) ** 2
-    )
-    vec01 = np.array(big_grid0) - np.array(big_grid1)
-    pix_angle = np.arccos(np.dot(vec01, up_vector) / len01)
-    print(big_grid0, big_grid1, vec01)
-    print(pix_angle / np.pi * 180)
-
-    # get angle in solar pix now (this y-axis is defined the opposite way)
-    vec01_sol = np.array(
-        [int(point0["X"]) - int(point1["X"]), int(int(point1["Y"]) - point0["Y"])]
-    )
-    _dx = abs(vec01_sol[0])
-    _dy = abs(vec01_sol[1])
-    len01_sol = np.sqrt((_dx) ** 2 + (_dy) ** 2)
-    sol_pix_angle = np.arccos(np.dot(vec01_sol, up_vector) / len01_sol)
-    print(vec01_sol)
-    print(sol_pix_angle / np.pi * 180)
-
-    return (pix_angle - sol_pix_angle) / np.pi * 180
-
-
-# print(roll_from_solar_north(event_data))
 
 
 def get_nustar_solar_rotation(roll_time, nustar_roll):
@@ -621,29 +571,26 @@ def get_nustar_solar_rotations(roll_times, nustar_rolls):
     )
 
 
-# nustar_roll_times, nustar_roll = read_filter_file(filename_filter)
-# roll_times = utc_from_nustar_time(nustar_roll_times)
-# solar_rotations = get_nustar_solar_rotations(roll_times[:100], nustar_roll[:100])
-# print(solar_rotations)
-
-
-def add_legs_to_chip_gap_plus():
+def chip_gap_shape_legs():
     """Delta coordinates from centre to vertices of plus shape."""
     half_cg = CHIP_GAP / 2
     to_edges_from_centre = PIX_GRID[0] * RAW_PIX_DIFF + half_cg
+    half_cg = half_cg.value
+    angle_unit = to_edges_from_centre.unit
+    to_edges_from_centre = to_edges_from_centre.value
 
     top_left = np.array([-half_cg, to_edges_from_centre])
     top_right = np.array([half_cg, to_edges_from_centre])
-    top_right_center = np.array([to_edges_from_centre, to_edges_from_centre])
+    top_right_center = np.array([half_cg, half_cg])
     right_top = np.array([to_edges_from_centre, half_cg])
     right_bottom = np.array([to_edges_from_centre, -half_cg])
-    bottom_right_center = np.array([to_edges_from_centre, -to_edges_from_centre])
+    bottom_right_center = np.array([half_cg, -half_cg])
     bottom_left = np.array([-half_cg, -to_edges_from_centre])
     bottom_right = np.array([half_cg, -to_edges_from_centre])
-    bottom_left_center = np.array([-to_edges_from_centre, -to_edges_from_centre])
+    bottom_left_center = np.array([-half_cg, -half_cg])
     left_top = np.array([-to_edges_from_centre, half_cg])
     left_bottom = np.array([-to_edges_from_centre, -half_cg])
-    top_left_center = np.array([-to_edges_from_centre, to_edges_from_centre])
+    top_left_center = np.array([-half_cg, half_cg])
 
     return np.array(
         [
@@ -653,14 +600,14 @@ def add_legs_to_chip_gap_plus():
             right_top,
             right_bottom,
             bottom_right_center,
-            bottom_left,
             bottom_right,
+            bottom_left,
             bottom_left_center,
-            left_top,
             left_bottom,
+            left_top,
             top_left_center,
         ]
-    )
+    ) << angle_unit
 
 
 def raw_pixel_to_center(det, rawx, rawy):
@@ -669,17 +616,57 @@ def raw_pixel_to_center(det, rawx, rawy):
     Grid defined in ``universal_pixel_location``.
     """
     x, y = universal_pixel_location(det, rawx, rawy)
-    mid_coord_position_x = (2 * PIX_GRID[0] - 1) / 2
-    mid_coord_position_y = (2 * PIX_GRID[1] - 1) / 2
-    return x - mid_coord_position_x, y - mid_coord_position_y
+    mid_coord_position_x = (2 * PIX_GRID[0].value - 1) / 2
+    mid_coord_position_y = (2 * PIX_GRID[1].value - 1) / 2
+    x = mid_coord_position_x - x
+    y = mid_coord_position_y - y
+    dir_x, dir_y = x/np.abs(x), y/np.abs(y)
+
+    half_cg_as_pix = (CHIP_GAP/RAW_PIX_DIFF).value/2 
+    half_pix = 0.5
+    return (rawx+half_pix+half_cg_as_pix)*dir_x, (rawy+half_pix+half_cg_as_pix)*dir_y
 
 
 def estimate_chip_gap(event_data, filename_filter, sample=None):
-    sample = 0 if sample is None else sample
-    nustar_roll_times, nustar_roll = read_filter_file(filename_filter)
-    event_times = event_data["TIME"] << u.s
+    """Returns a shape to estimate the chip-gap over the event data.
+    
+    Parameters
+    ----------
+    event_data : FITS data structure 
+        The event list
+    
+    filename_filter : `str`, `file-like` or `pathlib.Path`
+        A `.mkf` filter NuSTAR file.
+    
+    sample : `float`
+        Decides how often to sample the event list for counts to 
+        calculate the chip-gap shape for. E.g., a value of 0.1 will 
+        sample every 10% of the event list as additional times to 
+        calculate the chip-gap shape for. The first event time and last 
+        event time are guarenteed so a vallue of 1 will only use those 
+        two times. If `None` then a value of 0.5 will be used. Value 
+        needs to be >0 and <=1.
+        Default:  None
+    """
+    default_sample = 0.5
+    sample = default_sample if sample is None else sample
+    if not (0<sample<=1):
+        warnings.warn(
+                    "Sample should be >0 and <=1. Sampling at 0.5 to continue."
+                )
+        sample = default_sample
 
-    # use event_data to get the times we want from the roll angle
+    # sample the event data to work with far fewer conversions
+    num_of_counts = len(event_data)
+    every = int(sample*num_of_counts)
+    sliced_event_data = Table(event_data[::every])
+    if sliced_event_data[-1]["TIME"]!=event_data[-1]["TIME"]:
+        sliced_event_data.add_row(event_data[-1])
+
+    nustar_roll_times, nustar_roll = read_filter_file(filename_filter)
+    event_times = sliced_event_data["TIME"] << u.s
+
+    # use sliced_event_data to get the times we want from the roll angle
     roll_times_in_event_range = (nustar_roll_times >= event_times[0]) & (
         nustar_roll_times <= event_times[-1]
     )
@@ -687,50 +674,80 @@ def estimate_chip_gap(event_data, filename_filter, sample=None):
     sliced_nustar_roll_times = nustar_roll_times[inds]
     sliced_nustar_roll = nustar_roll[inds]
 
+    # sample the roll times too
+    sampled_sliced_nustar_roll_times = sliced_nustar_roll_times[::every]
+    sampled_sliced_nustar_roll = sliced_nustar_roll[::every]
+    if sampled_sliced_nustar_roll_times[-1]!=sliced_nustar_roll_times[-1]:
+        sampled_sliced_nustar_roll_times = np.append(sampled_sliced_nustar_roll_times, sliced_nustar_roll_times[-1])
+        sampled_sliced_nustar_roll = np.append(sampled_sliced_nustar_roll, sliced_nustar_roll[-1])
+
     solar_rotations = get_nustar_solar_rotations(
-        utc_from_nustar_time(sliced_nustar_roll_times), sliced_nustar_roll
+        utc_from_nustar_time(sampled_sliced_nustar_roll_times), sampled_sliced_nustar_roll
     )
 
-    event_rolls = np.interp(event_times, sliced_nustar_roll_times, solar_rotations)
+    event_rolls = np.interp(event_times, sampled_sliced_nustar_roll_times, solar_rotations.value, left=solar_rotations.value[0], right=solar_rotations.value[-1]) << solar_rotations.unit
 
-    # ind where the fov centres would be using the roll angle and the
+    # find where the fov centres would be using the roll angle and the
     #   resolution values from previous
-    rawx, rawy, det = event_data["RAWX"], event_data["RAWY"], event_data["DET_ID"]
-    delx_pix, dely_pix = raw_pixel_to_center(det, rawx, rawy)
-    translated_x, translated_y = rotate_coord(
-        [delx_pix, dely_pix], event_rolls, rotate="anticlockwise"
-    )
+    rawx, rawy, det = sliced_event_data["RAWX"], sliced_event_data["RAWY"], sliced_event_data["DET_ID"]
+    del_pix = np.zeros((len(det), 2))
+    for c, (d, rx, ry) in enumerate(zip(det, rawx, rawy)):
+        del_pix[c] = raw_pixel_to_center(d, rx, ry) 
+    
+    # fov centre in raw pix delta from raw pixel count location
+    tanslated_xy_coords = []
+    for dp, er in zip(del_pix, event_rolls):
+        tanslated_xy_coords.append(rotate_coord(
+            dp, er, rotate="clockwise"
+        ))
+    tanslated_xy_coords = np.array(tanslated_xy_coords)
 
     # use translated_x, translated_y to get the solar coord of the fov centre
     count_x, count_y = (
-        pixel_coords_to_solar_coords(event_data["X"]),
-        pixel_coords_to_solar_coords(event_data["Y"]),
+        pixel_coords_to_solar_coords(sliced_event_data["X"]),
+        pixel_coords_to_solar_coords(sliced_event_data["Y"]),
     )
-    sol_fov_cx = count_x + (np.floor(translated_x) * RAW_PIX_DIFF + CHIP_GAP)
-    sol_fov_cy = count_y + (np.floor(translated_y) * RAW_PIX_DIFF + CHIP_GAP)
+    # get fov centres in solar coods
+    sol_fov_cx = count_x + tanslated_xy_coords[:,0]*u.pix * RAW_PIX_DIFF
+    sol_fov_cy = count_y - tanslated_xy_coords[:,1]*u.pix * RAW_PIX_DIFF # negative since down increases y value in universal grid
 
     # construct the "plus" shape of the chip-gap from that centre point
-    tanslated_legs = rotate_coord(
-        add_legs_to_chip_gap_plus(), event_rolls, rotate="clockwise"
-    )
+    tanslated_legs_coords = []
+    cgsl = chip_gap_shape_legs()
+    for er in event_rolls:
+        tanslated_legs_coords.append(rotate_coord(
+            cgsl, er, rotate="anticlockwise"
+        ))
+    tanslated_legs_coords = np.array(tanslated_legs_coords) << cgsl.unit
 
-    chip_gaps = []
-    for c, xy in enumerate(zip(sol_fov_cx, sol_fov_cy)):
-        chip_gaps.append(arcsec_points_to_shape(xy + tanslated_legs[c]))
+    # convert the chip-gap vertices to a union shape
+    chip_gap = None
+    for c, (x, y) in enumerate(zip(sol_fov_cx, sol_fov_cy)):
+        xy = np.array([x.value, y.value]) << x.unit
+        cg = arcsec_points_to_shape(xy + tanslated_legs_coords[c])
+        if chip_gap is None:
+            chip_gap = cg
+        else:
+            chip_gap = chip_gap.union(cg)
 
-    return chip_gaps
+    return chip_gap, (count_x, count_y), (sol_fov_cx, sol_fov_cy)
 
 
-# circle_region_custom = estimate_chip_gap(event_data, filename_filter, sample=None)
-# bottom_left = [-1000, -500] << u.arcsec
-# top_right = [100, 425] << u.arcsec
-# m = nustar_object.nustar_map(bottom_left, top_right)
+event_data=by_time(nustar_object.cleaned_evt_data, time0, time1)
+circle_region_custom, count, center = estimate_chip_gap(event_data, filename_filter, sample=0.5)
+bottom_left = [-1000, -500] << u.arcsec
+top_right = [100, 425] << u.arcsec
+time0 = "2021-11-20T02:22:10"
+time1 = "2021-11-20T02:25:30"
+m = nustar_object.nustar_map(bottom_left, top_right, event_data=event_data)
 
-# from jdhsrpy.visualize import shape_plot
-# fig = plt.figure()
-# ax = fig.add_subplot(projection=m)
-# m.plot(axes=ax)
-# shape_plot(circle_region_custom, m.coordinate_frame, color="k")
-# draw_grid(m, ax)
-# plt.title("From FK5/Sexagesimal REG file\nand custom created region file")
-# plt.show()
+fig = plt.figure()
+ax = fig.add_subplot(projection=m)
+m.plot(axes=ax)
+shape_plot(circle_region_custom, m.coordinate_frame, color="k")
+from jdhsrpy.visualize import points_plot
+points_plot(*count, m.coordinate_frame)
+points_plot(*center, m.coordinate_frame)
+draw_grid(m, ax)
+plt.title("From FK5/Sexagesimal REG file\nand custom created region file")
+plt.show()
