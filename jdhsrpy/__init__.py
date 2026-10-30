@@ -18,5 +18,5 @@ PIX_SIZE = 0.6 << u.mm
 RAW_PIX_DIFF = 12.3 << u.Unit(PIXELUNIT) / u.pixel
 # CHIP_GAP = 15.77588557692691 << u.Unit(PIXELUNIT)
 CHIP_GAP_SIZE = 0.5 << u.mm
-CHIP_GAP = (RAW_PIX_DIFF * (CHIP_GAP_SIZE/PIX_SIZE)).value << u.Unit(PIXELUNIT)
+CHIP_GAP = (RAW_PIX_DIFF * (CHIP_GAP_SIZE / PIX_SIZE)).value << u.Unit(PIXELUNIT)
 PIX_GRID = (32, 32) << u.pixel

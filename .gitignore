@@ -38,3 +38,4 @@ docs/sg_execution_times.rst
 *.reg
 *.bsp
 *.tle
+*.mkf

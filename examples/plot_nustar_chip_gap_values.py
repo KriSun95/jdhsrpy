@@ -6,15 +6,15 @@ Obtaining NuSTAR Chip-gap Values
 .. note::
 
     This example shows getting the detector values for the chip-gap and
-    pixels. Even though the final values stored in 
-    ``jdhsrpy.RAW_PIX_DIFF`` and ``jdhsrpy.CHIP_GAP`` are derived from 
+    pixels. Even though the final values stored in
+    ``jdhsrpy.RAW_PIX_DIFF`` and ``jdhsrpy.CHIP_GAP`` are derived from
     published values we obtain good estimates from the EVT file.
 
-    However, for some reason, I could not get the translation from a 
+    However, for some reason, I could not get the translation from a
     coordinate from a count to the detector center to work quickly so
-    
-    This example falls short at the minute but there might be useful 
-    workings in it with detector orientations and such so it will be 
+
+    This example falls short at the minute but there might be useful
+    workings in it with detector orientations and such so it will be
     kept.
 
 This example will be a little different to the others. This will show
@@ -64,12 +64,10 @@ url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A06_cl_sunpos.evt"
 filename_evt = os.path.join(os.getcwd(), ntpath.split(url)[1])
 if not os.path.isfile(filename_evt):
     urllib.request.urlretrieve(url, filename_evt)
-# url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A.mkf"
-# filename_filter = os.path.join(os.getcwd(), ntpath.split(url)[1])
-# if not os.path.isfile(filename_filter):
-#     urllib.request.urlretrieve(url, filename_filter)
-filename_filter = "/Users/kris/Documents/umnPostdoc/projects/analysis/nustarNov2021/data/nsNov2021on17-19-21/nustarFiles/nsNov19/20619003001/event_cl/nu20619003001A.mkf"
-
+url = f"{TEST_DATA_LOCATION}/test_nustar_data/nu20619003001A.mkf"
+filename_filter = os.path.join(os.getcwd(), ntpath.split(url)[1])
+if not os.path.isfile(filename_filter):
+    urllib.request.urlretrieve(url, filename_filter)
 
 # %%
 #
@@ -592,22 +590,25 @@ def chip_gap_shape_legs():
     left_bottom = np.array([-to_edges_from_centre, -half_cg])
     top_left_center = np.array([-half_cg, half_cg])
 
-    return np.array(
-        [
-            top_left,
-            top_right,
-            top_right_center,
-            right_top,
-            right_bottom,
-            bottom_right_center,
-            bottom_right,
-            bottom_left,
-            bottom_left_center,
-            left_bottom,
-            left_top,
-            top_left_center,
-        ]
-    ) << angle_unit
+    return (
+        np.array(
+            [
+                top_left,
+                top_right,
+                top_right_center,
+                right_top,
+                right_bottom,
+                bottom_right_center,
+                bottom_right,
+                bottom_left,
+                bottom_left_center,
+                left_bottom,
+                left_top,
+                top_left_center,
+            ]
+        )
+        << angle_unit
+    )
 
 
 def raw_pixel_to_center(det, rawx, rawy):
@@ -620,47 +621,47 @@ def raw_pixel_to_center(det, rawx, rawy):
     mid_coord_position_y = (2 * PIX_GRID[1].value - 1) / 2
     x = mid_coord_position_x - x
     y = mid_coord_position_y - y
-    dir_x, dir_y = x/np.abs(x), y/np.abs(y)
+    dir_x, dir_y = x / np.abs(x), y / np.abs(y)
 
-    half_cg_as_pix = (CHIP_GAP/RAW_PIX_DIFF).value/2 
+    half_cg_as_pix = (CHIP_GAP / RAW_PIX_DIFF).value / 2
     half_pix = 0.5
-    return (rawx+half_pix+half_cg_as_pix)*dir_x, (rawy+half_pix+half_cg_as_pix)*dir_y
+    return (rawx + half_pix + half_cg_as_pix) * dir_x, (
+        rawy + half_pix + half_cg_as_pix
+    ) * dir_y
 
 
 def estimate_chip_gap(event_data, filename_filter, sample=None):
     """Returns a shape to estimate the chip-gap over the event data.
-    
+
     Parameters
     ----------
-    event_data : FITS data structure 
+    event_data : FITS data structure
         The event list
-    
+
     filename_filter : `str`, `file-like` or `pathlib.Path`
         A `.mkf` filter NuSTAR file.
-    
+
     sample : `float`
-        Decides how often to sample the event list for counts to 
-        calculate the chip-gap shape for. E.g., a value of 0.1 will 
-        sample every 10% of the event list as additional times to 
-        calculate the chip-gap shape for. The first event time and last 
-        event time are guarenteed so a vallue of 1 will only use those 
-        two times. If `None` then a value of 0.5 will be used. Value 
+        Decides how often to sample the event list for counts to
+        calculate the chip-gap shape for. E.g., a value of 0.1 will
+        sample every 10% of the event list as additional times to
+        calculate the chip-gap shape for. The first event time and last
+        event time are guaranteed so a value of 1 will only use those
+        two times. If `None` then a value of 0.5 will be used. Value
         needs to be >0 and <=1.
         Default:  None
     """
     default_sample = 0.5
     sample = default_sample if sample is None else sample
-    if not (0<sample<=1):
-        warnings.warn(
-                    "Sample should be >0 and <=1. Sampling at 0.5 to continue."
-                )
+    if not (0 < sample <= 1):
+        warnings.warn("Sample should be >0 and <=1. Sampling at 0.5 to continue.")
         sample = default_sample
 
     # sample the event data to work with far fewer conversions
     num_of_counts = len(event_data)
-    every = int(sample*num_of_counts)
+    every = int(sample * num_of_counts)
     sliced_event_data = Table(event_data[::every])
-    if sliced_event_data[-1]["TIME"]!=event_data[-1]["TIME"]:
+    if sliced_event_data[-1]["TIME"] != event_data[-1]["TIME"]:
         sliced_event_data.add_row(event_data[-1])
 
     nustar_roll_times, nustar_roll = read_filter_file(filename_filter)
@@ -677,29 +678,45 @@ def estimate_chip_gap(event_data, filename_filter, sample=None):
     # sample the roll times too
     sampled_sliced_nustar_roll_times = sliced_nustar_roll_times[::every]
     sampled_sliced_nustar_roll = sliced_nustar_roll[::every]
-    if sampled_sliced_nustar_roll_times[-1]!=sliced_nustar_roll_times[-1]:
-        sampled_sliced_nustar_roll_times = np.append(sampled_sliced_nustar_roll_times, sliced_nustar_roll_times[-1])
-        sampled_sliced_nustar_roll = np.append(sampled_sliced_nustar_roll, sliced_nustar_roll[-1])
+    if sampled_sliced_nustar_roll_times[-1] != sliced_nustar_roll_times[-1]:
+        sampled_sliced_nustar_roll_times = np.append(
+            sampled_sliced_nustar_roll_times, sliced_nustar_roll_times[-1]
+        )
+        sampled_sliced_nustar_roll = np.append(
+            sampled_sliced_nustar_roll, sliced_nustar_roll[-1]
+        )
 
     solar_rotations = get_nustar_solar_rotations(
-        utc_from_nustar_time(sampled_sliced_nustar_roll_times), sampled_sliced_nustar_roll
+        utc_from_nustar_time(sampled_sliced_nustar_roll_times),
+        sampled_sliced_nustar_roll,
     )
 
-    event_rolls = np.interp(event_times, sampled_sliced_nustar_roll_times, solar_rotations.value, left=solar_rotations.value[0], right=solar_rotations.value[-1]) << solar_rotations.unit
+    event_rolls = (
+        np.interp(
+            event_times,
+            sampled_sliced_nustar_roll_times,
+            solar_rotations.value,
+            left=solar_rotations.value[0],
+            right=solar_rotations.value[-1],
+        )
+        << solar_rotations.unit
+    )
 
     # find where the fov centres would be using the roll angle and the
     #   resolution values from previous
-    rawx, rawy, det = sliced_event_data["RAWX"], sliced_event_data["RAWY"], sliced_event_data["DET_ID"]
+    rawx, rawy, det = (
+        sliced_event_data["RAWX"],
+        sliced_event_data["RAWY"],
+        sliced_event_data["DET_ID"],
+    )
     del_pix = np.zeros((len(det), 2))
     for c, (d, rx, ry) in enumerate(zip(det, rawx, rawy)):
-        del_pix[c] = raw_pixel_to_center(d, rx, ry) 
-    
+        del_pix[c] = raw_pixel_to_center(d, rx, ry)
+
     # fov centre in raw pix delta from raw pixel count location
     tanslated_xy_coords = []
     for dp, er in zip(del_pix, event_rolls):
-        tanslated_xy_coords.append(rotate_coord(
-            dp, er, rotate="clockwise"
-        ))
+        tanslated_xy_coords.append(rotate_coord(dp, er, rotate="clockwise"))
     tanslated_xy_coords = np.array(tanslated_xy_coords)
 
     # use translated_x, translated_y to get the solar coord of the fov centre
@@ -708,16 +725,16 @@ def estimate_chip_gap(event_data, filename_filter, sample=None):
         pixel_coords_to_solar_coords(sliced_event_data["Y"]),
     )
     # get fov centres in solar coods
-    sol_fov_cx = count_x + tanslated_xy_coords[:,0]*u.pix * RAW_PIX_DIFF
-    sol_fov_cy = count_y - tanslated_xy_coords[:,1]*u.pix * RAW_PIX_DIFF # negative since down increases y value in universal grid
+    sol_fov_cx = count_x + tanslated_xy_coords[:, 0] * u.pix * RAW_PIX_DIFF
+    sol_fov_cy = (
+        count_y - tanslated_xy_coords[:, 1] * u.pix * RAW_PIX_DIFF
+    )  # negative since down increases y value in universal grid
 
     # construct the "plus" shape of the chip-gap from that centre point
     tanslated_legs_coords = []
     cgsl = chip_gap_shape_legs()
     for er in event_rolls:
-        tanslated_legs_coords.append(rotate_coord(
-            cgsl, er, rotate="anticlockwise"
-        ))
+        tanslated_legs_coords.append(rotate_coord(cgsl, er, rotate="anticlockwise"))
     tanslated_legs_coords = np.array(tanslated_legs_coords) << cgsl.unit
 
     # convert the chip-gap vertices to a union shape
@@ -733,8 +750,10 @@ def estimate_chip_gap(event_data, filename_filter, sample=None):
     return chip_gap, (count_x, count_y), (sol_fov_cx, sol_fov_cy)
 
 
-event_data=by_time(nustar_object.cleaned_evt_data, time0, time1)
-circle_region_custom, count, center = estimate_chip_gap(event_data, filename_filter, sample=0.5)
+event_data = by_time(nustar_object.cleaned_evt_data, time0, time1)
+circle_region_custom, count, center = estimate_chip_gap(
+    event_data, filename_filter, sample=0.5
+)
 bottom_left = [-1000, -500] << u.arcsec
 top_right = [100, 425] << u.arcsec
 time0 = "2021-11-20T02:22:10"
@@ -746,6 +765,7 @@ ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
 shape_plot(circle_region_custom, m.coordinate_frame, color="k")
 from jdhsrpy.visualize import points_plot
+
 points_plot(*count, m.coordinate_frame)
 points_plot(*center, m.coordinate_frame)
 draw_grid(m, ax)

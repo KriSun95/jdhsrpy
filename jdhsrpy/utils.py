@@ -228,7 +228,7 @@ def helioprojective_to_radec(x, y, time, **kwargs):
 
     Returns
     -------
-    The Ra and Dec in degrees. : `tuple[astropy.units.Quantity]` 
+    The Ra and Dec in degrees. : `tuple[astropy.units.Quantity]`
     """
     from nustar_pysolar.utils import skyfield_ephem
 
