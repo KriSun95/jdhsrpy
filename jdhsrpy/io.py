@@ -14,6 +14,7 @@ from jdhsrpy.utils import (
 )
 
 __all__ = [
+    "read_filter_file",
     "read_heasarc_arf",
     "read_heasarc_rmf",
     "read_nustar_pha",
