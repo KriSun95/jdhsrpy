@@ -10,12 +10,11 @@ Obtaining NuSTAR Chip-gap Values
     ``jdhsrpy.RAW_PIX_DIFF`` and ``jdhsrpy.CHIP_GAP`` are derived from
     published values we obtain good estimates from the EVT file.
 
-    However, for some reason, I could not get the translation from a
-    coordinate from a count to the detector center to work quickly so
-
     This example falls short at the minute but there might be useful
     workings in it with detector orientations and such so it will be
-    kept.
+    kept. I believe the difference in count position and pixel
+    resolution makes the estiamted region a bit too varied from
+    count-to-count.
 
 This example will be a little different to the others. This will show
 how certain hard-coded values were obtained rather than an example for
@@ -611,23 +610,45 @@ def chip_gap_shape_legs():
     )
 
 
+# def raw_pixel_to_center(det, rawx, rawy):
+#     """Center translation of the self-define 64x64 grid from a given point.
+
+#     Grid defined in ``universal_pixel_location``.
+#     """
+#     x, y = universal_pixel_location(det, rawx, rawy)
+#     mid_coord_position_x = (2 * PIX_GRID[0].value - 1) / 2
+#     mid_coord_position_y = (2 * PIX_GRID[1].value - 1) / 2
+#     x = mid_coord_position_x - x
+#     y = mid_coord_position_y - y
+#     dir_x, dir_y = x / np.abs(x), y / np.abs(y)
+
+#     half_cg_as_pix = (CHIP_GAP / RAW_PIX_DIFF).value / 2
+#     half_pix = 0.5
+#     return (rawx + half_pix + half_cg_as_pix) * dir_x, (
+#         rawy + half_pix + half_cg_as_pix
+#     ) * dir_y
+
+
 def raw_pixel_to_center(det, rawx, rawy):
     """Center translation of the self-define 64x64 grid from a given point.
 
     Grid defined in ``universal_pixel_location``.
     """
-    x, y = universal_pixel_location(det, rawx, rawy)
-    mid_coord_position_x = (2 * PIX_GRID[0].value - 1) / 2
-    mid_coord_position_y = (2 * PIX_GRID[1].value - 1) / 2
-    x = mid_coord_position_x - x
-    y = mid_coord_position_y - y
-    dir_x, dir_y = x / np.abs(x), y / np.abs(y)
 
     half_cg_as_pix = (CHIP_GAP / RAW_PIX_DIFF).value / 2
     half_pix = 0.5
-    return (rawx + half_pix + half_cg_as_pix) * dir_x, (
-        rawy + half_pix + half_cg_as_pix
-    ) * dir_y
+    valuex, valuey = (
+        (rawx + half_pix + half_cg_as_pix),
+        (rawy + half_pix + half_cg_as_pix),
+    )
+    if det == 0:
+        return valuex, valuey
+    elif det == 1:
+        return valuey, -valuex
+    elif det == 2:
+        return -valuex, -valuey
+    elif det == 3:
+        return -valuey, valuex
 
 
 def estimate_chip_gap(event_data, filename_filter, sample=None):
@@ -711,7 +732,7 @@ def estimate_chip_gap(event_data, filename_filter, sample=None):
     )
     del_pix = np.zeros((len(det), 2))
     for c, (d, rx, ry) in enumerate(zip(det, rawx, rawy)):
-        del_pix[c] = raw_pixel_to_center(d, rx, ry)
+        del_pix[c] = raw_pixel_to_center(d, rx, ry)[::-1]
 
     # fov centre in raw pix delta from raw pixel count location
     tanslated_xy_coords = []
@@ -724,6 +745,7 @@ def estimate_chip_gap(event_data, filename_filter, sample=None):
         pixel_coords_to_solar_coords(sliced_event_data["X"]),
         pixel_coords_to_solar_coords(sliced_event_data["Y"]),
     )
+
     # get fov centres in solar coods
     sol_fov_cx = count_x + tanslated_xy_coords[:, 0] * u.pix * RAW_PIX_DIFF
     sol_fov_cy = (
@@ -747,13 +769,11 @@ def estimate_chip_gap(event_data, filename_filter, sample=None):
         else:
             chip_gap = chip_gap.union(cg)
 
-    return chip_gap, (count_x, count_y), (sol_fov_cx, sol_fov_cy)
+    return chip_gap
 
 
 event_data = by_time(nustar_object.cleaned_evt_data, time0, time1)
-circle_region_custom, count, center = estimate_chip_gap(
-    event_data, filename_filter, sample=0.5
-)
+chip_gap_region_custom = estimate_chip_gap(event_data, filename_filter, sample=0.01)
 bottom_left = [-1000, -500] << u.arcsec
 top_right = [100, 425] << u.arcsec
 time0 = "2021-11-20T02:22:10"
@@ -763,11 +783,7 @@ m = nustar_object.nustar_map(bottom_left, top_right, event_data=event_data)
 fig = plt.figure()
 ax = fig.add_subplot(projection=m)
 m.plot(axes=ax)
-shape_plot(circle_region_custom, m.coordinate_frame, color="k")
-from jdhsrpy.visualize import points_plot
-
-points_plot(*count, m.coordinate_frame)
-points_plot(*center, m.coordinate_frame)
+shape_plot(chip_gap_region_custom, m.coordinate_frame, color="k")
 draw_grid(m, ax)
-plt.title("From FK5/Sexagesimal REG file\nand custom created region file")
+plt.title("Map with estimated ship-gap location")
 plt.show()
